@@ -1,0 +1,27 @@
+{
+  "id": "sports",
+  "name": "Sports",
+  "category": "Sport",
+  "words": [
+    "Soccer",
+    "Basketball",
+    "Tennis",
+    "Cricket",
+    "Boxing",
+    "Surfing",
+    "Golf",
+    "Archery",
+    "Bowling",
+    "Skiing",
+    "Volleyball",
+    "Rugby",
+    "Fencing",
+    "Skateboarding",
+    "Badminton",
+    "Rowing",
+    "Curling",
+    "Gymnastics",
+    "Wrestling",
+    "Climbing"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "foods",
+  "name": "Foods",
+  "category": "Food",
+  "words": [
+    "Pizza",
+    "Sushi",
+    "Tacos",
+    "Ramen",
+    "Burger",
+    "Pancakes",
+    "Spaghetti",
+    "Ice Cream",
+    "Dumplings",
+    "Curry",
+    "Waffles",
+    "Nachos",
+    "Falafel",
+    "Croissant",
+    "Popcorn",
+    "Cheesecake",
+    "Hot Dog",
+    "Burrito",
+    "Fried Rice",
+    "Donut"
+  ]
+}

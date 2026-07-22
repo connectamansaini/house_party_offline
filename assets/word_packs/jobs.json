@@ -1,0 +1,27 @@
+{
+  "id": "jobs",
+  "name": "Jobs",
+  "category": "Job",
+  "words": [
+    "Firefighter",
+    "Chef",
+    "Astronaut",
+    "Teacher",
+    "Doctor",
+    "Pilot",
+    "Detective",
+    "Farmer",
+    "Barber",
+    "Lawyer",
+    "Plumber",
+    "Journalist",
+    "Electrician",
+    "Magician",
+    "Lifeguard",
+    "Librarian",
+    "Dentist",
+    "Photographer",
+    "Mechanic",
+    "Scientist"
+  ]
+}

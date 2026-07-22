@@ -1,0 +1,27 @@
+{
+  "id": "places",
+  "name": "Places",
+  "category": "Place",
+  "words": [
+    "Beach",
+    "Airport",
+    "Hospital",
+    "Library",
+    "Casino",
+    "Museum",
+    "Stadium",
+    "Zoo",
+    "Space Station",
+    "Submarine",
+    "Ski Resort",
+    "Jungle",
+    "Desert",
+    "Castle",
+    "Aquarium",
+    "Theme Park",
+    "Lighthouse",
+    "Volcano",
+    "Bank",
+    "Cruise Ship"
+  ]
+}

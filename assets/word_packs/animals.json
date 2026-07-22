@@ -1,0 +1,27 @@
+{
+  "id": "animals",
+  "name": "Animals",
+  "category": "Animal",
+  "words": [
+    "Elephant",
+    "Penguin",
+    "Kangaroo",
+    "Dolphin",
+    "Giraffe",
+    "Octopus",
+    "Cheetah",
+    "Koala",
+    "Hedgehog",
+    "Flamingo",
+    "Panda",
+    "Crocodile",
+    "Owl",
+    "Sloth",
+    "Rhinoceros",
+    "Chameleon",
+    "Walrus",
+    "Peacock",
+    "Otter",
+    "Squirrel"
+  ]
+}

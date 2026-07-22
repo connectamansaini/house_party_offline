@@ -1,0 +1,10 @@
+{
+  "packs": [
+    "foods.json",
+    "animals.json",
+    "places.json",
+    "movies.json",
+    "sports.json",
+    "jobs.json"
+  ]
+}

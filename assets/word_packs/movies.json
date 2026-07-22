@@ -1,0 +1,27 @@
+{
+  "id": "movies",
+  "name": "Movie Genres",
+  "category": "Movie Genre",
+  "words": [
+    "Horror",
+    "Comedy",
+    "Romance",
+    "Action",
+    "Sci-Fi",
+    "Fantasy",
+    "Documentary",
+    "Thriller",
+    "Musical",
+    "Western",
+    "Mystery",
+    "Animation",
+    "Superhero",
+    "Zombie",
+    "Heist",
+    "War",
+    "Noir",
+    "Adventure",
+    "Slasher",
+    "Rom-Com"
+  ]
+}
