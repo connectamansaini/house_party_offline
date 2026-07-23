@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/src/imposter/domain/engine/round_engine.dart';
 import 'package:house_party_offline/src/imposter/domain/entities/game_config.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
 import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
 import 'package:house_party_offline/src/imposter/domain/entities/role.dart';
 import 'package:house_party_offline/src/imposter/domain/entities/round_result.dart';
@@ -25,13 +26,15 @@ void main() {
   GameConfig config({
     int imposterCount = 1,
     bool hint = false,
-    int crewPoints = 1,
+    int civilianPoints = 1,
     int imposterPoints = 2,
+    ImposterMode mode = ImposterMode.blank,
   }) => GameConfig(
-    pack: pack,
+    packs: [pack],
     imposterCount: imposterCount,
+    imposterMode: mode,
     categoryHintEnabled: hint,
-    crewWinPoints: crewPoints,
+    civilianWinPoints: civilianPoints,
     imposterWinPoints: imposterPoints,
   );
 
@@ -47,14 +50,14 @@ void main() {
       expect(a.imposterIds.length, 2);
       expect(pack.words, contains(a.secretWord));
       expect(a.rolesByPlayerId.length, 5);
-      // Every player has a role; imposters are ImposterRole, others CrewRole.
+      // Every player has a role; imposters are ImposterRole, others CivilianRole.
       for (final p in players) {
         final role = a.roleOf(p.id);
         if (a.imposterIds.contains(p.id)) {
           expect(role, isA<ImposterRole>());
         } else {
-          expect(role, isA<CrewRole>());
-          expect((role as CrewRole).secretWord, a.secretWord);
+          expect(role, isA<CivilianRole>());
+          expect((role as CivilianRole).secretWord, a.secretWord);
         }
       }
     });
@@ -66,17 +69,17 @@ void main() {
       expect(a, equals(b));
     });
 
-    test('crew see the category hint only when enabled', () {
+    test('civilian see the category hint only when enabled', () {
       final players = makePlayers(4);
 
       final off = engine.assignRoles(players, config(hint: false), rng: Random(3));
-      final crewOff =
-          off.rolesByPlayerId.values.whereType<CrewRole>().first;
-      expect(crewOff.categoryHint, isNull);
+      final civilianOff =
+          off.rolesByPlayerId.values.whereType<CivilianRole>().first;
+      expect(civilianOff.categoryHint, isNull);
 
       final on = engine.assignRoles(players, config(hint: true), rng: Random(3));
-      final crewOn = on.rolesByPlayerId.values.whereType<CrewRole>().first;
-      expect(crewOn.categoryHint, pack.category);
+      final civilianOn = on.rolesByPlayerId.values.whereType<CivilianRole>().first;
+      expect(civilianOn.categoryHint, pack.category);
     });
 
     test('imposter sees the hint only when enabled and never the word', () {
@@ -121,12 +124,128 @@ void main() {
       expect(() => engine.assignRoles(dup, config()), throwsArgumentError);
     });
 
-    test('rejects an empty word pack', () {
+    test('rejects packs with no words', () {
       const empty = WordPack(id: 'e', name: 'Empty', category: 'None', words: []);
       expect(
-        () => engine.assignRoles(makePlayers(4), config().copyWith(pack: empty)),
+        () => engine.assignRoles(makePlayers(4), config().copyWith(packs: [empty])),
         throwsArgumentError,
       );
+    });
+
+    test('draws across multiple packs; hint matches the chosen word pack', () {
+      const animals = WordPack(
+        id: 'animals',
+        name: 'Animals',
+        category: 'Animal',
+        words: ['Owl', 'Cat', 'Fox'],
+      );
+      final cfg = config(hint: true).copyWith(packs: [pack, animals]);
+
+      // Across many seeds, the word always comes from one of the packs and the
+      // civilian's category hint reflects that word's pack.
+      for (var seed = 0; seed < 25; seed++) {
+        final a = engine.assignRoles(makePlayers(4), cfg, rng: Random(seed));
+        final fromFoods = pack.words.contains(a.secretWord);
+        final fromAnimals = animals.words.contains(a.secretWord);
+        expect(fromFoods ^ fromAnimals, isTrue,
+            reason: '${a.secretWord} must belong to exactly one pack');
+        final civilian = a.rolesByPlayerId.values.whereType<CivilianRole>().first;
+        expect(civilian.categoryHint, fromFoods ? 'Food' : 'Animal');
+      }
+    });
+  });
+
+  group('imposter mode', () {
+    test('blank mode gives the imposter no decoy word', () {
+      final a = engine.assignRoles(
+        makePlayers(4),
+        config(mode: ImposterMode.blank),
+        rng: Random(2),
+      );
+      final imposter =
+          a.rolesByPlayerId.values.whereType<ImposterRole>().first;
+      expect(imposter.decoyWord, isNull);
+    });
+
+    test('undercover gives a decoy word that differs from the secret', () {
+      final a = engine.assignRoles(
+        makePlayers(4),
+        config(mode: ImposterMode.undercover),
+        rng: Random(2),
+      );
+      final imposter =
+          a.rolesByPlayerId.values.whereType<ImposterRole>().first;
+      expect(imposter.decoyWord, isNotNull);
+      expect(pack.words, contains(imposter.decoyWord));
+      expect(imposter.decoyWord, isNot(a.secretWord));
+    });
+
+    test('undercover decoy stays within the secret word\'s category', () {
+      const foods = WordPack(
+        id: 'foods',
+        name: 'Foods',
+        category: 'Food',
+        words: ['Pizza', 'Sushi'],
+      );
+      const animals = WordPack(
+        id: 'animals',
+        name: 'Animals',
+        category: 'Animal',
+        words: ['Owl', 'Cat'],
+      );
+      final a = engine.assignRoles(
+        makePlayers(4),
+        GameConfig(
+          packs: const [foods, animals],
+          imposterMode: ImposterMode.undercover,
+        ),
+        rng: Random(5),
+      );
+      final decoy =
+          a.rolesByPlayerId.values.whereType<ImposterRole>().first.decoyWord!;
+      final secretIsFood = foods.words.contains(a.secretWord);
+      final decoyIsFood = foods.words.contains(decoy);
+      expect(decoyIsFood, secretIsFood,
+          reason: 'decoy should come from the same category as the secret');
+    });
+
+    test('single-word pool yields no decoy (falls back to blank)', () {
+      const solo = WordPack(
+        id: 'solo',
+        name: 'Solo',
+        category: 'One',
+        words: ['OnlyWord'],
+      );
+      final a = engine.assignRoles(
+        makePlayers(3),
+        const GameConfig(packs: [solo], imposterMode: ImposterMode.undercover),
+        rng: Random(1),
+      );
+      expect(
+        a.rolesByPlayerId.values.whereType<ImposterRole>().first.decoyWord,
+        isNull,
+      );
+    });
+  });
+
+  group('tallyVotes', () {
+    test('eliminates the player with the most votes', () {
+      final votedOut = engine.tallyVotes({
+        'a': 'x',
+        'b': 'x',
+        'c': 'y',
+      });
+      expect(votedOut, 'x');
+    });
+
+    test('breaks a tie among the leaders using the rng', () {
+      // x and y each get 1 vote; the tie is broken deterministically by seed.
+      final result = engine.tallyVotes({'a': 'x', 'b': 'y'}, rng: Random(0));
+      expect(['x', 'y'], contains(result));
+    });
+
+    test('throws on an empty ballot set', () {
+      expect(() => engine.tallyVotes(const {}), throwsArgumentError);
     });
   });
 
@@ -148,11 +267,11 @@ void main() {
     );
     // Ensure we know who the imposter is for the scenarios below.
     late String imposterId;
-    late String crewId;
+    late String civilianId;
 
     setUp(() {
       imposterId = assignment.imposterIds.first;
-      crewId = assignment.rolesByPlayerId.keys
+      civilianId = assignment.rolesByPlayerId.keys
           .firstWhere((id) => !assignment.imposterIds.contains(id));
     });
 
@@ -166,42 +285,42 @@ void main() {
       expect(r.winningSide, WinningSide.imposter);
       expect(r.imposterGuessedRight, isTrue);
       expect(r.scoreDeltas[imposterId], 2);
-      expect(r.scoreDeltas[crewId], 0);
+      expect(r.scoreDeltas[civilianId], 0);
     });
 
-    test('imposter caught with wrong guess → crew wins', () {
+    test('imposter caught with wrong guess → civilian wins', () {
       final r = engine.resolveRound(
         assignment: assignment,
         votedOutId: imposterId,
         imposterGuess: 'definitely wrong',
-        config: config(crewPoints: 1),
+        config: config(civilianPoints: 1),
       );
-      expect(r.winningSide, WinningSide.crew);
+      expect(r.winningSide, WinningSide.civilian);
       expect(r.imposterGuessedRight, isFalse);
-      expect(r.scoreDeltas[crewId], 1);
+      expect(r.scoreDeltas[civilianId], 1);
       expect(r.scoreDeltas[imposterId], 0);
     });
 
-    test('imposter caught with no guess → crew wins', () {
+    test('imposter caught with no guess → civilian wins', () {
       final r = engine.resolveRound(
         assignment: assignment,
         votedOutId: imposterId,
         config: config(),
       );
-      expect(r.winningSide, WinningSide.crew);
+      expect(r.winningSide, WinningSide.civilian);
       expect(r.imposterGuessedRight, isFalse);
     });
 
-    test('crew member voted out → imposter wins, guess ignored', () {
+    test('civilian member voted out → imposter wins, guess ignored', () {
       final r = engine.resolveRound(
         assignment: assignment,
-        votedOutId: crewId,
+        votedOutId: civilianId,
         config: config(imposterPoints: 3),
       );
       expect(r.winningSide, WinningSide.imposter);
       expect(r.imposterGuessedRight, isFalse);
       expect(r.scoreDeltas[imposterId], 3);
-      expect(r.scoreDeltas[crewId], 0);
+      expect(r.scoreDeltas[civilianId], 0);
     });
 
     test('score deltas cover every player', () {

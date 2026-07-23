@@ -17,9 +17,9 @@ class RoundResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final result = state.result;
-    final crewWon = result.winningSide == WinningSide.crew;
+    final civilianWon = result.winningSide == WinningSide.civilian;
     final gradient =
-        crewWon ? AppColors.crewGradient : AppColors.imposterGradient;
+        civilianWon ? AppColors.civilianGradient : AppColors.imposterGradient;
 
     return Column(
       children: [
@@ -44,13 +44,13 @@ class RoundResultView extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(
-                      crewWon ? Icons.groups_rounded : Icons.theater_comedy_rounded,
+                      civilianWon ? Icons.groups_rounded : Icons.theater_comedy_rounded,
                       size: 52,
                       color: AppColors.onGradient,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      crewWon ? 'Crew wins! 🎉' : 'Imposter wins! 🎭',
+                      civilianWon ? 'Civilians win! 🎉' : 'Imposter wins! 🎭',
                       style: theme.textTheme.headlineMedium?.copyWith(
                         color: AppColors.onGradient,
                       ),
@@ -76,7 +76,7 @@ class RoundResultView extends StatelessWidget {
                     children: [
                       _InfoRow(label: 'Voted out', value: state.votedOut.name),
                       _InfoRow(
-                        label: state.imposters.length > 1 ? 'Imposters' : 'Imposter',
+                        label: 'Imposter',
                         value: state.imposters.map((p) => p.name).join(', '),
                       ),
                       _InfoRow(

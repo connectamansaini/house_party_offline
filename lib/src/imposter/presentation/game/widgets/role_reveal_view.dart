@@ -156,11 +156,18 @@ class _RoleCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     final (gradient, icon, title, subtitle) = switch (role) {
-      CrewRole(:final secretWord) => (
-        AppColors.crewGradient,
+      CivilianRole(:final secretWord) => (
+        AppColors.civilianGradient,
         Icons.vpn_key_rounded,
         secretWord,
         'Your secret word',
+      ),
+      // Undercover: show the decoy word as the headline; blank: show "IMPOSTER".
+      ImposterRole(:final decoyWord) when decoyWord != null => (
+        AppColors.imposterGradient,
+        Icons.theater_comedy_rounded,
+        decoyWord,
+        'IMPOSTER — blend in with',
       ),
       ImposterRole() => (
         AppColors.imposterGradient,

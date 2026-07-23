@@ -11,8 +11,8 @@ sealed class Role extends Equatable {
 }
 
 /// A regular player who knows the secret word.
-class CrewRole extends Role {
-  const CrewRole({required this.secretWord, this.categoryHint});
+class CivilianRole extends Role {
+  const CivilianRole({required this.secretWord, this.categoryHint});
 
   final String secretWord;
 
@@ -23,14 +23,20 @@ class CrewRole extends Role {
   List<Object?> get props => [secretWord, categoryHint];
 }
 
-/// The imposter, who does not know the secret word. May receive the category
-/// hint when [GameConfig.categoryHintEnabled] is true.
+/// The imposter, who does not know the civilians' secret word.
+///
+/// - In [ImposterMode.blank] they get nothing (optionally the category hint).
+/// - In [ImposterMode.undercover] they also get a [decoyWord] — a different
+///   word from the same category — to help them blend in.
 class ImposterRole extends Role {
-  const ImposterRole({this.categoryHint});
+  const ImposterRole({this.categoryHint, this.decoyWord});
+
+  /// A blend-in word (Undercover mode), or null in blank mode.
+  final String? decoyWord;
 
   @override
   final String? categoryHint;
 
   @override
-  List<Object?> get props => [categoryHint];
+  List<Object?> get props => [categoryHint, decoyWord];
 }

@@ -70,7 +70,7 @@ void main() {
       final s = cubit.state;
       expect(s.packsStatus, PacksStatus.ready);
       expect(s.players.length, SetupState.minPlayers);
-      expect(s.selectedPack?.id, 'foods');
+      expect(s.selectedPackIds, {'foods'});
       expect(s.canStart, isTrue);
     });
 
@@ -85,15 +85,15 @@ void main() {
   });
 
   group('preferences', () {
-    test('init restores saved roster, options, and pack', () async {
+    test('init restores saved roster, options, and packs', () async {
       const prefs = ImposterPreferences(
         playerNames: ['Ann', 'Bo', 'Cy', 'Di'],
         imposterCount: 2,
         categoryHintEnabled: true,
         discussionMinutes: 4,
-        crewWinPoints: 3,
+        civilianWinPoints: 3,
         imposterWinPoints: 5,
-        selectedPackId: 'animals',
+        selectedPackIds: ['animals', 'foods'],
       );
       final cubit = _cubit([_foods, _animals], prefs: prefs);
       await cubit.init();
@@ -103,24 +103,25 @@ void main() {
       expect(s.imposterCount, 2);
       expect(s.categoryHintEnabled, isTrue);
       expect(s.discussionMinutes, 4);
-      expect(s.crewWinPoints, 3);
+      expect(s.civilianWinPoints, 3);
       expect(s.imposterWinPoints, 5);
-      expect(s.selectedPack?.id, 'animals');
+      expect(s.selectedPackIds, {'animals', 'foods'});
     });
 
-    test('falls back to the first pack when the saved one is gone', () async {
+    test('drops saved packs that no longer exist, falling back to first',
+        () async {
       const prefs = ImposterPreferences(
         playerNames: ['A', 'B', 'C'],
         imposterCount: 1,
         categoryHintEnabled: false,
         discussionMinutes: 3,
-        crewWinPoints: 1,
+        civilianWinPoints: 1,
         imposterWinPoints: 2,
-        selectedPackId: 'deleted-pack',
+        selectedPackIds: ['deleted-pack'],
       );
       final cubit = _cubit([_foods], prefs: prefs);
       await cubit.init();
-      expect(cubit.state.selectedPack?.id, 'foods');
+      expect(cubit.state.selectedPackIds, {'foods'});
     });
 
     test('clamps a saved imposter count that no longer fits the roster',
@@ -130,7 +131,7 @@ void main() {
         imposterCount: 9,
         categoryHintEnabled: false,
         discussionMinutes: 3,
-        crewWinPoints: 1,
+        civilianWinPoints: 1,
         imposterWinPoints: 2,
       );
       final cubit = _cubit([_foods], prefs: prefs);
@@ -141,8 +142,8 @@ void main() {
     test('persist writes the current form back to the repository', () async {
       final settings = _FakeSettings();
       final cubit = SetupCubit(_FakeRepo([_foods, _animals]), settings);
-      await cubit.init();
-      cubit.selectPack('animals');
+      await cubit.init(); // defaults to {foods}
+      cubit.togglePack('animals'); // now {foods, animals}
       cubit.setCategoryHint(true);
       cubit.setDiscussionMinutes(6);
 
@@ -150,7 +151,7 @@ void main() {
 
       final saved = settings.stored!;
       expect(saved.playerNames.length, SetupState.minPlayers);
-      expect(saved.selectedPackId, 'animals');
+      expect(saved.selectedPackIds, containsAll(['foods', 'animals']));
       expect(saved.categoryHintEnabled, isTrue);
       expect(saved.discussionMinutes, 6);
     });
@@ -209,23 +210,37 @@ void main() {
       expect(cubit.state.imposterCount, 1);
     });
 
-    test('selectPack switches the chosen pack', () async {
+    test('togglePack adds and removes packs', () async {
+      final cubit = _cubit([_foods, _animals]);
+      await cubit.init(); // {foods}
+      cubit.togglePack('animals');
+      expect(cubit.state.selectedPackIds, {'foods', 'animals'});
+      cubit.togglePack('foods');
+      expect(cubit.state.selectedPackIds, {'animals'});
+    });
+
+    test('selectAll and clear toggle every pack', () async {
       final cubit = _cubit([_foods, _animals]);
       await cubit.init();
-      cubit.selectPack('animals');
-      expect(cubit.state.selectedPack?.id, 'animals');
+      cubit.selectAllPacks();
+      expect(cubit.state.selectedPackIds, {'foods', 'animals'});
+      expect(cubit.state.allPacksSelected, isTrue);
+      cubit.clearPacks();
+      expect(cubit.state.selectedPackIds, isEmpty);
+      expect(cubit.state.canStart, isFalse);
     });
 
     test('buildSetup produces a matching GameSetup', () async {
-      final cubit = _cubit([_foods]);
+      final cubit = _cubit([_foods, _animals]);
       await cubit.init();
+      cubit.selectAllPacks();
       cubit.setCategoryHint(true);
       cubit.setDiscussionMinutes(5);
 
       expect(cubit.state.canStart, isTrue);
       final setup = cubit.state.buildSetup();
       expect(setup.players.length, 3);
-      expect(setup.config.pack.id, 'foods');
+      expect(setup.config.packs.map((p) => p.id), containsAll(['foods', 'animals']));
       expect(setup.config.categoryHintEnabled, isTrue);
       expect(setup.config.discussionTime, const Duration(minutes: 5));
     });

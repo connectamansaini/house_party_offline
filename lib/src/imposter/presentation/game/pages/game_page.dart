@@ -15,6 +15,7 @@ import '../widgets/game_over_view.dart';
 import '../widgets/imposter_guessing_view.dart';
 import '../widgets/role_reveal_view.dart';
 import '../widgets/round_result_view.dart';
+import '../widgets/secret_voting_view.dart';
 import '../widgets/voting_view.dart';
 
 /// Single-route host for the whole imposter game. The [GameBloc] FSM is
@@ -100,6 +101,8 @@ class _GameScaffoldState extends State<_GameScaffold> {
       RoleReveal() => RoleRevealView(key: const ValueKey('reveal'), state: state),
       Discussion() => DiscussionView(key: const ValueKey('discussion'), state: state),
       Voting() => VotingView(key: const ValueKey('voting'), state: state),
+      SecretVoting() =>
+        SecretVotingView(key: const ValueKey('secret-voting'), state: state),
       ImposterGuessing() =>
         ImposterGuessingView(key: const ValueKey('guessing'), state: state),
       RoundResultState() =>

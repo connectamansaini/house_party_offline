@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
+import '../../../domain/entities/imposter_mode.dart';
 import '../../../domain/entities/player.dart';
 import '../../../domain/entities/word_pack.dart';
 import '../../../domain/repositories/imposter_settings_repository.dart';
@@ -281,11 +282,12 @@ class _PlayerRowState extends State<_PlayerRow> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 18,
+            radius: 20,
             backgroundColor: scheme.primaryContainer,
             foregroundColor: scheme.onPrimaryContainer,
             child: Text(
@@ -300,17 +302,18 @@ class _PlayerRowState extends State<_PlayerRow> {
             child: TextField(
               controller: _controller,
               textCapitalization: TextCapitalization.words,
+              style: theme.textTheme.titleMedium,
               decoration: InputDecoration(
                 hintText: 'Player ${widget.number}',
-                isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 14,
+                  vertical: 12,
                 ),
               ),
               onChanged: widget.onChanged,
             ),
           ),
+          const SizedBox(width: 4),
           IconButton(
             tooltip: 'Remove',
             visualDensity: VisualDensity.compact,
@@ -354,12 +357,43 @@ class _PackStep extends StatelessWidget {
         ),
       ),
       PacksStatus.ready => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${state.selectedPackIds.length} of ${state.availablePacks.length} packs'
+                  ' • ${state.selectedWordCount} words',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: state.allPacksSelected
+                    ? cubit.clearPacks
+                    : cubit.selectAllPacks,
+                child: Text(state.allPacksSelected ? 'Clear' : 'Select all'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
           for (final pack in state.availablePacks)
             _PackOption(
               pack: pack,
-              selected: pack.id == state.selectedPack?.id,
-              onTap: () => cubit.selectPack(pack.id),
+              selected: state.selectedPackIds.contains(pack.id),
+              onTap: () => cubit.togglePack(pack.id),
+            ),
+          if (!state.hasUsablePacks)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Select at least one pack.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
             ),
         ],
       ),
@@ -380,23 +414,51 @@ class _PackOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      selected: selected,
-      onTap: onTap,
-      leading: Icon(
-        selected ? Icons.radio_button_checked : Icons.radio_button_off,
-        color: selected ? scheme.primary : scheme.onSurfaceVariant,
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: selected ? scheme.primaryContainer : scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                Icon(
+                  selected
+                      ? Icons.check_box_rounded
+                      : Icons.check_box_outline_blank_rounded,
+                  color: selected ? scheme.primary : scheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(pack.name, style: theme.textTheme.titleMedium),
+                      Text(
+                        '${pack.category} • ${pack.words.length} words',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (pack.isCustom)
+                  const Chip(
+                    label: Text('Custom'),
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
-      title: Text(pack.name),
-      subtitle: Text('${pack.category} • ${pack.words.length} words'),
-      trailing: pack.isCustom
-          ? const Chip(
-              label: Text('Custom'),
-              visualDensity: VisualDensity.compact,
-            )
-          : null,
     );
   }
 }
@@ -416,22 +478,36 @@ class _OptionsStep extends StatelessWidget {
     return Column(
       children: [
         _Stepper(
-          label: 'Imposters',
+          label: 'Imposter',
           value: state.imposterCount,
           min: 1,
           max: state.maxImposters,
           onChanged: cubit.setImposterCount,
         ),
+        const SizedBox(height: 12),
+        _ImposterModeSelector(state: state, cubit: cubit),
+        const SizedBox(height: 8),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Give imposter a category hint'),
+          title: const Text('Give the imposter a category hint'),
           subtitle: Text(
             state.categoryHintEnabled
-                ? 'Imposter sees "${state.selectedPack?.category ?? ''}"'
-                : 'Imposter sees nothing',
+                ? "The imposter sees the word's category"
+                : 'The imposter sees nothing',
           ),
           value: state.categoryHintEnabled,
           onChanged: cubit.setCategoryHint,
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Secret voting'),
+          subtitle: Text(
+            state.secretVoting
+                ? 'Each player votes privately (pass & play), then tally'
+                : 'The group casts one shared vote',
+          ),
+          value: state.secretVoting,
+          onChanged: cubit.setSecretVoting,
         ),
         _Stepper(
           label: 'Discussion (min)',
@@ -441,11 +517,11 @@ class _OptionsStep extends StatelessWidget {
           onChanged: cubit.setDiscussionMinutes,
         ),
         _Stepper(
-          label: 'Crew win points',
-          value: state.crewWinPoints,
+          label: 'Civilian win points',
+          value: state.civilianWinPoints,
           min: 1,
           max: 10,
-          onChanged: cubit.setCrewWinPoints,
+          onChanged: cubit.setCivilianWinPoints,
         ),
         _Stepper(
           label: 'Imposter win points',
@@ -453,6 +529,61 @@ class _OptionsStep extends StatelessWidget {
           min: 1,
           max: 10,
           onChanged: cubit.setImposterWinPoints,
+        ),
+      ],
+    );
+  }
+}
+
+/// Segmented choice for what the imposter receives at reveal.
+class _ImposterModeSelector extends StatelessWidget {
+  const _ImposterModeSelector({required this.state, required this.cubit});
+
+  final SetupState state;
+  final SetupCubit cubit;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Imposter gets',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          child: SegmentedButton<ImposterMode>(
+            segments: const [
+              ButtonSegment(
+                value: ImposterMode.blank,
+                icon: Icon(Icons.block),
+                label: Text('No word'),
+              ),
+              ButtonSegment(
+                value: ImposterMode.undercover,
+                icon: Icon(Icons.swap_horiz),
+                label: Text('Decoy word'),
+              ),
+            ],
+            selected: {state.imposterMode},
+            showSelectedIcon: false,
+            onSelectionChanged: (s) => cubit.setImposterMode(s.first),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          state.imposterMode.isUndercover
+              ? 'Undercover: the imposter gets a different word from the same '
+                  'category to help them blend in.'
+              : 'Word Imposter: the imposter gets no word and must bluff.',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );

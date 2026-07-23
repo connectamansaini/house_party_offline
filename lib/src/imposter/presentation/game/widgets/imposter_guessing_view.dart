@@ -69,7 +69,7 @@ class _ImposterGuessingViewState extends State<ImposterGuessingView> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '${widget.state.guesser.name} was an imposter.',
+                  '${widget.state.guesser.name} was in the imposter.',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: AppColors.onGradient.withValues(alpha: 0.9),

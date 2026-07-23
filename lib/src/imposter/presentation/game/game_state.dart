@@ -88,6 +88,61 @@ class Voting extends GameState {
   List<Object?> get props => [session, assignment, selectedId];
 }
 
+/// Pass-and-play secret ballot. Each player, in turn, privately votes for a
+/// suspect; when everyone has voted the tally decides who is eliminated.
+class SecretVoting extends GameState {
+  const SecretVoting(
+    super.session, {
+    required this.assignment,
+    required this.currentVoterIndex,
+    this.ballots = const {},
+    this.selectedId,
+    this.isVoterReady = false,
+  });
+
+  final RoundAssignment assignment;
+
+  /// Whose turn it is to cast a ballot.
+  final int currentVoterIndex;
+
+  /// Completed ballots so far: voterId → suspectId.
+  final Map<String, String> ballots;
+
+  /// The current voter's tentative pick (before they confirm).
+  final String? selectedId;
+
+  /// False shows the "pass to X" privacy cover; true shows the ballot.
+  final bool isVoterReady;
+
+  Player get currentVoter => session.players[currentVoterIndex];
+  bool get isLastVoter => currentVoterIndex == session.players.length - 1;
+
+  /// Candidates this voter may pick — everyone except themselves.
+  List<Player> get candidates =>
+      session.players.where((p) => p.id != currentVoter.id).toList();
+
+  SecretVoting copyWith({
+    int? currentVoterIndex,
+    Map<String, String>? ballots,
+    String? selectedId,
+    bool? isVoterReady,
+    bool clearSelection = false,
+  }) {
+    return SecretVoting(
+      session,
+      assignment: assignment,
+      currentVoterIndex: currentVoterIndex ?? this.currentVoterIndex,
+      ballots: ballots ?? this.ballots,
+      selectedId: clearSelection ? null : (selectedId ?? this.selectedId),
+      isVoterReady: isVoterReady ?? this.isVoterReady,
+    );
+  }
+
+  @override
+  List<Object?> get props =>
+      [session, assignment, currentVoterIndex, ballots, selectedId, isVoterReady];
+}
+
 /// A caught imposter gets one guess of the secret word to steal the win.
 class ImposterGuessing extends GameState {
   const ImposterGuessing(

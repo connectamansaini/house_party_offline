@@ -7,6 +7,7 @@ import '../imposter/presentation/setup/imposter_home_page.dart';
 import '../imposter/domain/entities/word_pack.dart';
 import '../imposter/presentation/packs/pages/pack_editor_page.dart';
 import '../imposter/presentation/packs/pages/pack_list_page.dart';
+import '../imposter/presentation/rules_page.dart';
 import '../imposter/presentation/setup/pages/setup_page.dart';
 
 /// Named routes. Kept as constants so navigation calls stay typo-safe.
@@ -17,6 +18,7 @@ abstract final class Routes {
   static const imposterGame = '/imposter/game';
   static const imposterPacks = '/imposter/packs';
   static const imposterPackEditor = '/imposter/packs/editor';
+  static const imposterRules = '/imposter/rules';
 }
 
 /// Application router. The game route receives its [GameSetup] via `extra`.
@@ -47,6 +49,10 @@ final GoRouter appRouter = GoRouter(
       path: Routes.imposterPackEditor,
       builder: (context, state) =>
           PackEditorPage(pack: state.extra as WordPack?),
+    ),
+    GoRoute(
+      path: Routes.imposterRules,
+      builder: (context, state) => const RulesPage(),
     ),
   ],
 );

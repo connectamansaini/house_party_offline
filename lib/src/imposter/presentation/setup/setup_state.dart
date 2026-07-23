@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/game_config.dart';
 import '../../domain/entities/game_setup.dart';
+import '../../domain/entities/imposter_mode.dart';
 import '../../domain/entities/player.dart';
 import '../../domain/entities/word_pack.dart';
 
@@ -17,9 +18,11 @@ class SetupState extends Equatable {
     this.selectedPackIds = const {},
     this.players = const [],
     this.imposterCount = 1,
+    this.imposterMode = ImposterMode.blank,
     this.categoryHintEnabled = false,
+    this.secretVoting = false,
     this.discussionMinutes = 3,
-    this.crewWinPoints = 1,
+    this.civilianWinPoints = 1,
     this.imposterWinPoints = 2,
     this.errorMessage,
   });
@@ -29,9 +32,11 @@ class SetupState extends Equatable {
   final Set<String> selectedPackIds;
   final List<Player> players;
   final int imposterCount;
+  final ImposterMode imposterMode;
   final bool categoryHintEnabled;
+  final bool secretVoting;
   final int discussionMinutes;
-  final int crewWinPoints;
+  final int civilianWinPoints;
   final int imposterWinPoints;
   final String? errorMessage;
 
@@ -39,7 +44,7 @@ class SetupState extends Equatable {
   static const minPlayers = 3;
   static const maxPlayers = 12;
 
-  /// Largest imposter count that still leaves a crew member.
+  /// Largest imposter count that still leaves a civilian member.
   int get maxImposters => GameConfig.maxImposters(players.length);
 
   bool get hasEnoughPlayers =>
@@ -75,9 +80,11 @@ class SetupState extends Equatable {
       config: GameConfig(
         packs: selectedPacks,
         imposterCount: imposterCount,
+        imposterMode: imposterMode,
         categoryHintEnabled: categoryHintEnabled,
+        secretVoting: secretVoting,
         discussionTime: Duration(minutes: discussionMinutes),
-        crewWinPoints: crewWinPoints,
+        civilianWinPoints: civilianWinPoints,
         imposterWinPoints: imposterWinPoints,
       ),
     );
@@ -89,9 +96,11 @@ class SetupState extends Equatable {
     Set<String>? selectedPackIds,
     List<Player>? players,
     int? imposterCount,
+    ImposterMode? imposterMode,
     bool? categoryHintEnabled,
+    bool? secretVoting,
     int? discussionMinutes,
-    int? crewWinPoints,
+    int? civilianWinPoints,
     int? imposterWinPoints,
     String? errorMessage,
   }) {
@@ -101,9 +110,11 @@ class SetupState extends Equatable {
       selectedPackIds: selectedPackIds ?? this.selectedPackIds,
       players: players ?? this.players,
       imposterCount: imposterCount ?? this.imposterCount,
+      imposterMode: imposterMode ?? this.imposterMode,
       categoryHintEnabled: categoryHintEnabled ?? this.categoryHintEnabled,
+      secretVoting: secretVoting ?? this.secretVoting,
       discussionMinutes: discussionMinutes ?? this.discussionMinutes,
-      crewWinPoints: crewWinPoints ?? this.crewWinPoints,
+      civilianWinPoints: civilianWinPoints ?? this.civilianWinPoints,
       imposterWinPoints: imposterWinPoints ?? this.imposterWinPoints,
       errorMessage: errorMessage,
     );
@@ -116,9 +127,11 @@ class SetupState extends Equatable {
     selectedPackIds,
     players,
     imposterCount,
+    imposterMode,
     categoryHintEnabled,
+    secretVoting,
     discussionMinutes,
-    crewWinPoints,
+    civilianWinPoints,
     imposterWinPoints,
     errorMessage,
   ];

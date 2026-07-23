@@ -44,6 +44,27 @@ class VoteConfirmed extends GameEvent {
   const VoteConfirmed();
 }
 
+/// Secret voting: the current voter takes the phone and opens their ballot.
+class BallotOpened extends GameEvent {
+  const BallotOpened();
+}
+
+/// Secret voting: the current voter tentatively selects a suspect.
+class BallotSelected extends GameEvent {
+  const BallotSelected(this.playerId);
+
+  final String playerId;
+
+  @override
+  List<Object?> get props => [playerId];
+}
+
+/// Secret voting: the current voter confirms their ballot and passes on. After
+/// the last voter, the tally decides who is eliminated.
+class BallotCast extends GameEvent {
+  const BallotCast();
+}
+
 /// A caught imposter submits their guess of the secret word. An empty guess
 /// counts as giving up.
 class ImposterGuessSubmitted extends GameEvent {

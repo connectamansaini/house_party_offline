@@ -12,8 +12,8 @@ abstract final class AppColors {
   static const cyan = Color(0xFF19E3D2);
   static const amber = Color(0xFFFFB020);
 
-  /// Crew / "the good guys" — cool and confident.
-  static const crewGradient = LinearGradient(
+  /// Civilian / "the good guys" — cool and confident.
+  static const civilianGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [Color(0xFF00C2A8), Color(0xFF008FC7)],

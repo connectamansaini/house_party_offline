@@ -12,7 +12,12 @@ class ImposterSettingsRepositoryImpl implements ImposterSettingsRepository {
   Future<ImposterPreferences?> load() async {
     final map = _local.readPreferences();
     if (map == null) return null;
-    return ImposterPreferencesDto.fromMap(map).toDomain();
+    try {
+      return ImposterPreferencesDto.fromMap(map).toDomain();
+    } catch (_) {
+      // Ignore preferences we can't parse (e.g. saved by an older version).
+      return null;
+    }
   }
 
   @override

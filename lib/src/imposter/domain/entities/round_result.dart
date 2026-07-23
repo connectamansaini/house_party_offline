@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Which side won a round.
-enum WinningSide { crew, imposter }
+enum WinningSide { civilian, imposter }
 
 /// The outcome of a resolved round, including per-player score changes to apply
 /// to cumulative totals.

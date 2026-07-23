@@ -41,8 +41,13 @@ class ImposterHomePage extends StatelessWidget {
               subtitle: 'Browse, create, and edit packs',
               onTap: () => context.push(Routes.imposterPacks),
             ),
-            const SizedBox(height: 24),
-            const _HowToPlay(),
+            const SizedBox(height: 12),
+            _MenuCard(
+              icon: Icons.menu_book_rounded,
+              title: 'How to play',
+              subtitle: 'Rules, round flow, and tips',
+              onTap: () => context.push(Routes.imposterRules),
+            ),
           ],
         ),
       ),
@@ -117,57 +122,3 @@ class _MenuCard extends StatelessWidget {
   }
 }
 
-class _HowToPlay extends StatelessWidget {
-  const _HowToPlay();
-
-  static const _steps = [
-    'Everyone secretly gets the same word — except the imposter.',
-    'Take turns saying one-word clues about the word.',
-    'Vote out who you think the imposter is.',
-    'Catch the imposter, or let them guess the word to steal the win.',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('How to play', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 12),
-            for (var i = 0; i < _steps.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundColor: theme.colorScheme.primaryContainer,
-                      foregroundColor: theme.colorScheme.onPrimaryContainer,
-                      child: Text(
-                        '${i + 1}',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(_steps[i], style: theme.textTheme.bodyMedium),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}

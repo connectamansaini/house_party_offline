@@ -25,6 +25,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<DiscussionSkipped>(_onDiscussionSkipped);
     on<VoteSelected>(_onVoteSelected);
     on<VoteConfirmed>(_onVoteConfirmed);
+    on<BallotOpened>(_onBallotOpened);
+    on<BallotSelected>(_onBallotSelected);
+    on<BallotCast>(_onBallotCast);
     on<ImposterGuessSubmitted>(_onImposterGuessSubmitted);
     on<NextRoundRequested>(_onNextRoundRequested);
     on<GameEnded>(_onGameEnded);
@@ -70,7 +73,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final next = d.remaining - const Duration(seconds: 1);
       if (next <= Duration.zero) {
         _stopTimer();
-        emit(Voting(d.session, assignment: d.assignment));
+        _startVoting(d.session, d.assignment, emit);
       } else {
         emit(d.copyWith(remaining: next));
       }
@@ -80,7 +83,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   void _onDiscussionSkipped(DiscussionSkipped event, Emitter<GameState> emit) {
     if (state case final Discussion d) {
       _stopTimer();
-      emit(Voting(d.session, assignment: d.assignment));
+      _startVoting(d.session, d.assignment, emit);
+    }
+  }
+
+  /// Enters the voting phase — a shared vote or a secret pass-and-play ballot,
+  /// depending on the game config.
+  void _startVoting(
+    GameSession session,
+    RoundAssignment assignment,
+    Emitter<GameState> emit,
+  ) {
+    if (session.config.secretVoting) {
+      emit(SecretVoting(session, assignment: assignment, currentVoterIndex: 0));
+    } else {
+      emit(Voting(session, assignment: assignment));
     }
   }
 
@@ -92,18 +109,58 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   void _onVoteConfirmed(VoteConfirmed event, Emitter<GameState> emit) {
     if (state case final Voting v when v.selectedId != null) {
-      final caught = _engine.wasImposterCaught(v.assignment, v.selectedId!);
-      if (caught) {
+      _afterVote(v.session, v.assignment, v.selectedId!, emit);
+    }
+  }
+
+  void _onBallotOpened(BallotOpened event, Emitter<GameState> emit) {
+    if (state case final SecretVoting sv when !sv.isVoterReady) {
+      emit(sv.copyWith(isVoterReady: true));
+    }
+  }
+
+  void _onBallotSelected(BallotSelected event, Emitter<GameState> emit) {
+    if (state case final SecretVoting sv when sv.isVoterReady) {
+      emit(sv.copyWith(selectedId: event.playerId));
+    }
+  }
+
+  void _onBallotCast(BallotCast event, Emitter<GameState> emit) {
+    if (state case final SecretVoting sv when sv.selectedId != null) {
+      final ballots = {...sv.ballots, sv.currentVoter.id: sv.selectedId!};
+      if (sv.isLastVoter) {
+        final votedOutId = _engine.tallyVotes(ballots);
+        _afterVote(sv.session, sv.assignment, votedOutId, emit);
+      } else {
         emit(
-          ImposterGuessing(
-            v.session,
-            assignment: v.assignment,
-            votedOutId: v.selectedId!,
+          sv.copyWith(
+            currentVoterIndex: sv.currentVoterIndex + 1,
+            ballots: ballots,
+            isVoterReady: false,
+            clearSelection: true,
           ),
         );
-      } else {
-        emit(_resolve(v.session, v.assignment, v.selectedId!, null));
       }
+    }
+  }
+
+  /// Shared post-vote branch: a caught imposter guesses, otherwise resolve.
+  void _afterVote(
+    GameSession session,
+    RoundAssignment assignment,
+    String votedOutId,
+    Emitter<GameState> emit,
+  ) {
+    if (_engine.wasImposterCaught(assignment, votedOutId)) {
+      emit(
+        ImposterGuessing(
+          session,
+          assignment: assignment,
+          votedOutId: votedOutId,
+        ),
+      );
+    } else {
+      emit(_resolve(session, assignment, votedOutId, null));
     }
   }
 

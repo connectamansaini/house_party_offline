@@ -56,6 +56,12 @@ class RoundEngine {
     final secretWord = chosen.word;
     final hint = config.categoryHintEnabled ? chosen.category : null;
 
+    // Undercover mode: pick a decoy word for the imposter — a different word,
+    // preferring the same category, so it still reads as "related".
+    final decoyWord = config.imposterMode.isUndercover
+        ? _pickDecoy(entries, secretWord, chosen.category, random)
+        : null;
+
     // Shuffle a copy of the players and take the first N as imposters.
     final shuffled = List<Player>.of(players)..shuffle(random);
     final imposterIds =
@@ -64,8 +70,8 @@ class RoundEngine {
     final roles = <String, Role>{
       for (final player in players)
         player.id: imposterIds.contains(player.id)
-            ? ImposterRole(categoryHint: hint)
-            : CrewRole(secretWord: secretWord, categoryHint: hint),
+            ? ImposterRole(categoryHint: hint, decoyWord: decoyWord)
+            : CivilianRole(secretWord: secretWord, categoryHint: hint),
     };
 
     return RoundAssignment(
@@ -79,6 +85,26 @@ class RoundEngine {
   bool wasImposterCaught(RoundAssignment assignment, String votedOutId) =>
       assignment.isImposter(votedOutId);
 
+  /// Tallies secret ballots (voterId → suspectId) and returns the eliminated
+  /// player: the suspect with the most votes. Ties are broken at random (via
+  /// the injected [rng]) so no seating position is favoured.
+  String tallyVotes(Map<String, String> ballots, {Random? rng}) {
+    if (ballots.isEmpty) {
+      throw ArgumentError('Cannot tally an empty ballot set.');
+    }
+    final counts = <String, int>{};
+    for (final suspectId in ballots.values) {
+      counts[suspectId] = (counts[suspectId] ?? 0) + 1;
+    }
+    final max = counts.values.reduce((a, b) => a > b ? a : b);
+    final leaders = [
+      for (final entry in counts.entries)
+        if (entry.value == max) entry.key,
+    ]..sort(); // stable order before the random pick keeps tests deterministic
+    if (leaders.length == 1) return leaders.first;
+    return leaders[(rng ?? Random()).nextInt(leaders.length)];
+  }
+
   /// Case- and whitespace-insensitive comparison of an imposter's guess against
   /// the secret word.
   bool isGuessCorrect(String guess, String secretWord) =>
@@ -88,11 +114,11 @@ class RoundEngine {
   ///
   /// Rules:
   /// - Imposter caught + correct guess  → imposters win (steal).
-  /// - Imposter caught + wrong/no guess → crew wins.
+  /// - Imposter caught + wrong/no guess → civilian wins.
   /// - Imposter not caught              → imposters win.
   ///
   /// [imposterGuess] is only consulted when an imposter was caught; pass null
-  /// when the crew failed to catch an imposter.
+  /// when the civilian failed to catch an imposter.
   RoundResult resolveRound({
     required RoundAssignment assignment,
     required String votedOutId,
@@ -105,10 +131,10 @@ class RoundEngine {
         isGuessCorrect(imposterGuess, assignment.secretWord);
 
     final imposterWins = !caught || guessedRight;
-    final winningSide = imposterWins ? WinningSide.imposter : WinningSide.crew;
+    final winningSide = imposterWins ? WinningSide.imposter : WinningSide.civilian;
 
     final points =
-        imposterWins ? config.imposterWinPoints : config.crewWinPoints;
+        imposterWins ? config.imposterWinPoints : config.civilianWinPoints;
     final winners = imposterWins
         ? assignment.imposterIds
         : assignment.rolesByPlayerId.keys
@@ -126,6 +152,29 @@ class RoundEngine {
       imposterGuessedRight: guessedRight,
       scoreDeltas: deltas,
     );
+  }
+
+  /// Chooses the imposter's decoy word: a word different from [secretWord],
+  /// preferring one in the same [category]. Falls back to any different word,
+  /// or null when the pool has only the secret word.
+  String? _pickDecoy(
+    List<({String word, String category})> entries,
+    String secretWord,
+    String category,
+    Random random,
+  ) {
+    final sameCategory = [
+      for (final e in entries)
+        if (e.category == category && e.word != secretWord) e.word,
+    ];
+    final pool = sameCategory.isNotEmpty
+        ? sameCategory
+        : [
+            for (final e in entries)
+              if (e.word != secretWord) e.word,
+          ];
+    if (pool.isEmpty) return null;
+    return pool[random.nextInt(pool.length)];
   }
 
   String _normalize(String value) =>

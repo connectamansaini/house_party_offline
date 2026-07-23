@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/utils/id.dart';
+import '../../domain/entities/imposter_mode.dart';
 import '../../domain/entities/imposter_preferences.dart';
 import '../../domain/entities/player.dart';
+import '../../domain/entities/word_pack.dart';
 import '../../domain/repositories/imposter_settings_repository.dart';
 import '../../domain/repositories/word_pack_repository.dart';
 import 'setup_state.dart';
@@ -32,9 +34,11 @@ class SetupCubit extends Cubit<SetupState> {
     var seeded = state.copyWith(
       players: players,
       imposterCount: prefs?.imposterCount ?? state.imposterCount,
+      imposterMode: prefs?.imposterMode ?? state.imposterMode,
       categoryHintEnabled: prefs?.categoryHintEnabled ?? state.categoryHintEnabled,
+      secretVoting: prefs?.secretVoting ?? state.secretVoting,
       discussionMinutes: prefs?.discussionMinutes ?? state.discussionMinutes,
-      crewWinPoints: prefs?.crewWinPoints ?? state.crewWinPoints,
+      civilianWinPoints: prefs?.civilianWinPoints ?? state.civilianWinPoints,
       imposterWinPoints: prefs?.imposterWinPoints ?? state.imposterWinPoints,
     );
     seeded = seeded.copyWith(
@@ -51,9 +55,11 @@ class SetupCubit extends Cubit<SetupState> {
       ImposterPreferences(
         playerNames: state.players.map((p) => p.name).toList(),
         imposterCount: state.imposterCount,
+        imposterMode: state.imposterMode,
         categoryHintEnabled: state.categoryHintEnabled,
+        secretVoting: state.secretVoting,
         discussionMinutes: state.discussionMinutes,
-        crewWinPoints: state.crewWinPoints,
+        civilianWinPoints: state.civilianWinPoints,
         imposterWinPoints: state.imposterWinPoints,
         selectedPackIds: state.selectedPackIds.toList(),
       ),
@@ -135,16 +141,24 @@ class SetupCubit extends Cubit<SetupState> {
     );
   }
 
+  void setImposterMode(ImposterMode mode) {
+    emit(state.copyWith(imposterMode: mode));
+  }
+
   void setCategoryHint(bool enabled) {
     emit(state.copyWith(categoryHintEnabled: enabled));
+  }
+
+  void setSecretVoting(bool enabled) {
+    emit(state.copyWith(secretVoting: enabled));
   }
 
   void setDiscussionMinutes(int minutes) {
     emit(state.copyWith(discussionMinutes: minutes.clamp(1, 15)));
   }
 
-  void setCrewWinPoints(int points) {
-    emit(state.copyWith(crewWinPoints: points.clamp(1, 10)));
+  void setCivilianWinPoints(int points) {
+    emit(state.copyWith(civilianWinPoints: points.clamp(1, 10)));
   }
 
   void setImposterWinPoints(int points) {
