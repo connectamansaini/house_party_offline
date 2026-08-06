@@ -9,5 +9,10 @@ abstract final class AppStrings {
       'Everyone gets a secret word — except the imposter. Talk it out, vote, '
       'and unmask them.';
 
+  static const mafiaName = 'Mafia';
+  static const mafiaBlurb =
+      'Secret roles, night kills, and daytime accusations. Root out the mafia '
+      'before they take over the town.';
+
   static const comingSoon = 'Coming soon';
 }

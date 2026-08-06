@@ -40,6 +40,20 @@ abstract final class AppColors {
     colors: [Color(0xFFFFB020), Color(0xFFFF6D3B)],
   );
 
+  /// Mafia game / the mafia faction — dark, ominous crimson.
+  static const mafiaGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFC1121F), Color(0xFF6A040F)],
+  );
+
+  /// Night phase surfaces — deep indigo.
+  static const nightGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3A0CA3), Color(0xFF10002B)],
+  );
+
   /// On-gradient foreground (text/icons sit on the vivid gradients above).
   static const onGradient = Colors.white;
 }

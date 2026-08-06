@@ -60,6 +60,14 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             GameCard(
+              title: AppStrings.mafiaName,
+              subtitle: AppStrings.mafiaBlurb,
+              icon: Icons.dangerous_outlined,
+              gradient: AppColors.mafiaGradient,
+              onTap: () => context.push(Routes.mafia),
+            ),
+            const SizedBox(height: 12),
+            GameCard(
               title: 'More games',
               subtitle: 'New party games are on the way.',
               icon: Icons.add_reaction_outlined,

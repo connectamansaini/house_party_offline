@@ -10,6 +10,7 @@ import '../imposter/data/sources/imposter_settings_local_source.dart';
 import '../imposter/domain/engine/round_engine.dart';
 import '../imposter/domain/repositories/imposter_settings_repository.dart';
 import '../imposter/domain/repositories/word_pack_repository.dart';
+import '../mafia/domain/engine/mafia_engine.dart';
 
 /// Global service locator.
 final GetIt sl = GetIt.instance;
@@ -19,6 +20,7 @@ final GetIt sl = GetIt.instance;
 Future<void> configureDependencies() async {
   // Domain
   sl.registerLazySingleton<RoundEngine>(RoundEngine.new);
+  sl.registerLazySingleton<MafiaEngine>(MafiaEngine.new);
 
   // Imposter data sources
   sl.registerLazySingleton<BundledWordSource>(AssetBundledWordSource.new);

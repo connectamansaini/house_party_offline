@@ -3,8 +3,28 @@
 A collection of **offline, pass-and-play party games** built with Flutter. One
 phone gets passed around the room — no accounts, no internet, no second device.
 
-The first game is **Imposter** (a social word-and-bluffing game). More games will
-join the hub over time.
+Games in the hub: **Imposter** (a social word-and-bluffing game) and **Mafia**
+(the classic night/day social-deduction game). More will join over time.
+
+---
+
+## The Mafia game
+
+A fully **app-moderated** game of Mafia — no narrator needed. The app deals
+secret roles, runs each night by passing the phone to every player, resolves the
+kills, and runs the daytime lynch vote.
+
+**Features**
+- 🌙 Night/day loop: role reveal → night actions → morning recap → lynch vote,
+  until a faction wins
+- 🕵️ Classic roles: **Mafia** (night kill), **Doctor** (protect), **Detective**
+  (investigate), and Villagers
+- 🔒 Pass-and-play night — the phone goes to *every* player so nobody can tell who
+  acted; villagers just see a "you sleep" screen
+- 🗳️ Daytime shared lynch vote with a **skip** option
+- ⚙️ Host options: mafia count, reveal-role-on-death, first-night kill,
+  doctor self-save, detective learns exact role vs. alignment
+- 📖 Built-in **How to play** rules screen
 
 ---
 
@@ -74,10 +94,13 @@ lib/
     app/                        # App root, go_router, get_it wiring
     core/                       # theme, shared widgets, storage, utils, constants
     home/                       # the games hub
-    imposter/                      # the Imposter game feature
+    imposter/                   # the Imposter game feature
       data/                     # DTOs, sources (assets + Hive), repositories
       domain/                   # entities, engine (rules), repository interfaces
       presentation/             # setup, game (FSM + phase views), packs
+    mafia/                      # the Mafia game feature
+      domain/                   # entities, engine (rules)
+      presentation/             # setup, game (FSM + phase views)
 assets/
   word_packs/                   # bundled pack JSON + index.json
 test/                           # mirrors lib/ — engine, blocs/cubits, repos
