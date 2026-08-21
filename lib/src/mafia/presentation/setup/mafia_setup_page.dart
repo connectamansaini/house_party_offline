@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/router.dart';
+import '../../../../app/router/router.dart';
 import '../../../core/widgets/gradient_scaffold.dart';
 import '../../domain/entities/mafia_config.dart';
 import '../../domain/entities/mafia_player.dart';
@@ -45,7 +45,8 @@ class _SetupView extends StatelessWidget {
                         key: ValueKey(state.players[i].id),
                         number: i + 1,
                         player: state.players[i],
-                        canRemove: state.players.length > MafiaConfig.minPlayers,
+                        canRemove:
+                            state.players.length > MafiaConfig.minPlayers,
                         onChanged: (name) =>
                             cubit.renamePlayer(state.players[i].id, name),
                         onRemove: () => cubit.removePlayer(state.players[i].id),
@@ -62,8 +63,9 @@ class _SetupView extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
                           'Mafia needs at least ${MafiaConfig.minPlayers} players.',
-                          style: theme.textTheme.bodyMedium
-                              ?.copyWith(color: theme.colorScheme.error),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
                         ),
                       ),
                     const Divider(),
@@ -121,7 +123,7 @@ class _SetupView extends StatelessWidget {
                 child: FilledButton.icon(
                   onPressed: state.canStart
                       ? () => context.push(
-                          Routes.mafiaGame,
+                          AppRoutes.mafiaGame,
                           extra: state.buildSetup(),
                         )
                       : null,
@@ -158,8 +160,9 @@ class _PlayerRow extends StatefulWidget {
 }
 
 class _PlayerRowState extends State<_PlayerRow> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.player.name);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.player.name,
+  );
 
   @override
   void dispose() {
@@ -193,8 +196,10 @@ class _PlayerRowState extends State<_PlayerRow> {
               style: Theme.of(context).textTheme.titleMedium,
               decoration: InputDecoration(
                 hintText: 'Player ${widget.number}',
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
               onChanged: widget.onChanged,
             ),

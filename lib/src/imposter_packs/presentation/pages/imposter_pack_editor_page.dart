@@ -1,38 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../app/di.dart';
-import '../../../../core/widgets/gradient_scaffold.dart';
-import '../../../domain/entities/word_pack.dart';
-import '../../../domain/repositories/word_pack_repository.dart';
-import '../pack_editor_cubit.dart';
+import '../../../../core/design/spacing.dart';
+import '../../../../src/core/widgets/gradient_scaffold.dart';
+import '../../../../app/injector/injector.dart';
+import '../../domain/entities/imposter_pack_entity.dart';
+import '../../domain/usecases/save_custom_imposter_pack_usecase.dart';
+import '../editor/imposter_pack_editor_bloc.dart';
 
-/// Create or edit a custom word pack. Pass [pack] to edit, or null to create.
-class PackEditorPage extends StatelessWidget {
-  const PackEditorPage({super.key, this.pack});
+class ImposterPackEditorPage extends StatelessWidget {
+  const ImposterPackEditorPage({super.key, this.pack});
 
-  final WordPack? pack;
+  final ImposterPackEntity? pack;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => PackEditorCubit(sl<WordPackRepository>())..start(pack),
-      child: const _EditorView(),
+      create: (_) =>
+          ImposterPackEditorBloc(getIt<SaveCustomImposterPackUseCase>())
+            ..add(ImposterPackEditorStarted(pack)),
+      child: const _ImposterPackEditorView(),
     );
   }
 }
 
-class _EditorView extends StatelessWidget {
-  const _EditorView();
+class _ImposterPackEditorView extends StatelessWidget {
+  const _ImposterPackEditorView();
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PackEditorCubit, PackEditorState>(
-      listenWhen: (prev, curr) => curr.status == PackEditorStatus.saved,
+    return BlocListener<ImposterPackEditorBloc, ImposterPackEditorState>(
+      listenWhen: (previous, current) =>
+          previous.status != current.status &&
+          current.status == ImposterPackEditorStatus.saved,
       listener: (context, state) => Navigator.of(context).pop(true),
-      child: BlocBuilder<PackEditorCubit, PackEditorState>(
+      child: BlocBuilder<ImposterPackEditorBloc, ImposterPackEditorState>(
         builder: (context, state) {
-          final cubit = context.read<PackEditorCubit>();
+          final bloc = context.read<ImposterPackEditorBloc>();
+
           return GradientScaffold(
             appBar: AppBar(
               title: Text(state.isEditing ? 'Edit pack' : 'New pack'),
@@ -48,9 +53,11 @@ class _EditorView extends StatelessWidget {
                     hintText: 'e.g. Movie Villains',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: cubit.setName,
+                  onChanged: (value) {
+                    bloc.add(ImposterPackNameChanged(value));
+                  },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: Spacing.xl),
                 TextFormField(
                   initialValue: state.category,
                   textCapitalization: TextCapitalization.words,
@@ -59,41 +66,63 @@ class _EditorView extends StatelessWidget {
                     hintText: 'e.g. Villain',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: cubit.setCategory,
+                  onChanged: (value) {
+                    bloc.add(ImposterPackCategoryChanged(value));
+                  },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: Spacing.x7l),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Words', style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      'Words',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     Text(
                       '${state.cleanedWords.length} added',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: Spacing.md),
                 for (final word in state.words)
                   _WordRow(
                     key: ValueKey(word.id),
                     initialText: word.text,
-                    onChanged: (text) => cubit.updateWord(word.id, text),
-                    onRemove: () => cubit.removeWord(word.id),
+                    onChanged: (value) {
+                      bloc.add(
+                        ImposterPackWordChanged(id: word.id, value: value),
+                      );
+                    },
+                    onRemove: () {
+                      bloc.add(ImposterPackWordRemoved(word.id));
+                    },
                   ),
-                const SizedBox(height: 8),
+                const SizedBox(height: Spacing.md),
                 OutlinedButton.icon(
-                  onPressed: cubit.addWord,
+                  onPressed: () => bloc.add(const ImposterPackWordAdded()),
                   icon: const Icon(Icons.add),
                   label: const Text('Add word'),
                 ),
-                const SizedBox(height: 8),
-                if (state.cleanedWords.length < PackEditorState.minWords)
+                const SizedBox(height: Spacing.md),
+                if (state.cleanedWords.length <
+                    ImposterPackEditorState.minWords)
                   Text(
-                    'Add at least ${PackEditorState.minWords} words.',
+                    'Add at least ${ImposterPackEditorState.minWords} words.',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
+                if (state.status == ImposterPackEditorStatus.failure &&
+                    state.errorMessage != null) ...[
+                  const SizedBox(height: Spacing.xl),
+                  Text(
+                    state.errorMessage!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
               ],
             ),
             bottomNavigationBar: Padding(
@@ -104,10 +133,12 @@ class _EditorView extends StatelessWidget {
                 8 + MediaQuery.of(context).padding.bottom,
               ),
               child: FilledButton(
-                onPressed: state.canSave && state.status != PackEditorStatus.saving
-                    ? cubit.save
+                onPressed:
+                    state.canSave &&
+                        state.status != ImposterPackEditorStatus.saving
+                    ? () => bloc.add(const ImposterPackSaveRequested())
                     : null,
-                child: state.status == PackEditorStatus.saving
+                child: state.status == ImposterPackEditorStatus.saving
                     ? const SizedBox(
                         height: 20,
                         width: 20,
@@ -125,10 +156,10 @@ class _EditorView extends StatelessWidget {
 
 class _WordRow extends StatefulWidget {
   const _WordRow({
-    super.key,
     required this.initialText,
     required this.onChanged,
     required this.onRemove,
+    super.key,
   });
 
   final String initialText;
@@ -140,8 +171,9 @@ class _WordRow extends StatefulWidget {
 }
 
 class _WordRowState extends State<_WordRow> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.initialText);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initialText,
+  );
 
   @override
   void dispose() {
@@ -152,7 +184,7 @@ class _WordRowState extends State<_WordRow> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         children: [
           Expanded(

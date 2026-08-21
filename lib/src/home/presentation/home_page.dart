@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/router.dart';
+import '../../../app/router/router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/gradient_scaffold.dart';
@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
               subtitle: AppStrings.imposterBlurb,
               icon: Icons.theater_comedy_outlined,
               gradient: AppColors.imposterGradient,
-              onTap: () => context.push(Routes.imposter),
+              onTap: () => context.push(AppRoutes.imposter),
             ),
             const SizedBox(height: 12),
             GameCard(
@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
               subtitle: AppStrings.mafiaBlurb,
               icon: Icons.dangerous_outlined,
               gradient: AppColors.mafiaGradient,
-              onTap: () => context.push(Routes.mafia),
+              onTap: () => context.push(AppRoutes.mafia),
             ),
             const SizedBox(height: 12),
             GameCard(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router.dart';
+import '../../../../../app/router/router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../domain/entities/player.dart';
 import '../game_state.dart';
@@ -17,8 +17,9 @@ class GameOverView extends StatelessWidget {
     final theme = Theme.of(context);
     final standings = state.session.standings;
     final topScore = standings.isEmpty ? 0 : standings.first.cumulativeScore;
-    final winners =
-        standings.where((p) => p.cumulativeScore == topScore && topScore > 0);
+    final winners = standings.where(
+      (p) => p.cumulativeScore == topScore && topScore > 0,
+    );
 
     return Column(
       children: [
@@ -31,7 +32,9 @@ class GameOverView extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: AppColors.winGradient.colors.first.withValues(alpha: 0.4),
+                color: AppColors.winGradient.colors.first.withValues(
+                  alpha: 0.4,
+                ),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -39,8 +42,11 @@ class GameOverView extends StatelessWidget {
           ),
           child: Column(
             children: [
-              const Icon(Icons.emoji_events_rounded,
-                  size: 56, color: AppColors.onGradient),
+              const Icon(
+                Icons.emoji_events_rounded,
+                size: 56,
+                color: AppColors.onGradient,
+              ),
               const SizedBox(height: 12),
               Text(
                 topScore == 0 ? 'Game over' : _winnerLine(winners),
@@ -72,7 +78,7 @@ class GameOverView extends StatelessWidget {
             8 + MediaQuery.of(context).padding.bottom,
           ),
           child: FilledButton.icon(
-            onPressed: () => context.go(Routes.home),
+            onPressed: () => context.go(AppRoutes.home),
             icon: const Icon(Icons.home_rounded),
             label: const Text('Back to games'),
           ),
@@ -124,7 +130,9 @@ class _StandingTile extends StatelessWidget {
               child: Text(
                 player.name,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: isWinner ? scheme.onTertiaryContainer : scheme.onSurface,
+                  color: isWinner
+                      ? scheme.onTertiaryContainer
+                      : scheme.onSurface,
                 ),
               ),
             ),

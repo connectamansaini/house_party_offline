@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-import '../../../../app/di.dart';
-import '../../../../app/router.dart';
+import '../../../../../app/injector/injector.dart';
+import '../../../../../app/router/router.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
 import '../../../domain/engine/mafia_engine.dart';
 import '../../../domain/entities/mafia_setup.dart';
@@ -20,14 +20,14 @@ import '../widgets/mafia_role_reveal_view.dart';
 /// authoritative; the body swaps by phase so the OS back button can't corrupt
 /// the game.
 class MafiaGamePage extends StatelessWidget {
-  const MafiaGamePage({super.key, required this.setup});
+  const MafiaGamePage({required this.setup, super.key});
 
   final MafiaSetup setup;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MafiaGameBloc(setup: setup, engine: sl<MafiaEngine>()),
+      create: (_) => MafiaGameBloc(setup: setup, engine: getIt<MafiaEngine>()),
       child: const _GameScaffold(),
     );
   }
@@ -63,7 +63,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
           onPopInvokedWithResult: (didPop, _) async {
             if (didPop) return;
             final leave = await _confirmQuit(context);
-            if (leave && context.mounted) context.go(Routes.home);
+            if (leave && context.mounted) context.go(AppRoutes.home);
           },
           child: GradientScaffold(
             appBar: AppBar(
@@ -76,7 +76,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
                     icon: const Icon(Icons.close),
                     onPressed: () async {
                       final leave = await _confirmQuit(context);
-                      if (leave && context.mounted) context.go(Routes.home);
+                      if (leave && context.mounted) context.go(AppRoutes.home);
                     },
                   ),
               ],
@@ -103,17 +103,27 @@ class _GameScaffoldState extends State<_GameScaffold> {
   };
 
   Widget _phase(MafiaGameState state) => switch (state) {
-    MafiaRoleReveal() =>
-      MafiaRoleRevealView(key: const ValueKey('reveal'), state: state),
+    MafiaRoleReveal() => MafiaRoleRevealView(
+      key: const ValueKey('reveal'),
+      state: state,
+    ),
     MafiaNight() => MafiaNightView(key: const ValueKey('night'), state: state),
-    MafiaNightRecap() =>
-      MafiaNightRecapView(key: const ValueKey('night-recap'), state: state),
-    MafiaDayVote() =>
-      MafiaDayVoteView(key: const ValueKey('day'), state: state),
-    MafiaLynchRecap() =>
-      MafiaLynchRecapView(key: const ValueKey('lynch-recap'), state: state),
-    MafiaGameOver() =>
-      MafiaGameOverView(key: const ValueKey('over'), state: state),
+    MafiaNightRecap() => MafiaNightRecapView(
+      key: const ValueKey('night-recap'),
+      state: state,
+    ),
+    MafiaDayVote() => MafiaDayVoteView(
+      key: const ValueKey('day'),
+      state: state,
+    ),
+    MafiaLynchRecap() => MafiaLynchRecapView(
+      key: const ValueKey('lynch-recap'),
+      state: state,
+    ),
+    MafiaGameOver() => MafiaGameOverView(
+      key: const ValueKey('over'),
+      state: state,
+    ),
   };
 
   Future<bool> _confirmQuit(BuildContext context) async {

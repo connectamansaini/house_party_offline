@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/router.dart';
+import '../../../app/router/router.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/gradient_scaffold.dart';
@@ -32,14 +32,14 @@ class MafiaHomePage extends StatelessWidget {
               title: 'New game',
               subtitle: 'Set up players and roles',
               highlighted: true,
-              onTap: () => context.push(Routes.mafiaSetup),
+              onTap: () => context.push(AppRoutes.mafiaSetup),
             ),
             const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.menu_book_rounded,
               title: 'How to play',
               subtitle: 'Roles, night/day flow, and tips',
-              onTap: () => context.push(Routes.mafiaRules),
+              onTap: () => context.push(AppRoutes.mafiaRules),
             ),
           ],
         ),
@@ -89,22 +89,28 @@ class _MenuCard extends StatelessWidget {
                       : scheme.primaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(icon,
-                    size: 28,
-                    color:
-                        highlighted ? scheme.onPrimary : scheme.onPrimaryContainer),
+                child: Icon(
+                  icon,
+                  size: 28,
+                  color: highlighted
+                      ? scheme.onPrimary
+                      : scheme.onPrimaryContainer,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: theme.textTheme.titleLarge?.copyWith(color: fg)),
+                    Text(
+                      title,
+                      style: theme.textTheme.titleLarge?.copyWith(color: fg),
+                    ),
                     const SizedBox(height: 2),
-                    Text(subtitle,
-                        style:
-                            theme.textTheme.bodyMedium?.copyWith(color: subFg)),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: subFg),
+                    ),
                   ],
                 ),
               ),

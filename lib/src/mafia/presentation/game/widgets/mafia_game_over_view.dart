@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router.dart';
+import '../../../../../app/router/router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../domain/entities/mafia_role.dart';
 import '../mafia_game_state.dart';
@@ -17,8 +17,9 @@ class MafiaGameOverView extends StatelessWidget {
     final theme = Theme.of(context);
     final session = state.session;
     final townWon = state.winner == MafiaFaction.town;
-    final gradient =
-        townWon ? AppColors.civilianGradient : AppColors.mafiaGradient;
+    final gradient = townWon
+        ? AppColors.civilianGradient
+        : AppColors.mafiaGradient;
 
     return Column(
       children: [
@@ -80,14 +81,14 @@ class MafiaGameOverView extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => context.go(Routes.mafia),
+                  onPressed: () => context.go(AppRoutes.mafia),
                   child: const Text('Play again'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () => context.go(Routes.home),
+                  onPressed: () => context.go(AppRoutes.home),
                   icon: const Icon(Icons.home_rounded),
                   label: const Text('Games'),
                 ),
@@ -114,10 +115,12 @@ class _RoleRow extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor:
-              role.isMafia ? scheme.errorContainer : scheme.primaryContainer,
-          foregroundColor:
-              role.isMafia ? scheme.onErrorContainer : scheme.onPrimaryContainer,
+          backgroundColor: role.isMafia
+              ? scheme.errorContainer
+              : scheme.primaryContainer,
+          foregroundColor: role.isMafia
+              ? scheme.onErrorContainer
+              : scheme.onPrimaryContainer,
           child: Icon(
             role.isMafia ? Icons.dangerous_rounded : Icons.person_rounded,
             size: 20,

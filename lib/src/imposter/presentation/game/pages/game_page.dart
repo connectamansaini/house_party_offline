@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-import '../../../../app/di.dart';
-import '../../../../app/router.dart';
+import '../../../../../app/router/router.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
 import '../../../domain/engine/round_engine.dart';
 import '../../../domain/entities/game_setup.dart';
@@ -18,18 +18,15 @@ import '../widgets/round_result_view.dart';
 import '../widgets/secret_voting_view.dart';
 import '../widgets/voting_view.dart';
 
-/// Single-route host for the whole imposter game. The [GameBloc] FSM is
-/// authoritative; the body swaps by phase so the OS back button can't corrupt
-/// mid-round state.
 class GamePage extends StatelessWidget {
-  const GamePage({super.key, required this.setup});
+  const GamePage({required this.setup, super.key});
 
   final GameSetup setup;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GameBloc(setup: setup, engine: sl<RoundEngine>()),
+      create: (_) => GameBloc(setup: setup, engine: getIt<RoundEngine>()),
       child: const _GameScaffold(),
     );
   }
@@ -66,11 +63,13 @@ class _GameScaffoldState extends State<_GameScaffold> {
           onPopInvokedWithResult: (didPop, _) async {
             if (didPop) return;
             final leave = await _confirmQuit(context);
-            if (leave && context.mounted) context.go(Routes.home);
+            if (leave && context.mounted) context.go(AppRoutes.home);
           },
           child: GradientScaffold(
             appBar: AppBar(
-              title: Text(isOver ? 'Game over' : 'Round ${state.session.roundNumber}'),
+              title: Text(
+                isOver ? 'Game over' : 'Round ${state.session.roundNumber}',
+              ),
               automaticallyImplyLeading: false,
               actions: [
                 if (!isOver)
@@ -79,7 +78,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
                     icon: const Icon(Icons.close),
                     onPressed: () async {
                       final leave = await _confirmQuit(context);
-                      if (leave && context.mounted) context.go(Routes.home);
+                      if (leave && context.mounted) context.go(AppRoutes.home);
                     },
                   ),
               ],
@@ -98,15 +97,27 @@ class _GameScaffoldState extends State<_GameScaffold> {
 
   Widget _buildPhase(GameState state) {
     return switch (state) {
-      RoleReveal() => RoleRevealView(key: const ValueKey('reveal'), state: state),
-      Discussion() => DiscussionView(key: const ValueKey('discussion'), state: state),
+      RoleReveal() => RoleRevealView(
+        key: const ValueKey('reveal'),
+        state: state,
+      ),
+      Discussion() => DiscussionView(
+        key: const ValueKey('discussion'),
+        state: state,
+      ),
       Voting() => VotingView(key: const ValueKey('voting'), state: state),
-      SecretVoting() =>
-        SecretVotingView(key: const ValueKey('secret-voting'), state: state),
-      ImposterGuessing() =>
-        ImposterGuessingView(key: const ValueKey('guessing'), state: state),
-      RoundResultState() =>
-        RoundResultView(key: const ValueKey('result'), state: state),
+      SecretVoting() => SecretVotingView(
+        key: const ValueKey('secret-voting'),
+        state: state,
+      ),
+      ImposterGuessing() => ImposterGuessingView(
+        key: const ValueKey('guessing'),
+        state: state,
+      ),
+      RoundResultState() => RoundResultView(
+        key: const ValueKey('result'),
+        state: state,
+      ),
       GameOver() => GameOverView(key: const ValueKey('over'), state: state),
     };
   }

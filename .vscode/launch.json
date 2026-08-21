@@ -1,0 +1,30 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "House Party - Development",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_development.dart"
+      //   "toolArgs": ["--dart-define-from-file=.env.dev"]
+    },
+    {
+      "name": "House Party - Staging",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart"
+      //   "toolArgs": ["--dart-define-from-file=.env.stage"]
+    },
+    {
+      "name": "House Party - Production",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart"
+      //   "toolArgs": ["--dart-define-from-file=.env.prod"]
+    }
+  ]
+}

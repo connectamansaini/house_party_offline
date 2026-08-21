@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/router.dart';
+import '../../../../app/router/router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/gradient_scaffold.dart';
@@ -32,21 +32,21 @@ class ImposterHomePage extends StatelessWidget {
               title: 'New game',
               subtitle: 'Set up players and start playing',
               highlighted: true,
-              onTap: () => context.push(Routes.imposterSetup),
+              onTap: () => context.push(AppRoutes.imposterSetup),
             ),
             const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.style_outlined,
               title: 'Word packs',
               subtitle: 'Browse, create, and edit packs',
-              onTap: () => context.push(Routes.imposterPacks),
+              onTap: () => context.push(AppRoutes.imposterPacks),
             ),
             const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.menu_book_rounded,
               title: 'How to play',
               subtitle: 'Rules, round flow, and tips',
-              onTap: () => context.push(Routes.imposterRules),
+              onTap: () => context.push(AppRoutes.imposterRules),
             ),
           ],
         ),
@@ -99,7 +99,9 @@ class _MenuCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 28,
-                  color: highlighted ? scheme.onPrimary : scheme.onPrimaryContainer,
+                  color: highlighted
+                      ? scheme.onPrimary
+                      : scheme.onPrimaryContainer,
                 ),
               ),
               const SizedBox(width: 16),
@@ -107,9 +109,15 @@ class _MenuCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: theme.textTheme.titleLarge?.copyWith(color: fg)),
+                    Text(
+                      title,
+                      style: theme.textTheme.titleLarge?.copyWith(color: fg),
+                    ),
                     const SizedBox(height: 2),
-                    Text(subtitle, style: theme.textTheme.bodyMedium?.copyWith(color: subFg)),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: subFg),
+                    ),
                   ],
                 ),
               ),
@@ -121,4 +129,3 @@ class _MenuCard extends StatelessWidget {
     );
   }
 }
-

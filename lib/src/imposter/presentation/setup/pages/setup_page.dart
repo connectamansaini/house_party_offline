@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/di.dart';
-import '../../../../app/router.dart';
+import '../../../../../app/injector/injector.dart';
+import '../../../../../app/router/router.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
 import '../../../domain/entities/imposter_mode.dart';
 import '../../../domain/entities/player.dart';
@@ -21,8 +21,8 @@ class SetupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => SetupCubit(
-        sl<WordPackRepository>(),
-        sl<ImposterSettingsRepository>(),
+        getIt<WordPackRepository>(),
+        getIt<ImposterSettingsRepository>(),
       )..init(),
       child: const _SetupView(),
     );
@@ -56,7 +56,7 @@ class _SetupViewState extends State<_SetupView> {
     final router = GoRouter.of(context);
     await cubit.persist();
     if (!mounted) return;
-    router.push(Routes.imposterGame, extra: setup);
+    router.push(AppRoutes.imposterGame, extra: setup);
   }
 
   @override
@@ -124,7 +124,9 @@ class _SetupViewState extends State<_SetupView> {
                               ? () => _onContinue(cubit, state)
                               : null,
                           icon: Icon(
-                            isLast ? Icons.play_arrow_rounded : Icons.arrow_forward,
+                            isLast
+                                ? Icons.play_arrow_rounded
+                                : Icons.arrow_forward,
                           ),
                           label: Text(isLast ? 'Start game' : 'Next'),
                         ),
@@ -183,8 +185,9 @@ class _StepHeader extends StatelessWidget {
                         color: i == current
                             ? scheme.primary
                             : scheme.onSurfaceVariant,
-                        fontWeight:
-                            i == current ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: i == current
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                       ),
                     ),
                   ],
@@ -249,12 +252,12 @@ class _PlayersStep extends StatelessWidget {
 
 class _PlayerRow extends StatefulWidget {
   const _PlayerRow({
-    super.key,
     required this.number,
     required this.player,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
+    super.key,
   });
 
   final int number;
@@ -268,8 +271,9 @@ class _PlayerRow extends StatefulWidget {
 }
 
 class _PlayerRowState extends State<_PlayerRow> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.player.name);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.player.name,
+  );
 
   @override
   void dispose() {
@@ -284,7 +288,6 @@ class _PlayerRowState extends State<_PlayerRow> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 20,
@@ -579,7 +582,7 @@ class _ImposterModeSelector extends StatelessWidget {
         Text(
           state.imposterMode.isUndercover
               ? 'Undercover: the imposter gets a different word from the same '
-                  'category to help them blend in.'
+                    'category to help them blend in.'
               : 'Word Imposter: the imposter gets no word and must bluff.',
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
