@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../mafia_game_bloc.dart';
-import '../mafia_game_event.dart';
-import '../mafia_game_state.dart';
-import 'mafia_player_tile.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_bloc.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_event.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_player_tile.dart';
 
 /// Daytime lynch: a shared vote with a skip option.
 class MafiaDayVoteView extends StatelessWidget {
-  const MafiaDayVoteView({super.key, required this.state});
+  const MafiaDayVoteView({required this.state, super.key});
 
   final MafiaDayVote state;
 
@@ -25,10 +25,12 @@ class MafiaDayVoteView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
           child: Column(
             children: [
-              Text('Day ${state.session.nightNumber}',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  )),
+              Text(
+                'Day ${state.session.nightNumber}',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
               const SizedBox(height: 2),
               Text('Who do you lynch?', style: theme.textTheme.headlineMedium),
               const SizedBox(height: 4),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../game_bloc.dart';
-import '../game_event.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// The group votes one player out. Single highlight, confirm to resolve.
 class VotingView extends StatelessWidget {
-  const VotingView({super.key, required this.state});
+  const VotingView({required this.state, super.key});
 
   final Voting state;
 
@@ -24,7 +24,10 @@ class VotingView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
           child: Column(
             children: [
-              Text("Who's the imposter?", style: theme.textTheme.headlineMedium),
+              Text(
+                "Who's the imposter?",
+                style: theme.textTheme.headlineMedium,
+              ),
               const SizedBox(height: 4),
               Text(
                 'Tap your suspect, then confirm the vote.',
@@ -44,10 +47,11 @@ class VotingView extends StatelessWidget {
               final p = players[i];
               final isSelected = p.id == selected;
               return Card(
-                color: isSelected ? scheme.primary : scheme.surfaceContainerHigh,
+                color: isSelected
+                    ? scheme.primary
+                    : scheme.surfaceContainerHigh,
                 child: InkWell(
-                  onTap: () =>
-                      context.read<GameBloc>().add(VoteSelected(p.id)),
+                  onTap: () => context.read<GameBloc>().add(VoteSelected(p.id)),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -75,7 +79,9 @@ class VotingView extends StatelessWidget {
                           child: Text(
                             p.name,
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color: isSelected ? scheme.onPrimary : scheme.onSurface,
+                              color: isSelected
+                                  ? scheme.onPrimary
+                                  : scheme.onSurface,
                             ),
                           ),
                         ),

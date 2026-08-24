@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
-import '../../core/widgets/gradient_scaffold.dart';
-import '../../core/widgets/hero_banner.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
 
 /// In-app rulebook for the Mafia game.
 class MafiaRulesPage extends StatelessWidget {
@@ -19,7 +19,8 @@ class MafiaRulesPage extends StatelessWidget {
           children: const [
             HeroBanner(
               title: 'How to play',
-              subtitle: 'Town vs Mafia — a game of night kills and daytime lies.',
+              subtitle:
+                  'Town vs Mafia — a game of night kills and daytime lies.',
               icon: Icons.menu_book_rounded,
               gradient: AppColors.mafiaGradient,
               compact: true,
@@ -48,10 +49,10 @@ class MafiaRulesPage extends StatelessWidget {
               title: 'Each night',
               steps: [
                 'The phone passes to every living player in turn.',
-                'Mafia pick a victim, the doctor picks someone to protect, the '
-                    'detective investigates — villagers just see a “you sleep” '
+                'Mafia pick a victim, the doctor picks someone to protect, the ' +
+                    'detective investigates — villagers just see a “you sleep” ' +
                     'screen, so nobody can tell who acted.',
-                'The app resolves the night: the victim dies unless the doctor '
+                'The app resolves the night: the victim dies unless the doctor ' +
                     'protected them.',
               ],
             ),
@@ -138,9 +139,10 @@ class _BulletSection extends StatelessWidget {
                 children: [
                   Text('•  ', style: theme.textTheme.bodyMedium),
                   Expanded(
-                    child: Text(b,
-                        style:
-                            theme.textTheme.bodyMedium?.copyWith(height: 1.35)),
+                    child: Text(
+                      b,
+                      style: theme.textTheme.bodyMedium?.copyWith(height: 1.35),
+                    ),
                   ),
                 ],
               ),
@@ -182,17 +184,23 @@ class _NumberedSection extends StatelessWidget {
                     radius: 12,
                     backgroundColor: scheme.primaryContainer,
                     foregroundColor: scheme.onPrimaryContainer,
-                    child: Text('${i + 1}',
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(fontWeight: FontWeight.w700)),
+                    child: Text(
+                      '${i + 1}',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 2),
-                      child: Text(steps[i],
-                          style: theme.textTheme.bodyMedium
-                              ?.copyWith(height: 1.35)),
+                      child: Text(
+                        steps[i],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          height: 1.35,
+                        ),
+                      ),
                     ),
                   ),
                 ],

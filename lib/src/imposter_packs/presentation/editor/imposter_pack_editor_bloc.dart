@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/utils/id.dart';
-import '../../domain/entities/imposter_pack_entity.dart';
-import '../../domain/failures/imposter_packs_failure.dart';
-import '../../domain/usecases/save_custom_imposter_pack_usecase.dart';
+import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/failures/imposter_packs_failure.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/usecases/save_custom_imposter_pack_usecase.dart';
 
 part 'imposter_pack_editor_event.dart';
 part 'imposter_pack_editor_state.dart';

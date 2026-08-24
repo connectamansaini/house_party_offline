@@ -107,73 +107,84 @@ void main() {
     expect(result.result.winningSide, WinningSide.imposter);
     expect(result.result.imposterGuessedRight, isTrue);
     expect(
-      result.session.players.firstWhere((p) => p.id == imposterId).cumulativeScore,
+      result.session.players
+          .firstWhere((p) => p.id == imposterId)
+          .cumulativeScore,
       greaterThan(0),
     );
     await bloc.close();
   });
 
-  test('caught imposter with a wrong guess gives the civilian the win', () async {
-    final bloc = GameBloc(setup: _setup(), engine: _engine);
-    final voting = await driveToVoting(bloc, 4);
-    final imposterId = voting.assignment.imposterIds.first;
+  test(
+    'caught imposter with a wrong guess gives the civilian the win',
+    () async {
+      final bloc = GameBloc(setup: _setup(), engine: _engine);
+      final voting = await driveToVoting(bloc, 4);
+      final imposterId = voting.assignment.imposterIds.first;
 
-    bloc.add(VoteSelected(imposterId));
-    await next(bloc);
-    bloc.add(const VoteConfirmed());
-    await next(bloc);
-    bloc.add(const ImposterGuessSubmitted('wrong'));
-    final result = await next(bloc) as RoundResultState;
-
-    expect(result.result.winningSide, WinningSide.civilian);
-    expect(result.result.imposterGuessedRight, isFalse);
-    await bloc.close();
-  });
-
-  test('voting out a civilian member wins the round for the imposter', () async {
-    final bloc = GameBloc(setup: _setup(), engine: _engine);
-    final voting = await driveToVoting(bloc, 4);
-    final civilianId = voting.session.players
-        .firstWhere((p) => !voting.assignment.imposterIds.contains(p.id))
-        .id;
-
-    bloc.add(VoteSelected(civilianId));
-    await next(bloc);
-    bloc.add(const VoteConfirmed());
-    final result = await next(bloc) as RoundResultState;
-
-    expect(result.result.winningSide, WinningSide.imposter);
-    expect(result.result.imposterGuessedRight, isFalse);
-    await bloc.close();
-  });
-
-  test('secret voting collects ballots and tallies to catch the imposter',
-      () async {
-    final bloc = GameBloc(setup: _setup(secret: true), engine: _engine);
-    await driveToDiscussion(bloc, 4);
-    bloc.add(const DiscussionSkipped());
-    var sv = await next(bloc) as SecretVoting;
-    final imposterId = sv.assignment.imposterIds.first;
-
-    // Every civilian votes the imposter; the imposter votes someone else.
-    for (var i = 0; i < 4; i++) {
-      bloc.add(const BallotOpened());
+      bloc.add(VoteSelected(imposterId));
       await next(bloc);
-      final voter = sv.currentVoter;
-      final target =
-          voter.id == imposterId ? sv.candidates.first.id : imposterId;
-      bloc.add(BallotSelected(target));
+      bloc.add(const VoteConfirmed());
       await next(bloc);
-      bloc.add(const BallotCast());
-      final s = await next(bloc);
-      if (s is SecretVoting) sv = s;
-    }
+      bloc.add(const ImposterGuessSubmitted('wrong'));
+      final result = await next(bloc) as RoundResultState;
 
-    // 3 votes for the imposter vs 1 → imposter caught → guess step.
-    expect(bloc.state, isA<ImposterGuessing>());
-    expect((bloc.state as ImposterGuessing).votedOutId, imposterId);
-    await bloc.close();
-  });
+      expect(result.result.winningSide, WinningSide.civilian);
+      expect(result.result.imposterGuessedRight, isFalse);
+      await bloc.close();
+    },
+  );
+
+  test(
+    'voting out a civilian member wins the round for the imposter',
+    () async {
+      final bloc = GameBloc(setup: _setup(), engine: _engine);
+      final voting = await driveToVoting(bloc, 4);
+      final civilianId = voting.session.players
+          .firstWhere((p) => !voting.assignment.imposterIds.contains(p.id))
+          .id;
+
+      bloc.add(VoteSelected(civilianId));
+      await next(bloc);
+      bloc.add(const VoteConfirmed());
+      final result = await next(bloc) as RoundResultState;
+
+      expect(result.result.winningSide, WinningSide.imposter);
+      expect(result.result.imposterGuessedRight, isFalse);
+      await bloc.close();
+    },
+  );
+
+  test(
+    'secret voting collects ballots and tallies to catch the imposter',
+    () async {
+      final bloc = GameBloc(setup: _setup(secret: true), engine: _engine);
+      await driveToDiscussion(bloc, 4);
+      bloc.add(const DiscussionSkipped());
+      var sv = await next(bloc) as SecretVoting;
+      final imposterId = sv.assignment.imposterIds.first;
+
+      // Every civilian votes the imposter; the imposter votes someone else.
+      for (var i = 0; i < 4; i++) {
+        bloc.add(const BallotOpened());
+        await next(bloc);
+        final voter = sv.currentVoter;
+        final target = voter.id == imposterId
+            ? sv.candidates.first.id
+            : imposterId;
+        bloc.add(BallotSelected(target));
+        await next(bloc);
+        bloc.add(const BallotCast());
+        final s = await next(bloc);
+        if (s is SecretVoting) sv = s;
+      }
+
+      // 3 votes for the imposter vs 1 → imposter caught → guess step.
+      expect(bloc.state, isA<ImposterGuessing>());
+      expect((bloc.state as ImposterGuessing).votedOutId, imposterId);
+      await bloc.close();
+    },
+  );
 
   test('next round deals a fresh reveal and increments the round', () async {
     final bloc = GameBloc(setup: _setup(), engine: _engine);

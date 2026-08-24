@@ -1,10 +1,13 @@
 import 'dart:math';
 
-import '../entities/game_config.dart';
-import '../entities/player.dart';
-import '../entities/role.dart';
-import '../entities/round_assignment.dart';
-import '../entities/round_result.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_config.dart'
+    show GameConfig;
+
+import 'package:house_party_offline/src/imposter/domain/entities/game_config.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/role.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/round_assignment.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/round_result.dart';
 
 /// Pure game rules for the Imposter game. No Flutter, BLoC, or IO dependencies
 /// so the full round lifecycle is unit-testable in isolation.
@@ -15,7 +18,7 @@ class RoundEngine {
 
   /// Deals roles for a new round.
   ///
-  /// Picks a secret word from [GameConfig.pack], selects
+  /// Picks a secret word from [GameConfig.packs], selects
   /// [GameConfig.imposterCount] imposters at random, and builds each player's
   /// [Role] honoring [GameConfig.categoryHintEnabled].
   ///
@@ -64,8 +67,10 @@ class RoundEngine {
 
     // Shuffle a copy of the players and take the first N as imposters.
     final shuffled = List<Player>.of(players)..shuffle(random);
-    final imposterIds =
-        shuffled.take(config.imposterCount).map((p) => p.id).toSet();
+    final imposterIds = shuffled
+        .take(config.imposterCount)
+        .map((p) => p.id)
+        .toSet();
 
     final roles = <String, Role>{
       for (final player in players)
@@ -126,20 +131,24 @@ class RoundEngine {
     String? imposterGuess,
   }) {
     final caught = wasImposterCaught(assignment, votedOutId);
-    final guessedRight = caught &&
+    final guessedRight =
+        caught &&
         imposterGuess != null &&
         isGuessCorrect(imposterGuess, assignment.secretWord);
 
     final imposterWins = !caught || guessedRight;
-    final winningSide = imposterWins ? WinningSide.imposter : WinningSide.civilian;
+    final winningSide = imposterWins
+        ? WinningSide.imposter
+        : WinningSide.civilian;
 
-    final points =
-        imposterWins ? config.imposterWinPoints : config.civilianWinPoints;
+    final points = imposterWins
+        ? config.imposterWinPoints
+        : config.civilianWinPoints;
     final winners = imposterWins
         ? assignment.imposterIds
         : assignment.rolesByPlayerId.keys
-            .where((id) => !assignment.imposterIds.contains(id))
-            .toSet();
+              .where((id) => !assignment.imposterIds.contains(id))
+              .toSet();
 
     final deltas = <String, int>{
       for (final id in assignment.rolesByPlayerId.keys)

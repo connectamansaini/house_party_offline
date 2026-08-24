@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
-import '../../core/widgets/gradient_scaffold.dart';
-import '../../core/widgets/hero_banner.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
 
 /// In-app rulebook for the Imposter game.
 class RulesPage extends StatelessWidget {
@@ -48,14 +48,14 @@ class RulesPage extends StatelessWidget {
               title: 'A round, step by step',
               steps: [
                 'Reveal: pass the phone so everyone secretly sees their role.',
-                'Clues: going around, each player says ONE word related to the '
-                    'secret word — no rhymes, spellings, translations, or the '
+                'Clues: going around, each player says ONE word related to the ' +
+                    'secret word — no rhymes, spellings, translations, or the ' +
                     'word itself.',
-                'Debate: talk it out before the timer runs down. Who was vague? '
+                'Debate: talk it out before the timer runs down. Who was vague? ' +
                     'Who was a beat too slow?',
-                'Vote: as a shared vote or a secret ballot, the group eliminates '
+                'Vote: as a shared vote or a secret ballot, the group eliminates ' +
                     'one suspect.',
-                'Last Chance Guess: if the eliminated player is an imposter, '
+                'Last Chance Guess: if the eliminated player is an imposter, ' +
                     'they get one guess at the secret word to steal the win.',
               ],
             ),
@@ -73,10 +73,10 @@ class RulesPage extends StatelessWidget {
               title: 'Host options',
               bullets: [
                 'Imposters: 1 up to (players − 1).',
-                'Imposter gets: nothing, or a decoy word (Undercover) from the '
+                'Imposter gets: nothing, or a decoy word (Undercover) from the ' +
                     'same category to blend in.',
                 'Category hint: optionally tell the imposter the word’s category.',
-                'Secret voting: one shared vote, or a private pass-and-play '
+                'Secret voting: one shared vote, or a private pass-and-play ' +
                     'ballot that’s tallied.',
                 'Discussion length and win points per side.',
               ],
@@ -206,8 +206,9 @@ class _NumberedSection extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(
                         steps[i],
-                        style:
-                            theme.textTheme.bodyMedium?.copyWith(height: 1.35),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          height: 1.35,
+                        ),
                       ),
                     ),
                   ),

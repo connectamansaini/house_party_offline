@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../game_bloc.dart';
-import '../game_event.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// The timed discussion phase: a countdown ring that shifts colour as time
 /// runs low, plus a skip-to-vote.
 class DiscussionView extends StatelessWidget {
-  const DiscussionView({super.key, required this.state});
+  const DiscussionView({required this.state, super.key});
 
   final Discussion state;
 
@@ -54,13 +54,14 @@ class DiscussionView extends StatelessWidget {
                       child: TweenAnimationBuilder<double>(
                         tween: Tween(begin: progress, end: progress),
                         duration: const Duration(milliseconds: 400),
-                        builder: (context, value, _) => CircularProgressIndicator(
-                          value: value,
-                          strokeWidth: 14,
-                          strokeCap: StrokeCap.round,
-                          color: ringColor,
-                          backgroundColor: scheme.surfaceContainerHighest,
-                        ),
+                        builder: (context, value, _) =>
+                            CircularProgressIndicator(
+                              value: value,
+                              strokeWidth: 14,
+                              strokeCap: StrokeCap.round,
+                              color: ringColor,
+                              backgroundColor: scheme.surfaceContainerHighest,
+                            ),
                       ),
                     ),
                     Column(

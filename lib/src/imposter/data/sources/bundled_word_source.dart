@@ -2,9 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show AssetBundle, rootBundle;
 
-import '../models/word_pack_dto.dart';
+import 'package:house_party_offline/src/imposter/data/models/word_pack_dto.dart';
 
 /// Loads the read-only word packs that ship with the app.
+///
+/// Kept as an interface (not a top-level function) so tests can substitute a
+/// fake — see `test/imposter/data/word_pack_repository_impl_test.dart`.
+// ignore: one_member_abstracts
 abstract interface class BundledWordSource {
   Future<List<WordPackDto>> load();
 }

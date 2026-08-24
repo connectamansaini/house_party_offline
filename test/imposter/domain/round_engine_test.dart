@@ -30,7 +30,7 @@ void main() {
     int imposterPoints = 2,
     ImposterMode mode = ImposterMode.blank,
   }) => GameConfig(
-    packs: [pack],
+    packs: const [pack],
     imposterCount: imposterCount,
     imposterMode: mode,
     categoryHintEnabled: hint,
@@ -72,27 +72,36 @@ void main() {
     test('civilian see the category hint only when enabled', () {
       final players = makePlayers(4);
 
-      final off = engine.assignRoles(players, config(hint: false), rng: Random(3));
-      final civilianOff =
-          off.rolesByPlayerId.values.whereType<CivilianRole>().first;
+      final off = engine.assignRoles(players, config(), rng: Random(3));
+      final civilianOff = off.rolesByPlayerId.values
+          .whereType<CivilianRole>()
+          .first;
       expect(civilianOff.categoryHint, isNull);
 
-      final on = engine.assignRoles(players, config(hint: true), rng: Random(3));
-      final civilianOn = on.rolesByPlayerId.values.whereType<CivilianRole>().first;
+      final on = engine.assignRoles(
+        players,
+        config(hint: true),
+        rng: Random(3),
+      );
+      final civilianOn = on.rolesByPlayerId.values
+          .whereType<CivilianRole>()
+          .first;
       expect(civilianOn.categoryHint, pack.category);
     });
 
     test('imposter sees the hint only when enabled and never the word', () {
       final players = makePlayers(4);
 
-      final on = engine.assignRoles(players, config(hint: true), rng: Random(7));
+      final on = engine.assignRoles(
+        players,
+        config(hint: true),
+        rng: Random(7),
+      );
       final impOn = on.rolesByPlayerId.values.whereType<ImposterRole>().first;
       expect(impOn.categoryHint, pack.category);
 
-      final off =
-          engine.assignRoles(players, config(hint: false), rng: Random(7));
-      final impOff =
-          off.rolesByPlayerId.values.whereType<ImposterRole>().first;
+      final off = engine.assignRoles(players, config(), rng: Random(7));
+      final impOff = off.rolesByPlayerId.values.whereType<ImposterRole>().first;
       expect(impOff.categoryHint, isNull);
     });
 
@@ -125,9 +134,17 @@ void main() {
     });
 
     test('rejects packs with no words', () {
-      const empty = WordPack(id: 'e', name: 'Empty', category: 'None', words: []);
+      const empty = WordPack(
+        id: 'e',
+        name: 'Empty',
+        category: 'None',
+        words: [],
+      );
       expect(
-        () => engine.assignRoles(makePlayers(4), config().copyWith(packs: [empty])),
+        () => engine.assignRoles(
+          makePlayers(4),
+          config().copyWith(packs: [empty]),
+        ),
         throwsArgumentError,
       );
     });
@@ -147,9 +164,14 @@ void main() {
         final a = engine.assignRoles(makePlayers(4), cfg, rng: Random(seed));
         final fromFoods = pack.words.contains(a.secretWord);
         final fromAnimals = animals.words.contains(a.secretWord);
-        expect(fromFoods ^ fromAnimals, isTrue,
-            reason: '${a.secretWord} must belong to exactly one pack');
-        final civilian = a.rolesByPlayerId.values.whereType<CivilianRole>().first;
+        expect(
+          fromFoods ^ fromAnimals,
+          isTrue,
+          reason: '${a.secretWord} must belong to exactly one pack',
+        );
+        final civilian = a.rolesByPlayerId.values
+            .whereType<CivilianRole>()
+            .first;
         expect(civilian.categoryHint, fromFoods ? 'Food' : 'Animal');
       }
     });
@@ -159,11 +181,10 @@ void main() {
     test('blank mode gives the imposter no decoy word', () {
       final a = engine.assignRoles(
         makePlayers(4),
-        config(mode: ImposterMode.blank),
+        config(),
         rng: Random(2),
       );
-      final imposter =
-          a.rolesByPlayerId.values.whereType<ImposterRole>().first;
+      final imposter = a.rolesByPlayerId.values.whereType<ImposterRole>().first;
       expect(imposter.decoyWord, isNull);
     });
 
@@ -173,14 +194,13 @@ void main() {
         config(mode: ImposterMode.undercover),
         rng: Random(2),
       );
-      final imposter =
-          a.rolesByPlayerId.values.whereType<ImposterRole>().first;
+      final imposter = a.rolesByPlayerId.values.whereType<ImposterRole>().first;
       expect(imposter.decoyWord, isNotNull);
       expect(pack.words, contains(imposter.decoyWord));
       expect(imposter.decoyWord, isNot(a.secretWord));
     });
 
-    test('undercover decoy stays within the secret word\'s category', () {
+    test("undercover decoy stays within the secret word's category", () {
       const foods = WordPack(
         id: 'foods',
         name: 'Foods',
@@ -195,18 +215,23 @@ void main() {
       );
       final a = engine.assignRoles(
         makePlayers(4),
-        GameConfig(
-          packs: const [foods, animals],
+        const GameConfig(
+          packs: [foods, animals],
           imposterMode: ImposterMode.undercover,
         ),
         rng: Random(5),
       );
-      final decoy =
-          a.rolesByPlayerId.values.whereType<ImposterRole>().first.decoyWord!;
+      final decoy = a.rolesByPlayerId.values
+          .whereType<ImposterRole>()
+          .first
+          .decoyWord!;
       final secretIsFood = foods.words.contains(a.secretWord);
       final decoyIsFood = foods.words.contains(decoy);
-      expect(decoyIsFood, secretIsFood,
-          reason: 'decoy should come from the same category as the secret');
+      expect(
+        decoyIsFood,
+        secretIsFood,
+        reason: 'decoy should come from the same category as the secret',
+      );
     });
 
     test('single-word pool yields no decoy (falls back to blank)', () {
@@ -271,8 +296,9 @@ void main() {
 
     setUp(() {
       imposterId = assignment.imposterIds.first;
-      civilianId = assignment.rolesByPlayerId.keys
-          .firstWhere((id) => !assignment.imposterIds.contains(id));
+      civilianId = assignment.rolesByPlayerId.keys.firstWhere(
+        (id) => !assignment.imposterIds.contains(id),
+      );
     });
 
     test('imposter caught with correct guess → imposter steals the win', () {
@@ -280,7 +306,7 @@ void main() {
         assignment: assignment,
         votedOutId: imposterId,
         imposterGuess: assignment.secretWord,
-        config: config(imposterPoints: 2),
+        config: config(),
       );
       expect(r.winningSide, WinningSide.imposter);
       expect(r.imposterGuessedRight, isTrue);
@@ -293,7 +319,7 @@ void main() {
         assignment: assignment,
         votedOutId: imposterId,
         imposterGuess: 'definitely wrong',
-        config: config(civilianPoints: 1),
+        config: config(),
       );
       expect(r.winningSide, WinningSide.civilian);
       expect(r.imposterGuessedRight, isFalse);
@@ -329,7 +355,10 @@ void main() {
         votedOutId: imposterId,
         config: config(),
       );
-      expect(r.scoreDeltas.keys.toSet(), assignment.rolesByPlayerId.keys.toSet());
+      expect(
+        r.scoreDeltas.keys.toSet(),
+        assignment.rolesByPlayerId.keys.toSet(),
+      );
     });
   });
 }

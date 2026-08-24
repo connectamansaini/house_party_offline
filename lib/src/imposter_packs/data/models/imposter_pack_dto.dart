@@ -1,6 +1,5 @@
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../../domain/entities/imposter_pack_entity.dart';
 
 part 'imposter_pack_dto.g.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 /// Central light/dark themes. A vibrant seed plus an expressive scheme variant
 /// gives the app its party personality; component themes keep spacing, shape,
@@ -124,7 +124,9 @@ abstract final class AppTheme {
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
-      headlineMedium: base.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+      headlineMedium: base.headlineMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
       headlineSmall: base.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
       titleLarge: base.titleLarge?.copyWith(fontWeight: FontWeight.w700),
     );

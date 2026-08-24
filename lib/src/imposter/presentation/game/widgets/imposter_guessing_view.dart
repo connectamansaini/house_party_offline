@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../game_bloc.dart';
-import '../game_event.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// A caught imposter's one chance to guess the secret word and steal the win.
 class ImposterGuessingView extends StatefulWidget {
-  const ImposterGuessingView({super.key, required this.state});
+  const ImposterGuessingView({required this.state, super.key});
 
   final ImposterGuessing state;
 
@@ -26,9 +26,9 @@ class _ImposterGuessingViewState extends State<ImposterGuessingView> {
   }
 
   void _submit() {
-    context
-        .read<GameBloc>()
-        .add(ImposterGuessSubmitted(_controller.text.trim()));
+    context.read<GameBloc>().add(
+      ImposterGuessSubmitted(_controller.text.trim()),
+    );
   }
 
   @override
@@ -49,8 +49,9 @@ class _ImposterGuessingViewState extends State<ImposterGuessingView> {
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.imposterGradient.colors.first
-                      .withValues(alpha: 0.4),
+                  color: AppColors.imposterGradient.colors.first.withValues(
+                    alpha: 0.4,
+                  ),
                   blurRadius: 24,
                   offset: const Offset(0, 12),
                 ),
@@ -58,8 +59,11 @@ class _ImposterGuessingViewState extends State<ImposterGuessingView> {
             ),
             child: Column(
               children: [
-                const Icon(Icons.theater_comedy_rounded,
-                    size: 56, color: AppColors.onGradient),
+                const Icon(
+                  Icons.theater_comedy_rounded,
+                  size: 56,
+                  color: AppColors.onGradient,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   'Caught!',

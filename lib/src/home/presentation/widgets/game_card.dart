@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 /// A tappable game tile in the hub. Enabled tiles carry a vivid gradient
 /// icon badge; disabled tiles read as a dimmed "coming soon" placeholder.
 class GameCard extends StatelessWidget {
   const GameCard({
-    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
+    super.key,
     this.onTap,
     this.trailingLabel,
     this.gradient = AppColors.brandGradient,
@@ -48,7 +48,9 @@ class GameCard extends StatelessWidget {
                     boxShadow: enabled
                         ? [
                             BoxShadow(
-                              color: gradient.colors.first.withValues(alpha: 0.4),
+                              color: gradient.colors.first.withValues(
+                                alpha: 0.4,
+                              ),
                               blurRadius: 16,
                               offset: const Offset(0, 8),
                             ),

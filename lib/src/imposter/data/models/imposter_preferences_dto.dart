@@ -1,5 +1,5 @@
-import '../../domain/entities/imposter_mode.dart';
-import '../../domain/entities/imposter_preferences.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_preferences.dart';
 
 /// Serializable form of [ImposterPreferences] for the Hive settings box.
 class ImposterPreferencesDto {
@@ -15,22 +15,13 @@ class ImposterPreferencesDto {
     this.selectedPackIds = const [],
   });
 
-  final List<String> playerNames;
-  final int imposterCount;
-  final ImposterMode imposterMode;
-  final bool categoryHintEnabled;
-  final bool secretVoting;
-  final int discussionMinutes;
-  final int civilianWinPoints;
-  final int imposterWinPoints;
-  final List<String> selectedPackIds;
-
   /// Tolerant of Hive's `Map<dynamic, dynamic>` reads. Migrates prefs saved
   /// with the older single `selectedPackId` field and pre-mode prefs.
   factory ImposterPreferencesDto.fromMap(Map<dynamic, dynamic> map) {
     return ImposterPreferencesDto(
-      playerNames:
-          (map['playerNames'] as List<dynamic>).map((e) => e as String).toList(),
+      playerNames: (map['playerNames'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
       imposterCount: map['imposterCount'] as int,
       imposterMode: _readMode(map['imposterMode']),
       categoryHintEnabled: map['categoryHintEnabled'] as bool,
@@ -41,6 +32,29 @@ class ImposterPreferencesDto {
       selectedPackIds: _readPackIds(map),
     );
   }
+
+  factory ImposterPreferencesDto.fromDomain(ImposterPreferences p) =>
+      ImposterPreferencesDto(
+        playerNames: p.playerNames,
+        imposterCount: p.imposterCount,
+        imposterMode: p.imposterMode,
+        categoryHintEnabled: p.categoryHintEnabled,
+        secretVoting: p.secretVoting,
+        discussionMinutes: p.discussionMinutes,
+        civilianWinPoints: p.civilianWinPoints,
+        imposterWinPoints: p.imposterWinPoints,
+        selectedPackIds: p.selectedPackIds,
+      );
+
+  final List<String> playerNames;
+  final int imposterCount;
+  final ImposterMode imposterMode;
+  final bool categoryHintEnabled;
+  final bool secretVoting;
+  final int discussionMinutes;
+  final int civilianWinPoints;
+  final int imposterWinPoints;
+  final List<String> selectedPackIds;
 
   static ImposterMode _readMode(dynamic raw) => ImposterMode.values.firstWhere(
     (m) => m.name == raw,
@@ -65,19 +79,6 @@ class ImposterPreferencesDto {
     'imposterWinPoints': imposterWinPoints,
     'selectedPackIds': selectedPackIds,
   };
-
-  factory ImposterPreferencesDto.fromDomain(ImposterPreferences p) =>
-      ImposterPreferencesDto(
-        playerNames: p.playerNames,
-        imposterCount: p.imposterCount,
-        imposterMode: p.imposterMode,
-        categoryHintEnabled: p.categoryHintEnabled,
-        secretVoting: p.secretVoting,
-        discussionMinutes: p.discussionMinutes,
-        civilianWinPoints: p.civilianWinPoints,
-        imposterWinPoints: p.imposterWinPoints,
-        selectedPackIds: p.selectedPackIds,
-      );
 
   ImposterPreferences toDomain() => ImposterPreferences(
     playerNames: playerNames,

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/mafia/domain/engine/mafia_engine.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_setup.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_bloc.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_day_vote_view.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_game_over_view.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_night_view.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_recap_view.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_role_reveal_view.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-
-import '../../../../../app/injector/injector.dart';
-import '../../../../../app/router/router.dart';
-import '../../../../core/widgets/gradient_scaffold.dart';
-import '../../../domain/engine/mafia_engine.dart';
-import '../../../domain/entities/mafia_setup.dart';
-import '../mafia_game_bloc.dart';
-import '../mafia_game_state.dart';
-import '../widgets/mafia_day_vote_view.dart';
-import '../widgets/mafia_game_over_view.dart';
-import '../widgets/mafia_night_view.dart';
-import '../widgets/mafia_recap_view.dart';
-import '../widgets/mafia_role_reveal_view.dart';
 
 /// Single-route host for a whole Mafia match. The [MafiaGameBloc] FSM is
 /// authoritative; the body swaps by phase so the OS back button can't corrupt

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/engine/round_engine.dart';
-import '../../domain/entities/game_session.dart';
-import '../../domain/entities/game_setup.dart';
-import '../../domain/entities/round_assignment.dart';
-import 'game_event.dart';
-import 'game_state.dart';
+import 'package:house_party_offline/src/imposter/domain/engine/round_engine.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_session.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_setup.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/round_assignment.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// Finite state machine for a full imposter game. Deals the first round on
 /// creation and drives the phases: reveal → discussion → voting →
@@ -103,7 +103,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   void _onVoteSelected(VoteSelected event, Emitter<GameState> emit) {
     if (state case final Voting v) {
-      emit(Voting(v.session, assignment: v.assignment, selectedId: event.playerId));
+      emit(
+        Voting(v.session, assignment: v.assignment, selectedId: event.playerId),
+      );
     }
   }
 
@@ -173,7 +175,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
   }
 
-  void _onNextRoundRequested(NextRoundRequested event, Emitter<GameState> emit) {
+  void _onNextRoundRequested(
+    NextRoundRequested event,
+    Emitter<GameState> emit,
+  ) {
     final next = state.session.copyWith(
       roundNumber: state.session.roundNumber + 1,
     );
@@ -200,7 +205,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       imposterGuess: guess,
     );
     final updatedPlayers = [
-      for (final p in session.players) p.addScore(result.scoreDeltas[p.id] ?? 0),
+      for (final p in session.players)
+        p.addScore(result.scoreDeltas[p.id] ?? 0),
     ];
     return RoundResultState(
       session.copyWith(players: updatedPlayers),

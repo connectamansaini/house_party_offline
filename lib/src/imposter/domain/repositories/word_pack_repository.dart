@@ -1,4 +1,4 @@
-import '../entities/word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
 
 /// Abstract source of word packs. Implemented in the data layer over bundled
 /// JSON assets plus locally persisted custom packs.

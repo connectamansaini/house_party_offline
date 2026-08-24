@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/utils/id.dart';
-import '../../domain/entities/imposter_mode.dart';
-import '../../domain/entities/imposter_preferences.dart';
-import '../../domain/entities/player.dart';
-import '../../domain/entities/word_pack.dart';
-import '../../domain/repositories/imposter_settings_repository.dart';
-import '../../domain/repositories/word_pack_repository.dart';
-import 'setup_state.dart';
+import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_preferences.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/repositories/imposter_settings_repository.dart';
+import 'package:house_party_offline/src/imposter/domain/repositories/word_pack_repository.dart';
+import 'package:house_party_offline/src/imposter/presentation/setup/setup_state.dart';
 
 /// Drives the imposter setup form: player roster, pack choice, and options.
 ///
@@ -28,14 +28,18 @@ class SetupCubit extends Cubit<SetupState> {
     _preferredPackIds = prefs?.selectedPackIds ?? const [];
 
     final players = (prefs != null && prefs.playerNames.isNotEmpty)
-        ? [for (final name in prefs.playerNames) Player(id: newId(), name: name)]
+        ? [
+            for (final name in prefs.playerNames)
+              Player(id: newId(), name: name),
+          ]
         : _defaultRoster(SetupState.minPlayers);
 
     var seeded = state.copyWith(
       players: players,
       imposterCount: prefs?.imposterCount ?? state.imposterCount,
       imposterMode: prefs?.imposterMode ?? state.imposterMode,
-      categoryHintEnabled: prefs?.categoryHintEnabled ?? state.categoryHintEnabled,
+      categoryHintEnabled:
+          prefs?.categoryHintEnabled ?? state.categoryHintEnabled,
       secretVoting: prefs?.secretVoting ?? state.secretVoting,
       discussionMinutes: prefs?.discussionMinutes ?? state.discussionMinutes,
       civilianWinPoints: prefs?.civilianWinPoints ?? state.civilianWinPoints,
@@ -77,7 +81,7 @@ class SetupCubit extends Cubit<SetupState> {
           selectedPackIds: _initialSelection(packs),
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       emit(
         state.copyWith(
           packsStatus: PacksStatus.error,
@@ -145,11 +149,11 @@ class SetupCubit extends Cubit<SetupState> {
     emit(state.copyWith(imposterMode: mode));
   }
 
-  void setCategoryHint(bool enabled) {
+  void setCategoryHint({required bool enabled}) {
     emit(state.copyWith(categoryHintEnabled: enabled));
   }
 
-  void setSecretVoting(bool enabled) {
+  void setSecretVoting({required bool enabled}) {
     emit(state.copyWith(secretVoting: enabled));
   }
 

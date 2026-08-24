@@ -1,8 +1,8 @@
-import '../../domain/entities/imposter_pack_entity.dart';
-import '../../domain/failures/imposter_packs_failure.dart';
-import '../../domain/repositories/imposter_packs_repository.dart';
-import '../datasources/imposter_packs_datasource.dart';
-import '../models/imposter_pack_dto.dart';
+import 'package:house_party_offline/src/imposter_packs/data/datasources/imposter_packs_datasource.dart';
+import 'package:house_party_offline/src/imposter_packs/data/models/imposter_pack_dto.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/failures/imposter_packs_failure.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/repositories/imposter_packs_repository.dart';
 
 class ImposterPacksRepositoryImpl implements ImposterPacksRepository {
   ImposterPacksRepositoryImpl(this._dataSource);
@@ -18,7 +18,7 @@ class ImposterPacksRepositoryImpl implements ImposterPacksRepository {
         ...bundled.map((dto) => dto.toEntity()),
         ...custom.map((dto) => dto.toEntity(forceCustom: true)),
       ];
-    } catch (_) {
+    } on Object catch (_) {
       throw const ImposterPacksFailure(
         message: 'Could not load word packs.',
         code: 'load_failed',
@@ -37,7 +37,7 @@ class ImposterPacksRepositoryImpl implements ImposterPacksRepository {
 
     try {
       await _dataSource.saveCustomPack(ImposterPackDto.fromEntity(pack));
-    } catch (_) {
+    } on Object catch (_) {
       throw const ImposterPacksFailure(
         message: 'Could not save the pack.',
         code: 'save_failed',
@@ -49,7 +49,7 @@ class ImposterPacksRepositoryImpl implements ImposterPacksRepository {
   Future<void> deleteCustomPack(String id) async {
     try {
       await _dataSource.deleteCustomPack(id);
-    } catch (_) {
+    } on Object catch (_) {
       throw const ImposterPacksFailure(
         message: 'Could not delete the pack.',
         code: 'delete_failed',

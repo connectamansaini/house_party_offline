@@ -32,8 +32,16 @@ void main() {
     });
 
     test('is deterministic for a fixed seed', () {
-      final a = engine.assignRoles(players(6), const MafiaConfig(), rng: Random(9));
-      final b = engine.assignRoles(players(6), const MafiaConfig(), rng: Random(9));
+      final a = engine.assignRoles(
+        players(6),
+        const MafiaConfig(),
+        rng: Random(9),
+      );
+      final b = engine.assignRoles(
+        players(6),
+        const MafiaConfig(),
+        rng: Random(9),
+      );
       expect(a, equals(b));
     });
 
@@ -47,7 +55,10 @@ void main() {
     test('rejects duplicate ids and too-few players', () {
       expect(
         () => engine.assignRoles(
-          const [MafiaPlayer(id: 'x', name: 'A'), MafiaPlayer(id: 'x', name: 'B')],
+          const [
+            MafiaPlayer(id: 'x', name: 'A'),
+            MafiaPlayer(id: 'x', name: 'B'),
+          ],
           const MafiaConfig(),
         ),
         throwsArgumentError,
@@ -122,7 +133,7 @@ void main() {
         killTarget: 'v',
         doctorProtect: null,
         isFirstNight: true,
-        config: const MafiaConfig(firstNightKill: true),
+        config: const MafiaConfig(),
       );
       expect(r.killedId, 'v');
     });

@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/game_config.dart';
-import '../../domain/entities/game_setup.dart';
-import '../../domain/entities/imposter_mode.dart';
-import '../../domain/entities/player.dart';
-import '../../domain/entities/word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_config.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_setup.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
 
 /// Loading status of the available word packs.
 enum PacksStatus { loading, ready, error }

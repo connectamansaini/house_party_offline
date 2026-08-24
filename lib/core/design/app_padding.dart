@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'spacing.dart';
+import 'package:house_party_offline/core/design/spacing.dart';
 
 abstract final class AppPadding {
   static const allSm = EdgeInsets.all(Spacing.lg);

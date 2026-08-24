@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entities/imposter_pack_entity.dart';
-import '../../domain/failures/imposter_packs_failure.dart';
-import '../../domain/status/imposter_packs_status.dart';
-import '../../domain/usecases/delete_custom_imposter_pack_usecase.dart';
-import '../../domain/usecases/get_imposter_packs_usecase.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/failures/imposter_packs_failure.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/status/imposter_packs_status.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/usecases/delete_custom_imposter_pack_usecase.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/usecases/get_imposter_packs_usecase.dart';
 
 part 'imposter_packs_event.dart';
 part 'imposter_packs_state.dart';

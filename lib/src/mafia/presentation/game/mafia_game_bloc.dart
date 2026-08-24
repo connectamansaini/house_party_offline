@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/engine/mafia_engine.dart';
-import '../../domain/entities/mafia_role.dart';
-import '../../domain/entities/mafia_session.dart';
-import '../../domain/entities/mafia_setup.dart';
-import 'mafia_game_event.dart';
-import 'mafia_game_state.dart';
+import 'package:house_party_offline/src/mafia/domain/engine/mafia_engine.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_session.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_setup.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_event.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
 
 /// Finite state machine for a full Mafia match: reveal → night (pass-and-play
 /// actions) → morning recap → day lynch vote → recap → next night, until a
@@ -91,7 +91,9 @@ class MafiaGameBloc extends Bloc<MafiaGameEvent, MafiaGameState> {
         case MafiaRole.mafia:
           if (n.selectedId == null) return;
           _advanceNight(
-            n.copyWith(mafiaPicks: {...n.mafiaPicks, n.currentPlayer.id: n.selectedId!}),
+            n.copyWith(
+              mafiaPicks: {...n.mafiaPicks, n.currentPlayer.id: n.selectedId!},
+            ),
             emit,
           );
         case MafiaRole.doctor:

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'imposter_mode.dart';
-import 'word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
 
 /// Per-game settings chosen by the host during setup. Immutable once a game
 /// starts.

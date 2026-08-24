@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/design/app_color_tokens.dart';
-import '../../core/design/app_radii.dart';
+import 'package:house_party_offline/core/design/app_color_tokens.dart';
+import 'package:house_party_offline/core/design/app_radii.dart';
 
 abstract final class AppTheme {
   static ThemeData light() {

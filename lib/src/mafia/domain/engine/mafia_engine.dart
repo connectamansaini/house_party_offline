@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import '../entities/mafia_config.dart';
-import '../entities/mafia_player.dart';
-import '../entities/mafia_role.dart';
-import '../entities/night_resolution.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_config.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/night_resolution.dart';
 
 /// Pure game rules for Mafia. No Flutter/BLoC/IO so the full night/day
 /// lifecycle is unit-testable. Randomness is injected via [Random].
@@ -18,7 +18,9 @@ class MafiaEngine {
     Random? rng,
   }) {
     if (players.length < MafiaConfig.reservedSpecials + 1) {
-      throw ArgumentError('Need at least 3 players (mafia, doctor, detective).');
+      throw ArgumentError(
+        'Need at least 3 players (mafia, doctor, detective).',
+      );
     }
     final ids = players.map((p) => p.id).toSet();
     if (ids.length != players.length) {

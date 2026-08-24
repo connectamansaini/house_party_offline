@@ -21,7 +21,7 @@ void main() {
     });
 
     test('reads Hive-style dynamic maps', () {
-      final Map<dynamic, dynamic> map = {
+      final map = <dynamic, dynamic>{
         'id': 'x',
         'name': 'X',
         'category': 'Cat',

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 /// A bold gradient banner for the top of a screen — an icon, a title, and an
 /// optional subtitle sitting on a vivid brand gradient.
 class HeroBanner extends StatelessWidget {
   const HeroBanner({
-    super.key,
     required this.title,
+    super.key,
     this.subtitle,
     this.icon,
     this.gradient = AppColors.brandGradient,
@@ -26,7 +26,12 @@ class HeroBanner extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(24, compact ? 20 : 28, 24, compact ? 20 : 28),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        compact ? 20 : 28,
+        24,
+        compact ? 20 : 28,
+      ),
       decoration: BoxDecoration(
         gradient: gradient,
         borderRadius: BorderRadius.circular(28),
@@ -54,8 +59,11 @@ class HeroBanner extends StatelessWidget {
           ],
           Text(
             title,
-            style: (compact ? theme.textTheme.headlineSmall : theme.textTheme.headlineLarge)
-                ?.copyWith(color: AppColors.onGradient),
+            style:
+                (compact
+                        ? theme.textTheme.headlineSmall
+                        : theme.textTheme.headlineLarge)
+                    ?.copyWith(color: AppColors.onGradient),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 6),

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/entities/mafia_player.dart';
-import '../../../domain/entities/mafia_role.dart';
-import '../mafia_game_bloc.dart';
-import '../mafia_game_event.dart';
-import '../mafia_game_state.dart';
-import 'mafia_player_tile.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_bloc.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_event.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_player_tile.dart';
 
 /// Pass-and-play night. Each living player takes the phone; acting roles pick a
 /// target, villagers just pass — so nobody can tell who acted.
 class MafiaNightView extends StatelessWidget {
-  const MafiaNightView({super.key, required this.state});
+  const MafiaNightView({required this.state, super.key});
 
   final MafiaNight state;
 
@@ -49,20 +49,30 @@ class _Cover extends StatelessWidget {
               child: Card(
                 color: scheme.surfaceContainerHighest,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 48,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.nightlight_round, size: 64, color: scheme.primary),
+                      Icon(
+                        Icons.nightlight_round,
+                        size: 64,
+                        color: scheme.primary,
+                      ),
                       const SizedBox(height: 24),
-                      Text('The town sleeps.', style: theme.textTheme.titleMedium),
+                      Text(
+                        'The town sleeps.',
+                        style: theme.textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         'Pass to ${player.name}',
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.displaySmall
-                            ?.copyWith(color: scheme.primary),
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          color: scheme.primary,
+                        ),
                       ),
                     ],
                   ),
@@ -109,9 +119,11 @@ class _Action extends StatelessWidget {
         title: 'Doctor — choose who to protect',
         subtitle: 'They survive the mafia tonight.',
         candidates: state.session.livingPlayers
-            .where((p) =>
-                state.session.config.doctorSelfSave ||
-                p.id != state.currentPlayer.id)
+            .where(
+              (p) =>
+                  state.session.config.doctorSelfSave ||
+                  p.id != state.currentPlayer.id,
+            )
             .toList(),
         confirmLabel: 'Confirm protection',
       ),
@@ -129,7 +141,9 @@ class _Action extends StatelessWidget {
 
   String _teammateLine(MafiaNight state) {
     final mates = state.session.mafiaTeammateNames(state.currentPlayer.id);
-    return mates.isEmpty ? 'Choose a townsperson to eliminate.' : 'With: ${mates.join(', ')}';
+    return mates.isEmpty
+        ? 'Choose a townsperson to eliminate.'
+        : 'With: ${mates.join(', ')}';
   }
 }
 
@@ -152,7 +166,10 @@ class _Asleep extends StatelessWidget {
                 children: [
                   const Text('😴', style: TextStyle(fontSize: 72)),
                   const SizedBox(height: 16),
-                  Text('You sleep soundly', style: theme.textTheme.headlineSmall),
+                  Text(
+                    'You sleep soundly',
+                    style: theme.textTheme.headlineSmall,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     'No night powers tonight. Hide the screen and pass on.',
@@ -194,8 +211,11 @@ class _Investigation extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.search_rounded,
-                      size: 64, color: theme.colorScheme.primary),
+                  Icon(
+                    Icons.search_rounded,
+                    size: 64,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(height: 16),
                   Text('Investigation', style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8),
@@ -209,8 +229,9 @@ class _Investigation extends StatelessWidget {
             ),
           ),
           FilledButton.icon(
-            onPressed: () =>
-                context.read<MafiaGameBloc>().add(const NightInvestigationSeen()),
+            onPressed: () => context.read<MafiaGameBloc>().add(
+              const NightInvestigationSeen(),
+            ),
             icon: const Icon(Icons.visibility_off),
             label: const Text('Got it — hide & pass'),
           ),
@@ -245,9 +266,11 @@ class _TargetPicker extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
           child: Column(
             children: [
-              Text(title,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.headlineSmall),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall,
+              ),
               const SizedBox(height: 4),
               Text(
                 subtitle,

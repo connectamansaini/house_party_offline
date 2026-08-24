@@ -1,11 +1,21 @@
 import 'package:get_it/get_it.dart';
+import 'package:house_party_offline/app/injector/injector.config.dart';
+import 'package:house_party_offline/src/imposter/di/imposter_di.dart';
+import 'package:house_party_offline/src/imposter_packs/di/imposter_packs_di.dart';
+import 'package:house_party_offline/src/mafia/di/mafia_di.dart';
 import 'package:injectable/injectable.dart';
-
-import 'injector.config.dart';
 
 final GetIt getIt = GetIt.instance;
 
+/// Builds the dependency graph for [env] (`Environment.dev` / `test` / `prod`).
+///
+/// Registrations are lazy, so it is safe to call this before the Hive boxes are
+/// opened in `bootstrap` — nothing touches storage until it is first resolved.
 @InjectableInit()
 Future<void> configureInjector(String env) async {
   getIt.init(environment: env);
+
+  registerImposterPacksDependencies(getIt);
+  registerImposterDependencies(getIt);
+  registerMafiaDependencies(getIt);
 }

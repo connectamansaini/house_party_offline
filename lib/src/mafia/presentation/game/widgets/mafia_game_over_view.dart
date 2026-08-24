@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../app/router/router.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../domain/entities/mafia_role.dart';
-import '../mafia_game_state.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
 
 /// Final screen: the winning faction and every player's role revealed.
 class MafiaGameOverView extends StatelessWidget {
-  const MafiaGameOverView({super.key, required this.state});
+  const MafiaGameOverView({required this.state, super.key});
 
   final MafiaGameOver state;
 

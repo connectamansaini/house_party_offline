@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
-
-import '../../../../core/design/spacing.dart';
-import '../../../../core/widgets/loader.dart';
-import '../../../../core/widgets/page_failure_view.dart';
-import '../../../../app/router/router.dart';
-import '../../../../src/core/widgets/gradient_scaffold.dart';
-import '../../domain/entities/imposter_pack_entity.dart';
-import '../../domain/status/imposter_packs_status.dart';
-import '../../domain/usecases/delete_custom_imposter_pack_usecase.dart';
-import '../../domain/usecases/get_imposter_packs_usecase.dart';
-import '../bloc/imposter_packs_bloc.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/core/widgets/loader.dart';
+import 'package:house_party_offline/core/widgets/page_failure_view.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/status/imposter_packs_status.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/usecases/delete_custom_imposter_pack_usecase.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/usecases/get_imposter_packs_usecase.dart';
+import 'package:house_party_offline/src/imposter_packs/presentation/bloc/imposter_packs_bloc.dart';
 
 class ImposterPacksPage extends StatelessWidget {
   const ImposterPacksPage({super.key});

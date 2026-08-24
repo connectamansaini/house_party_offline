@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/game_session.dart';
-import '../../domain/entities/player.dart';
-import '../../domain/entities/round_assignment.dart';
-import '../../domain/entities/round_result.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_session.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/round_assignment.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/round_result.dart';
 
 /// States of the imposter game FSM. Every state carries the [GameSession] so
 /// the UI always has the roster, config, and round number.
@@ -139,8 +139,14 @@ class SecretVoting extends GameState {
   }
 
   @override
-  List<Object?> get props =>
-      [session, assignment, currentVoterIndex, ballots, selectedId, isVoterReady];
+  List<Object?> get props => [
+    session,
+    assignment,
+    currentVoterIndex,
+    ballots,
+    selectedId,
+    isVoterReady,
+  ];
 }
 
 /// A caught imposter gets one guess of the secret word to steal the win.
@@ -154,8 +160,7 @@ class ImposterGuessing extends GameState {
   final RoundAssignment assignment;
   final String votedOutId;
 
-  Player get guesser =>
-      session.players.firstWhere((p) => p.id == votedOutId);
+  Player get guesser => session.players.firstWhere((p) => p.id == votedOutId);
 
   @override
   List<Object?> get props => [session, assignment, votedOutId];

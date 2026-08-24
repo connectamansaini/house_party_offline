@@ -55,5 +55,5 @@ abstract final class AppColors {
   );
 
   /// On-gradient foreground (text/icons sit on the vivid gradients above).
-  static const onGradient = Colors.white;
+  static const Color onGradient = Colors.white;
 }

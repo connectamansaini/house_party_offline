@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/router/router.dart';
-import '../../core/constants/app_strings.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/widgets/gradient_scaffold.dart';
-import '../../core/widgets/hero_banner.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/constants/app_strings.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
 
 /// Landing screen for the Mafia game: start a match or read the rules.
 class MafiaHomePage extends StatelessWidget {

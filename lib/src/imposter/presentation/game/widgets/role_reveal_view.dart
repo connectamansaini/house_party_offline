@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../domain/entities/role.dart';
-import '../game_bloc.dart';
-import '../game_event.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/role.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// Pass-and-play role reveal: a privacy cover for the current player, then
 /// their secret role, then a pass to the next player.
 class RoleRevealView extends StatelessWidget {
-  const RoleRevealView({super.key, required this.state});
+  const RoleRevealView({required this.state, super.key});
 
   final RoleReveal state;
 
@@ -40,7 +40,7 @@ class RoleRevealView extends StatelessWidget {
                 transitionBuilder: (child, anim) => FadeTransition(
                   opacity: anim,
                   child: ScaleTransition(
-                    scale: Tween(begin: 0.96, end: 1.0).animate(anim),
+                    scale: Tween<double>(begin: 0.96, end: 1).animate(anim),
                     child: child,
                   ),
                 ),
@@ -49,7 +49,10 @@ class RoleRevealView extends StatelessWidget {
                         key: const ValueKey('role'),
                         role: state.assignment.roleOf(player.id),
                       )
-                    : _PassCover(key: const ValueKey('cover'), name: player.name),
+                    : _PassCover(
+                        key: const ValueKey('cover'),
+                        name: player.name,
+                      ),
               ),
             ),
           ),
@@ -96,7 +99,9 @@ class _ProgressDots extends StatelessWidget {
             width: i == current ? 22 : 8,
             height: 8,
             decoration: BoxDecoration(
-              color: i <= current ? scheme.primary : scheme.surfaceContainerHighest,
+              color: i <= current
+                  ? scheme.primary
+                  : scheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -106,7 +111,7 @@ class _ProgressDots extends StatelessWidget {
 }
 
 class _PassCover extends StatelessWidget {
-  const _PassCover({super.key, required this.name});
+  const _PassCover({required this.name, super.key});
 
   final String name;
 
@@ -147,7 +152,7 @@ class _PassCover extends StatelessWidget {
 }
 
 class _RoleCard extends StatelessWidget {
-  const _RoleCard({super.key, required this.role});
+  const _RoleCard({required this.role, super.key});
 
   final Role role;
 
@@ -215,7 +220,10 @@ class _RoleCard extends StatelessWidget {
             if (role.categoryHint != null) ...[
               const SizedBox(height: 22),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),

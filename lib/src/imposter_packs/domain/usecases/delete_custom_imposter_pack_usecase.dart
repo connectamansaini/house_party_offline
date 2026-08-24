@@ -1,4 +1,4 @@
-import '../repositories/imposter_packs_repository.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/repositories/imposter_packs_repository.dart';
 
 class DeleteCustomImposterPackUseCase {
   const DeleteCustomImposterPackUseCase(this._repository);

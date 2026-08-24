@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/utils/id.dart';
-import '../../domain/entities/mafia_config.dart';
-import '../../domain/entities/mafia_player.dart';
-import '../../domain/entities/mafia_setup.dart';
+import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_config.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_setup.dart';
 
 /// Mutable form state for the Mafia setup flow.
 class MafiaSetupState extends Equatable {
@@ -94,16 +94,19 @@ class MafiaSetupCubit extends Cubit<MafiaSetupState> {
     );
   }
 
-  void setRevealRolesOnDeath(bool value) =>
-      emit(state.copyWith(config: state.config.copyWith(revealRolesOnDeath: value)));
+  void setRevealRolesOnDeath({required bool value}) => emit(
+    state.copyWith(config: state.config.copyWith(revealRolesOnDeath: value)),
+  );
 
-  void setFirstNightKill(bool value) =>
-      emit(state.copyWith(config: state.config.copyWith(firstNightKill: value)));
+  void setFirstNightKill({required bool value}) => emit(
+    state.copyWith(config: state.config.copyWith(firstNightKill: value)),
+  );
 
-  void setDoctorSelfSave(bool value) =>
-      emit(state.copyWith(config: state.config.copyWith(doctorSelfSave: value)));
+  void setDoctorSelfSave({required bool value}) => emit(
+    state.copyWith(config: state.config.copyWith(doctorSelfSave: value)),
+  );
 
-  void setDetectiveExactRole(bool value) => emit(
+  void setDetectiveExactRole({required bool value}) => emit(
     state.copyWith(config: state.config.copyWith(detectiveExactRole: value)),
   );
 

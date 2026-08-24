@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show AssetBundle, rootBundle;
 import 'package:hive_ce/hive.dart';
 
-import '../models/imposter_pack_dto.dart';
+import 'package:house_party_offline/src/imposter_packs/data/models/imposter_pack_dto.dart';
 
 abstract interface class ImposterPacksDataSource {
   Future<List<ImposterPackDto>> getBundledPacks();

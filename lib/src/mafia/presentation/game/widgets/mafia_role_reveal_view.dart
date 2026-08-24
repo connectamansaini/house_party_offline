@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../mafia_game_bloc.dart';
-import '../mafia_game_event.dart';
-import '../mafia_game_state.dart';
-import 'mafia_role_visuals.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_bloc.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_event.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/widgets/mafia_role_visuals.dart';
 
 /// Pass-and-play initial reveal: each player privately sees their role.
 class MafiaRoleRevealView extends StatelessWidget {
-  const MafiaRoleRevealView({super.key, required this.state});
+  const MafiaRoleRevealView({required this.state, super.key});
 
   final MafiaRoleReveal state;
 
@@ -48,7 +48,9 @@ class MafiaRoleRevealView extends StatelessWidget {
               onPressed: () =>
                   context.read<MafiaGameBloc>().add(const RolePassed()),
               icon: Icon(
-                state.isLastPlayer ? Icons.nightlight_round : Icons.visibility_off,
+                state.isLastPlayer
+                    ? Icons.nightlight_round
+                    : Icons.visibility_off,
               ),
               label: Text(
                 state.isLastPlayer ? 'Begin night 1' : 'Hide & pass',
@@ -68,7 +70,7 @@ class MafiaRoleRevealView extends StatelessWidget {
 }
 
 class _Cover extends StatelessWidget {
-  const _Cover({super.key, required this.name});
+  const _Cover({required this.name, super.key});
 
   final String name;
 
@@ -90,7 +92,9 @@ class _Cover extends StatelessWidget {
             Text(
               name,
               textAlign: TextAlign.center,
-              style: theme.textTheme.displaySmall?.copyWith(color: scheme.primary),
+              style: theme.textTheme.displaySmall?.copyWith(
+                color: scheme.primary,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -107,7 +111,7 @@ class _Cover extends StatelessWidget {
 }
 
 class _RoleCard extends StatelessWidget {
-  const _RoleCard({super.key, required this.state});
+  const _RoleCard({required this.state, super.key});
 
   final MafiaRoleReveal state;
 
@@ -165,7 +169,10 @@ class _RoleCard extends StatelessWidget {
             if (teammates.isNotEmpty) ...[
               const SizedBox(height: 18),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),

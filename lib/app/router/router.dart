@@ -1,19 +1,19 @@
 import 'package:go_router/go_router.dart';
 
-import '../../src/home/presentation/home_page.dart';
-import '../../src/imposter/domain/entities/game_setup.dart';
-import '../../src/imposter/presentation/game/pages/game_page.dart';
-import '../../src/imposter/presentation/rules_page.dart';
-import '../../src/imposter/presentation/setup/imposter_home_page.dart';
-import '../../src/imposter/presentation/setup/pages/setup_page.dart';
-import '../../src/imposter_packs/domain/entities/imposter_pack_entity.dart';
-import '../../src/imposter_packs/presentation/pages/imposter_pack_editor_page.dart';
-import '../../src/imposter_packs/presentation/pages/imposter_packs_page.dart';
-import '../../src/mafia/domain/entities/mafia_setup.dart';
-import '../../src/mafia/presentation/game/pages/mafia_game_page.dart';
-import '../../src/mafia/presentation/mafia_home_page.dart';
-import '../../src/mafia/presentation/mafia_rules_page.dart';
-import '../../src/mafia/presentation/setup/mafia_setup_page.dart';
+import 'package:house_party_offline/src/home/presentation/home_page.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_setup.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/pages/game_page.dart';
+import 'package:house_party_offline/src/imposter/presentation/rules_page.dart';
+import 'package:house_party_offline/src/imposter/presentation/setup/imposter_home_page.dart';
+import 'package:house_party_offline/src/imposter/presentation/setup/pages/setup_page.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/presentation/pages/imposter_pack_editor_page.dart';
+import 'package:house_party_offline/src/imposter_packs/presentation/pages/imposter_packs_page.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_setup.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/pages/mafia_game_page.dart';
+import 'package:house_party_offline/src/mafia/presentation/mafia_home_page.dart';
+import 'package:house_party_offline/src/mafia/presentation/mafia_rules_page.dart';
+import 'package:house_party_offline/src/mafia/presentation/setup/mafia_setup_page.dart';
 
 /// Named routes. Kept as constants so navigation calls stay typo-safe.
 abstract final class AppRoutes {

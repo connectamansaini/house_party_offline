@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../domain/entities/mafia_role.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
 
 /// Visual identity for a role on reveal/night cards.
 typedef RoleVisual = ({Gradient gradient, IconData icon, String tagline});

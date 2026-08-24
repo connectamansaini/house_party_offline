@@ -1,8 +1,8 @@
-import '../../domain/entities/word_pack.dart';
-import '../../domain/repositories/word_pack_repository.dart';
-import '../models/word_pack_dto.dart';
-import '../sources/bundled_word_source.dart';
-import '../sources/imposter_local_source.dart';
+import 'package:house_party_offline/src/imposter/data/models/word_pack_dto.dart';
+import 'package:house_party_offline/src/imposter/data/sources/bundled_word_source.dart';
+import 'package:house_party_offline/src/imposter/data/sources/imposter_local_source.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/repositories/word_pack_repository.dart';
 
 /// Combines read-only bundled packs with user-created custom packs.
 ///

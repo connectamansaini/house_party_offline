@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../domain/entities/round_result.dart';
-import '../game_bloc.dart';
-import '../game_event.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/round_result.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// Shows the resolved round: who won, the reveal, and updated scores.
 class RoundResultView extends StatelessWidget {
-  const RoundResultView({super.key, required this.state});
+  const RoundResultView({required this.state, super.key});
 
   final RoundResultState state;
 
@@ -18,8 +18,9 @@ class RoundResultView extends StatelessWidget {
     final theme = Theme.of(context);
     final result = state.result;
     final civilianWon = result.winningSide == WinningSide.civilian;
-    final gradient =
-        civilianWon ? AppColors.civilianGradient : AppColors.imposterGradient;
+    final gradient = civilianWon
+        ? AppColors.civilianGradient
+        : AppColors.imposterGradient;
 
     return Column(
       children: [
@@ -29,7 +30,10 @@ class RoundResultView extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 28,
+                  horizontal: 20,
+                ),
                 decoration: BoxDecoration(
                   gradient: gradient,
                   borderRadius: BorderRadius.circular(28),
@@ -44,7 +48,9 @@ class RoundResultView extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(
-                      civilianWon ? Icons.groups_rounded : Icons.theater_comedy_rounded,
+                      civilianWon
+                          ? Icons.groups_rounded
+                          : Icons.theater_comedy_rounded,
                       size: 52,
                       color: AppColors.onGradient,
                     ),

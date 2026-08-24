@@ -1,6 +1,6 @@
 import 'package:hive_ce/hive.dart';
 
-import '../models/word_pack_dto.dart';
+import 'package:house_party_offline/src/imposter/data/models/word_pack_dto.dart';
 
 /// Local persistence for user-created word packs.
 abstract interface class ImposterLocalSource {

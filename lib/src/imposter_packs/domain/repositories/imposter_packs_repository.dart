@@ -1,4 +1,4 @@
-import '../entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
 
 abstract interface class ImposterPacksRepository {
   Future<List<ImposterPackEntity>> getPacks();

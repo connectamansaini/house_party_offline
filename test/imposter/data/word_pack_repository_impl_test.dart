@@ -44,21 +44,23 @@ void main() {
     );
   });
 
-  test('getPacks merges bundled (isCustom=false) and custom (isCustom=true)',
-      () async {
-    local.store['mine'] = const WordPackDto(
-      id: 'mine',
-      name: 'Mine',
-      category: 'Custom',
-      words: ['secret'],
-    );
+  test(
+    'getPacks merges bundled (isCustom=false) and custom (isCustom=true)',
+    () async {
+      local.store['mine'] = const WordPackDto(
+        id: 'mine',
+        name: 'Mine',
+        category: 'Custom',
+        words: ['secret'],
+      );
 
-    final packs = await repo.getPacks();
+      final packs = await repo.getPacks();
 
-    expect(packs.map((p) => p.id), ['foods', 'mine']);
-    expect(packs.firstWhere((p) => p.id == 'foods').isCustom, isFalse);
-    expect(packs.firstWhere((p) => p.id == 'mine').isCustom, isTrue);
-  });
+      expect(packs.map((p) => p.id), ['foods', 'mine']);
+      expect(packs.firstWhere((p) => p.id == 'foods').isCustom, isFalse);
+      expect(packs.firstWhere((p) => p.id == 'mine').isCustom, isTrue);
+    },
+  );
 
   test('saveCustomPack persists to the local source', () async {
     const pack = WordPack(

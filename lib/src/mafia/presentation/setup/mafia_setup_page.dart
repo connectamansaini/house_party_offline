@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/router.dart';
-import '../../../core/widgets/gradient_scaffold.dart';
-import '../../domain/entities/mafia_config.dart';
-import '../../domain/entities/mafia_player.dart';
-import 'mafia_setup_cubit.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_config.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/presentation/setup/mafia_setup_cubit.dart';
 
 /// Setup for a Mafia match: roster and options, then start.
 class MafiaSetupPage extends StatelessWidget {
@@ -82,9 +82,9 @@ class _SetupView extends StatelessWidget {
                       title: 'Reveal role on death',
                       subtitle: state.config.revealRolesOnDeath
                           ? 'Announce the role of anyone killed or lynched'
-                          : "Only announce who died, not their role",
+                          : 'Only announce who died, not their role',
                       value: state.config.revealRolesOnDeath,
-                      onChanged: cubit.setRevealRolesOnDeath,
+                      onChanged: (value) => cubit.setRevealRolesOnDeath(value: value),
                     ),
                     _OptionSwitch(
                       title: 'First night has a kill',
@@ -92,7 +92,7 @@ class _SetupView extends StatelessWidget {
                           ? 'Mafia may kill on night one'
                           : 'Night one is peaceful',
                       value: state.config.firstNightKill,
-                      onChanged: cubit.setFirstNightKill,
+                      onChanged: (value) => cubit.setFirstNightKill(value: value),
                     ),
                     _OptionSwitch(
                       title: 'Doctor can self-save',
@@ -100,7 +100,7 @@ class _SetupView extends StatelessWidget {
                           ? 'The doctor may protect themselves'
                           : 'The doctor cannot protect themselves',
                       value: state.config.doctorSelfSave,
-                      onChanged: cubit.setDoctorSelfSave,
+                      onChanged: (value) => cubit.setDoctorSelfSave(value: value),
                     ),
                     _OptionSwitch(
                       title: 'Detective learns exact role',
@@ -108,7 +108,7 @@ class _SetupView extends StatelessWidget {
                           ? 'Investigations reveal the exact role'
                           : "Investigations reveal only 'Mafia' or 'Not Mafia'",
                       value: state.config.detectiveExactRole,
-                      onChanged: cubit.setDetectiveExactRole,
+                      onChanged: (value) => cubit.setDetectiveExactRole(value: value),
                     ),
                   ],
                 ),
@@ -141,12 +141,12 @@ class _SetupView extends StatelessWidget {
 
 class _PlayerRow extends StatefulWidget {
   const _PlayerRow({
-    super.key,
     required this.number,
     required this.player,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
+    super.key,
   });
 
   final int number;

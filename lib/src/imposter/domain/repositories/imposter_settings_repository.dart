@@ -1,4 +1,4 @@
-import '../entities/imposter_preferences.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_preferences.dart';
 
 /// Stores the host's last-used setup choices between app launches.
 abstract interface class ImposterSettingsRepository {

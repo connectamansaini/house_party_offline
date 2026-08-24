@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'role.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/role.dart';
 
 /// The dealt state of a single round: who got which role and what the secret
 /// word is. Produced by the round engine and consumed by the game FSM.

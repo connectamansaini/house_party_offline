@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
 
 /// A selectable player row (avatar + name) used by night actions and the day
 /// vote.
 class MafiaPlayerTile extends StatelessWidget {
   const MafiaPlayerTile({
-    super.key,
     required this.player,
     required this.selected,
     required this.onTap,
+    super.key,
   });
 
   final MafiaPlayer player;
@@ -37,8 +37,9 @@ class MafiaPlayerTile extends StatelessWidget {
                   backgroundColor: selected
                       ? scheme.onPrimary.withValues(alpha: 0.2)
                       : scheme.primaryContainer,
-                  foregroundColor:
-                      selected ? scheme.onPrimary : scheme.onPrimaryContainer,
+                  foregroundColor: selected
+                      ? scheme.onPrimary
+                      : scheme.onPrimaryContainer,
                   child: Text(
                     player.name.trim().isEmpty
                         ? '?'
@@ -56,9 +57,7 @@ class MafiaPlayerTile extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  selected
-                      ? Icons.check_circle_rounded
-                      : Icons.circle_outlined,
+                  selected ? Icons.check_circle_rounded : Icons.circle_outlined,
                   color: selected ? scheme.onPrimary : scheme.onSurfaceVariant,
                 ),
               ],

@@ -11,7 +11,9 @@ import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state
 const _engine = MafiaEngine();
 
 MafiaSetup _setup(int players, {int mafia = 1}) => MafiaSetup(
-  players: [for (var i = 0; i < players; i++) MafiaPlayer(id: 'p$i', name: 'P$i')],
+  players: [
+    for (var i = 0; i < players; i++) MafiaPlayer(id: 'p$i', name: 'P$i'),
+  ],
   config: MafiaConfig(mafiaCount: mafia),
 );
 
@@ -56,8 +58,9 @@ void main() {
           bloc.add(const NightActionConfirmed());
           await bloc.next;
         case MafiaRole.detective:
-          final other = n.session.livingPlayers
-              .firstWhere((p) => p.id != n.currentPlayer.id);
+          final other = n.session.livingPlayers.firstWhere(
+            (p) => p.id != n.currentPlayer.id,
+          );
           bloc.add(NightTargetSelected(other.id));
           await bloc.next;
           bloc.add(const NightActionConfirmed());
@@ -82,36 +85,42 @@ void main() {
     bloc.close();
   });
 
-  test('unprotected mafia kill removes the victim; doctor save prevents it',
-      () async {
-    final bloc = MafiaGameBloc(setup: _setup(6), engine: _engine);
-    final night = await toFirstNight(bloc, 6);
+  test(
+    'unprotected mafia kill removes the victim; doctor save prevents it',
+    () async {
+      final bloc = MafiaGameBloc(setup: _setup(6), engine: _engine);
+      final night = await toFirstNight(bloc, 6);
 
-    // Pick a non-mafia victim.
-    final victim = night.session.players
-        .firstWhere((p) => !night.session.roleOf(p.id).isMafia);
-    final recap = await playNight(bloc, mafiaTarget: victim.id);
+      // Pick a non-mafia victim.
+      final victim = night.session.players.firstWhere(
+        (p) => !night.session.roleOf(p.id).isMafia,
+      );
+      final recap = await playNight(bloc, mafiaTarget: victim.id);
 
-    // Either the victim died, or (if the doctor happened to protect them) was
-    // saved — assert the two stay consistent.
-    if (recap.resolution.killedId != null) {
-      expect(recap.resolution.killedId, victim.id);
-      expect(recap.session.isAlive(victim.id), isFalse);
-    } else {
-      expect(recap.resolution.savedId, victim.id);
-      expect(recap.session.isAlive(victim.id), isTrue);
-    }
-    await bloc.close();
-  });
+      // Either the victim died, or (if the doctor happened to protect them) was
+      // saved — assert the two stay consistent.
+      if (recap.resolution.killedId != null) {
+        expect(recap.resolution.killedId, victim.id);
+        expect(recap.session.isAlive(victim.id), isFalse);
+      } else {
+        expect(recap.resolution.savedId, victim.id);
+        expect(recap.session.isAlive(victim.id), isTrue);
+      }
+      await bloc.close();
+    },
+  );
 
   test('recap continues to the day vote when nobody has won', () async {
-    final bloc = MafiaGameBloc(setup: _setup(7, mafia: 1), engine: _engine);
+    final bloc = MafiaGameBloc(setup: _setup(7), engine: _engine);
     await toFirstNight(bloc, 7);
-    final victim = (bloc.state as MafiaNight)
-        .session
-        .players
-        .firstWhere((p) => !(bloc.state as MafiaNight).session.roleOf(p.id).isMafia);
-    final recap = await playNight(bloc, mafiaTarget: victim.id, doctorTarget: 'none');
+    final victim = (bloc.state as MafiaNight).session.players.firstWhere(
+      (p) => !(bloc.state as MafiaNight).session.roleOf(p.id).isMafia,
+    );
+    final recap = await playNight(
+      bloc,
+      mafiaTarget: victim.id,
+      doctorTarget: 'none',
+    );
     expect(recap.winner, isNull);
     bloc.add(const RecapContinued());
     expect(await bloc.next, isA<MafiaDayVote>());
@@ -119,7 +128,7 @@ void main() {
   });
 
   test('lynching the last mafia wins the game for the town', () async {
-    final bloc = MafiaGameBloc(setup: _setup(5, mafia: 1), engine: _engine);
+    final bloc = MafiaGameBloc(setup: _setup(5), engine: _engine);
     await toFirstNight(bloc, 5);
     final session = (bloc.state as MafiaNight).session;
     final mafiaId = session.mafiaIds.first;
@@ -145,11 +154,12 @@ void main() {
   });
 
   test('skipping the day proceeds to the next night', () async {
-    final bloc = MafiaGameBloc(setup: _setup(8, mafia: 1), engine: _engine);
+    final bloc = MafiaGameBloc(setup: _setup(8), engine: _engine);
     await toFirstNight(bloc, 8);
     final session = (bloc.state as MafiaNight).session;
-    final victim =
-        session.players.firstWhere((p) => !session.roleOf(p.id).isMafia);
+    final victim = session.players.firstWhere(
+      (p) => !session.roleOf(p.id).isMafia,
+    );
     await playNight(bloc, mafiaTarget: victim.id, doctorTarget: 'none');
     bloc.add(const RecapContinued());
     await bloc.next; // day vote

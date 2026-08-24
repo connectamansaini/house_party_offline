@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'mafia_config.dart';
-import 'mafia_player.dart';
-import 'mafia_role.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_config.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
 
 /// The evolving state of a Mafia match: the roster, dealt roles, who is still
 /// alive, and the night counter.
@@ -58,8 +58,7 @@ class MafiaSession extends Equatable {
   }
 
   /// A copy with [id] removed from the living set.
-  MafiaSession kill(String id) =>
-      copyWith(aliveIds: {...aliveIds}..remove(id));
+  MafiaSession kill(String id) => copyWith(aliveIds: {...aliveIds}..remove(id));
 
   @override
   List<Object?> get props => [players, roles, aliveIds, config, nightNumber];

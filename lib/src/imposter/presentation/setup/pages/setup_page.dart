@@ -1,17 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../app/injector/injector.dart';
-import '../../../../../app/router/router.dart';
-import '../../../../core/widgets/gradient_scaffold.dart';
-import '../../../domain/entities/imposter_mode.dart';
-import '../../../domain/entities/player.dart';
-import '../../../domain/entities/word_pack.dart';
-import '../../../domain/repositories/imposter_settings_repository.dart';
-import '../../../domain/repositories/word_pack_repository.dart';
-import '../setup_cubit.dart';
-import '../setup_state.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/repositories/imposter_settings_repository.dart';
+import 'package:house_party_offline/src/imposter/domain/repositories/word_pack_repository.dart';
+import 'package:house_party_offline/src/imposter/presentation/setup/setup_cubit.dart';
+import 'package:house_party_offline/src/imposter/presentation/setup/setup_state.dart';
 
 /// Setup flow: enter players, pick a word pack, choose options, then start.
 class SetupPage extends StatelessWidget {
@@ -56,7 +58,7 @@ class _SetupViewState extends State<_SetupView> {
     final router = GoRouter.of(context);
     await cubit.persist();
     if (!mounted) return;
-    router.push(AppRoutes.imposterGame, extra: setup);
+    unawaited(router.push(AppRoutes.imposterGame, extra: setup));
   }
 
   @override
@@ -499,7 +501,7 @@ class _OptionsStep extends StatelessWidget {
                 : 'The imposter sees nothing',
           ),
           value: state.categoryHintEnabled,
-          onChanged: cubit.setCategoryHint,
+          onChanged: (value) => cubit.setCategoryHint(enabled: value),
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
@@ -510,7 +512,7 @@ class _OptionsStep extends StatelessWidget {
                 : 'The group casts one shared vote',
           ),
           value: state.secretVoting,
-          onChanged: cubit.setSecretVoting,
+          onChanged: (value) => cubit.setSecretVoting(enabled: value),
         ),
         _Stepper(
           label: 'Discussion (min)',

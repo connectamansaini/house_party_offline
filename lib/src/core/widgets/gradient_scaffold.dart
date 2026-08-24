@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 /// content. The [AppBarTheme] is transparent, so the gradient shows through.
 class GradientScaffold extends StatelessWidget {
   const GradientScaffold({
+    required this.body,
     super.key,
     this.appBar,
-    required this.body,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
     this.bottomNavigationBar,

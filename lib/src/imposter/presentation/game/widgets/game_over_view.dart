@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../app/router/router.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../domain/entities/player.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// Final standings once the host ends the game.
 class GameOverView extends StatelessWidget {
-  const GameOverView({super.key, required this.state});
+  const GameOverView({required this.state, super.key});
 
   final GameOver state;
 

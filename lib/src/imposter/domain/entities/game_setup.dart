@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'game_config.dart';
-import 'player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_config.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
 
 /// The complete, validated input to a game: who is playing and the chosen
 /// settings. Produced by the setup flow and consumed by the game FSM.

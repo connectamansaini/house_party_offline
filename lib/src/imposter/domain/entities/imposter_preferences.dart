@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'imposter_mode.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart';
 
 /// Persisted setup choices, so a New Game pre-fills with the last roster and
 /// options instead of starting blank.

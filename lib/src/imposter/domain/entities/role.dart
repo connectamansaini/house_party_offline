@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/imposter_mode.dart'
+    show ImposterMode;
 
 /// A player's secret role for a single round.
 ///

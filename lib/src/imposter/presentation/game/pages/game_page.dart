@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/imposter/domain/engine/round_engine.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_setup.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/discussion_view.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/game_over_view.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/imposter_guessing_view.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/role_reveal_view.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/round_result_view.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/secret_voting_view.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/widgets/voting_view.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-
-import '../../../../../app/router/router.dart';
-import '../../../../core/widgets/gradient_scaffold.dart';
-import '../../../domain/engine/round_engine.dart';
-import '../../../domain/entities/game_setup.dart';
-import '../game_bloc.dart';
-import '../game_state.dart';
-import '../widgets/discussion_view.dart';
-import '../widgets/game_over_view.dart';
-import '../widgets/imposter_guessing_view.dart';
-import '../widgets/role_reveal_view.dart';
-import '../widgets/round_result_view.dart';
-import '../widgets/secret_voting_view.dart';
-import '../widgets/voting_view.dart';
 
 class GamePage extends StatelessWidget {
   const GamePage({required this.setup, super.key});

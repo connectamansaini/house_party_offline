@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/router/router.dart';
-import '../../core/constants/app_strings.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/widgets/gradient_scaffold.dart';
-import 'widgets/game_card.dart';
+import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/src/core/constants/app_strings.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/home/presentation/widgets/game_card.dart';
 
 /// The games hub. Lists available party games as vivid cards.
 class HomePage extends StatelessWidget {
@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
               onTap: () => context.push(AppRoutes.mafia),
             ),
             const SizedBox(height: 12),
-            GameCard(
+            const GameCard(
               title: 'More games',
               subtitle: 'New party games are on the way.',
               icon: Icons.add_reaction_outlined,

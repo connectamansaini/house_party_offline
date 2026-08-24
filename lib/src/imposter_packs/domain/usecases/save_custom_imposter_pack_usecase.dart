@@ -1,5 +1,5 @@
-import '../entities/imposter_pack_entity.dart';
-import '../repositories/imposter_packs_repository.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/repositories/imposter_packs_repository.dart';
 
 class SaveCustomImposterPackUseCase {
   const SaveCustomImposterPackUseCase(this._repository);

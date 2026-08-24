@@ -4,9 +4,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:house_party_offline/app/app.dart';
 import 'package:house_party_offline/app/bootstrap.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:injectable/injectable.dart';
-
-import 'app/injector/injector.dart';
 
 Future<void> main() async {
   await runZonedGuarded(

@@ -11,8 +11,7 @@ enum MafiaRole {
 
   bool get isMafia => this == MafiaRole.mafia;
 
-  MafiaFaction get faction =>
-      isMafia ? MafiaFaction.mafia : MafiaFaction.town;
+  MafiaFaction get faction => isMafia ? MafiaFaction.mafia : MafiaFaction.town;
 
   /// Whether this role performs an action during the night.
   bool get actsAtNight =>

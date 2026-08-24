@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/mafia_player.dart';
-import '../../domain/entities/mafia_role.dart';
-import '../../domain/entities/mafia_session.dart';
-import '../../domain/entities/night_resolution.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_role.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/mafia_session.dart';
+import 'package:house_party_offline/src/mafia/domain/entities/night_resolution.dart';
 
 /// States of the Mafia game FSM. Every state carries the [MafiaSession].
 sealed class MafiaGameState extends Equatable {

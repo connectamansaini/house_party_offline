@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../mafia_game_bloc.dart';
-import '../mafia_game_event.dart';
-import '../mafia_game_state.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_bloc.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_event.dart';
+import 'package:house_party_offline/src/mafia/presentation/game/mafia_game_state.dart';
 
 /// Morning recap of what happened overnight.
 class MafiaNightRecapView extends StatelessWidget {
-  const MafiaNightRecapView({super.key, required this.state});
+  const MafiaNightRecapView({required this.state, super.key});
 
   final MafiaNightRecap state;
 
@@ -56,7 +56,7 @@ class MafiaNightRecapView extends StatelessWidget {
 
 /// Recap of the daytime lynch.
 class MafiaLynchRecapView extends StatelessWidget {
-  const MafiaLynchRecapView({super.key, required this.state});
+  const MafiaLynchRecapView({required this.state, super.key});
 
   final MafiaLynchRecap state;
 
@@ -123,8 +123,10 @@ class _RecapScaffold extends StatelessWidget {
             child: Center(
               child: Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 40,
+                ),
                 decoration: BoxDecoration(
                   gradient: gradient,
                   borderRadius: BorderRadius.circular(28),

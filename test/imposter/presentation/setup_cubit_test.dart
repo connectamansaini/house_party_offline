@@ -24,7 +24,7 @@ class _FakeRepo implements WordPackRepository {
   Future<void> deleteCustomPack(String id) async {}
 }
 
-/// In-memory settings repo. Starts empty unless [initial] is provided; records
+/// In-memory settings repo. Starts empty unless [stored] is provided; records
 /// the last saved value.
 class _FakeSettings implements ImposterSettingsRepository {
   _FakeSettings([this.stored]);
@@ -108,44 +108,49 @@ void main() {
       expect(s.selectedPackIds, {'animals', 'foods'});
     });
 
-    test('drops saved packs that no longer exist, falling back to first',
-        () async {
-      const prefs = ImposterPreferences(
-        playerNames: ['A', 'B', 'C'],
-        imposterCount: 1,
-        categoryHintEnabled: false,
-        discussionMinutes: 3,
-        civilianWinPoints: 1,
-        imposterWinPoints: 2,
-        selectedPackIds: ['deleted-pack'],
-      );
-      final cubit = _cubit([_foods], prefs: prefs);
-      await cubit.init();
-      expect(cubit.state.selectedPackIds, {'foods'});
-    });
+    test(
+      'drops saved packs that no longer exist, falling back to first',
+      () async {
+        const prefs = ImposterPreferences(
+          playerNames: ['A', 'B', 'C'],
+          imposterCount: 1,
+          categoryHintEnabled: false,
+          discussionMinutes: 3,
+          civilianWinPoints: 1,
+          imposterWinPoints: 2,
+          selectedPackIds: ['deleted-pack'],
+        );
+        final cubit = _cubit([_foods], prefs: prefs);
+        await cubit.init();
+        expect(cubit.state.selectedPackIds, {'foods'});
+      },
+    );
 
-    test('clamps a saved imposter count that no longer fits the roster',
-        () async {
-      const prefs = ImposterPreferences(
-        playerNames: ['A', 'B', 'C'], // 3 players → max 2 imposters
-        imposterCount: 9,
-        categoryHintEnabled: false,
-        discussionMinutes: 3,
-        civilianWinPoints: 1,
-        imposterWinPoints: 2,
-      );
-      final cubit = _cubit([_foods], prefs: prefs);
-      await cubit.init();
-      expect(cubit.state.imposterCount, 2);
-    });
+    test(
+      'clamps a saved imposter count that no longer fits the roster',
+      () async {
+        const prefs = ImposterPreferences(
+          playerNames: ['A', 'B', 'C'], // 3 players → max 2 imposters
+          imposterCount: 9,
+          categoryHintEnabled: false,
+          discussionMinutes: 3,
+          civilianWinPoints: 1,
+          imposterWinPoints: 2,
+        );
+        final cubit = _cubit([_foods], prefs: prefs);
+        await cubit.init();
+        expect(cubit.state.imposterCount, 2);
+      },
+    );
 
     test('persist writes the current form back to the repository', () async {
       final settings = _FakeSettings();
       final cubit = SetupCubit(_FakeRepo([_foods, _animals]), settings);
       await cubit.init(); // defaults to {foods}
-      cubit.togglePack('animals'); // now {foods, animals}
-      cubit.setCategoryHint(true);
-      cubit.setDiscussionMinutes(6);
+      cubit
+        ..togglePack('animals') // now {foods, animals}
+        ..setCategoryHint(enabled: true) // false → true
+        ..setDiscussionMinutes(6);
 
       await cubit.persist();
 
@@ -233,14 +238,18 @@ void main() {
     test('buildSetup produces a matching GameSetup', () async {
       final cubit = _cubit([_foods, _animals]);
       await cubit.init();
-      cubit.selectAllPacks();
-      cubit.setCategoryHint(true);
-      cubit.setDiscussionMinutes(5);
+      cubit
+        ..selectAllPacks()
+        ..setCategoryHint(enabled: true)
+        ..setDiscussionMinutes(5);
 
       expect(cubit.state.canStart, isTrue);
       final setup = cubit.state.buildSetup();
       expect(setup.players.length, 3);
-      expect(setup.config.packs.map((p) => p.id), containsAll(['foods', 'animals']));
+      expect(
+        setup.config.packs.map((p) => p.id),
+        containsAll(['foods', 'animals']),
+      );
       expect(setup.config.categoryHintEnabled, isTrue);
       expect(setup.config.discussionTime, const Duration(minutes: 5));
     });

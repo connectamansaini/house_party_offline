@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'game_config.dart';
-import 'player.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/game_config.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/player.dart';
 
 /// The evolving state of a full game across rounds: the roster (with running
 /// scores), the chosen config, and which round is being played.
@@ -18,7 +18,8 @@ class GameSession extends Equatable {
 
   /// Players ordered by score, highest first — for the scoreboard.
   List<Player> get standings =>
-      [...players]..sort((a, b) => b.cumulativeScore.compareTo(a.cumulativeScore));
+      [...players]
+        ..sort((a, b) => b.cumulativeScore.compareTo(a.cumulativeScore));
 
   GameSession copyWith({
     List<Player>? players,

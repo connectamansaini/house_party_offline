@@ -1,4 +1,4 @@
-import '../../domain/entities/word_pack.dart';
+import 'package:house_party_offline/src/imposter/domain/entities/word_pack.dart';
 
 /// Serializable representation of a [WordPack]. Used for bundled JSON assets
 /// and for persisting custom packs in Hive.
@@ -12,11 +12,6 @@ class WordPackDto {
     required this.category,
     required this.words,
   });
-
-  final String id;
-  final String name;
-  final String category;
-  final List<String> words;
 
   factory WordPackDto.fromJson(Map<String, dynamic> json) {
     return WordPackDto(
@@ -37,19 +32,24 @@ class WordPackDto {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'category': category,
-    'words': words,
-  };
-
   factory WordPackDto.fromDomain(WordPack pack) => WordPackDto(
     id: pack.id,
     name: pack.name,
     category: pack.category,
     words: pack.words,
   );
+
+  final String id;
+  final String name;
+  final String category;
+  final List<String> words;
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'category': category,
+    'words': words,
+  };
 
   WordPack toDomain({required bool isCustom}) => WordPack(
     id: id,

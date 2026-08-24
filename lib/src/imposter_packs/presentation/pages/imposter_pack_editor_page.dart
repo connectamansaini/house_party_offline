@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/design/spacing.dart';
-import '../../../../src/core/widgets/gradient_scaffold.dart';
-import '../../../../app/injector/injector.dart';
-import '../../domain/entities/imposter_pack_entity.dart';
-import '../../domain/usecases/save_custom_imposter_pack_usecase.dart';
-import '../editor/imposter_pack_editor_bloc.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
+import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
+import 'package:house_party_offline/src/imposter_packs/domain/usecases/save_custom_imposter_pack_usecase.dart';
+import 'package:house_party_offline/src/imposter_packs/presentation/editor/imposter_pack_editor_bloc.dart';
 
 class ImposterPackEditorPage extends StatelessWidget {
   const ImposterPackEditorPage({super.key, this.pack});

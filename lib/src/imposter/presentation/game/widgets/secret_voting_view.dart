@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../game_bloc.dart';
-import '../game_event.dart';
-import '../game_state.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_bloc.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_event.dart';
+import 'package:house_party_offline/src/imposter/presentation/game/game_state.dart';
 
 /// Pass-and-play secret ballot: each player privately votes, then the tally
 /// (handled by the bloc) decides who is eliminated.
 class SecretVotingView extends StatelessWidget {
-  const SecretVotingView({super.key, required this.state});
+  const SecretVotingView({required this.state, super.key});
 
   final SecretVoting state;
 
@@ -46,15 +46,23 @@ class _Cover extends StatelessWidget {
               child: Card(
                 color: scheme.surfaceContainerHighest,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 48,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.how_to_vote_rounded,
-                          size: 64, color: scheme.primary),
+                      Icon(
+                        Icons.how_to_vote_rounded,
+                        size: 64,
+                        color: scheme.primary,
+                      ),
                       const SizedBox(height: 24),
-                      Text('Pass the phone to', style: theme.textTheme.titleMedium),
+                      Text(
+                        'Pass the phone to',
+                        style: theme.textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         voter.name,
@@ -105,7 +113,10 @@ class _Ballot extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
           child: Column(
             children: [
-              Text("Who's the imposter?", style: theme.textTheme.headlineMedium),
+              Text(
+                "Who's the imposter?",
+                style: theme.textTheme.headlineMedium,
+              ),
               const SizedBox(height: 4),
               Text(
                 '${state.currentVoter.name}, pick in secret.',
@@ -125,7 +136,9 @@ class _Ballot extends StatelessWidget {
               final p = candidates[i];
               final isSelected = p.id == selected;
               return Card(
-                color: isSelected ? scheme.primary : scheme.surfaceContainerHigh,
+                color: isSelected
+                    ? scheme.primary
+                    : scheme.surfaceContainerHigh,
                 child: InkWell(
                   onTap: () =>
                       context.read<GameBloc>().add(BallotSelected(p.id)),
@@ -156,8 +169,9 @@ class _Ballot extends StatelessWidget {
                           child: Text(
                             p.name,
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color:
-                                  isSelected ? scheme.onPrimary : scheme.onSurface,
+                              color: isSelected
+                                  ? scheme.onPrimary
+                                  : scheme.onSurface,
                             ),
                           ),
                         ),
@@ -188,8 +202,12 @@ class _Ballot extends StatelessWidget {
             onPressed: selected == null
                 ? null
                 : () => context.read<GameBloc>().add(const BallotCast()),
-            icon: Icon(state.isLastVoter ? Icons.gavel_rounded : Icons.arrow_forward),
-            label: Text(state.isLastVoter ? 'Cast & reveal result' : 'Cast & pass'),
+            icon: Icon(
+              state.isLastVoter ? Icons.gavel_rounded : Icons.arrow_forward,
+            ),
+            label: Text(
+              state.isLastVoter ? 'Cast & reveal result' : 'Cast & pass',
+            ),
           ),
         ),
       ],
