@@ -157,10 +157,9 @@ class _PackTile extends StatelessWidget {
       ),
     );
 
-    if (approved ?? false) {
-      context.read<ImposterPacksBloc>().add(
-        ImposterPackDeletedRequested(pack.id),
-      );
-    }
+    if (!context.mounted || !(approved ?? false)) return;
+    context.read<ImposterPacksBloc>().add(
+      ImposterPackDeletedRequested(pack.id),
+    );
   }
 }

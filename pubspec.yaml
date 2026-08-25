@@ -9,10 +9,9 @@ environment:
   sdk: ^3.11.5
 
 dependencies:
+  equatable: ^2.1.0
   flutter:
     sdk: flutter
-
-  equatable: ^2.1.0
   flutter_bloc: ^9.1.1
   freezed_annotation: ^3.1.0
   get_it: ^9.2.1
@@ -25,11 +24,10 @@ dependencies:
   wakelock_plus: ^1.7.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   bloc_test: ^10.0.0
   build_runner: ^2.15.1
+  flutter_test:
+    sdk: flutter
   freezed: ^3.2.3
   injectable_generator: ^2.8.1
   json_serializable: ^6.11.0

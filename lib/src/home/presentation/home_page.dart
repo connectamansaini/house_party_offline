@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/src/core/constants/app_strings.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
-import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
 import 'package:house_party_offline/src/home/presentation/widgets/game_card.dart';
 
 /// The games hub. Lists available party games as vivid cards.
@@ -15,8 +14,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GradientScaffold(
-      body: SafeArea(
+    return Material(
+      child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 32, 20, 32),
           children: [

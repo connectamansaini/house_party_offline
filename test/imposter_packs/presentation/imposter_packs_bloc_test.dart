@@ -106,10 +106,14 @@ void main() {
         final repository = _FakeRepository([_bundled, _custom]);
         final bloc = _buildBloc(repository);
 
+        // A cascade doesn't fit here — the second call's return value (the
+        // loaded state) is what the test asserts on.
+        // ignore: cascade_invocations
         bloc.add(const ImposterPacksStarted());
-        await bloc.stream.firstWhere(
+        final loaded = await bloc.stream.firstWhere(
           (state) => state.status == ImposterPacksStatus.success,
         );
+        expect(loaded.packs, hasLength(2));
 
         bloc.add(const ImposterPackDeletedRequested('mine'));
         final reloaded = await bloc.stream.firstWhere(
