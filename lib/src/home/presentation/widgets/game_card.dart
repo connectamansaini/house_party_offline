@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:house_party_offline/core/design/app_padding.dart';
+import 'package:house_party_offline/core/design/app_radii.dart';
+import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 /// A tappable game tile in the hub. Enabled tiles carry a vivid gradient
@@ -34,8 +37,9 @@ class GameCard extends StatelessWidget {
       child: Card(
         child: InkWell(
           onTap: enabled ? onTap : null,
+          borderRadius: BorderRadius.circular(AppRadii.x3l),
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: AppPadding.allLg,
             child: Row(
               children: [
                 Container(
@@ -44,7 +48,7 @@ class GameCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: enabled ? gradient : null,
                     color: enabled ? null : scheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(AppRadii.x4l),
                     boxShadow: enabled
                         ? [
                             BoxShadow(
@@ -65,7 +69,7 @@ class GameCard extends StatelessWidget {
                         : scheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: Spacing.x3l),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,12 +83,12 @@ class GameCard extends StatelessWidget {
                             ),
                           ),
                           if (trailingLabel != null) ...[
-                            const SizedBox(width: 8),
+                            const SizedBox(width: Spacing.md),
                             _Badge(label: trailingLabel!),
                           ],
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: Spacing.xs),
                       Text(
                         subtitle,
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -114,10 +118,10 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: AppPadding.h8v2,
       decoration: BoxDecoration(
         color: scheme.tertiaryContainer,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadii.md),
       ),
       child: Text(
         label,
