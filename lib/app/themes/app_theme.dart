@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'package:house_party_offline/core/design/app_color_tokens.dart';
 import 'package:house_party_offline/core/design/app_radii.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 abstract final class AppTheme {
   static ThemeData light() {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColorTokens.seed,
-    );
+    final colorScheme = ColorScheme.fromSeed(seedColor: AppColors.seed);
     return _base(colorScheme);
   }
 
   static ThemeData dark() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColorTokens.seed,
+      seedColor: AppColors.seed,
       brightness: Brightness.dark,
     );
     return _base(colorScheme);
