@@ -8,6 +8,6 @@ void main() {
 
     expect(find.text('House Party'), findsOneWidget);
     expect(find.text('Imposter'), findsOneWidget);
-    expect(find.text('Coming soon'), findsOneWidget);
+    expect(find.text('Mafia'), findsOneWidget);
   });
 }
