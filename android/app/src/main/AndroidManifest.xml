@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="house_party_offline"
+        android:label="House Party Offline"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

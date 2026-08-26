@@ -28,9 +28,9 @@ class HeroBanner extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(
         24,
-        compact ? 20 : 28,
+        compact ? 16 : 24,
         24,
-        compact ? 20 : 28,
+        compact ? 16 : 24,
       ),
       decoration: BoxDecoration(
         gradient: gradient,
