@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/moment_card.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/round_result.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_bloc.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_event.dart';
@@ -27,51 +28,15 @@ class RoundResultView extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 28,
-                  horizontal: 20,
-                ),
-                decoration: BoxDecoration(
-                  gradient: gradient,
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: gradient.colors.first.withValues(alpha: 0.4),
-                      blurRadius: 24,
-                      offset: const Offset(0, 12),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      civilianWon
-                          ? Icons.groups_rounded
-                          : Icons.theater_comedy_rounded,
-                      size: 52,
-                      color: AppColors.onGradient,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      civilianWon ? 'Civilians win! 🎉' : 'Imposter wins! 🎭',
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        color: AppColors.onGradient,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (result.imposterGuessedRight) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        'Stolen with a correct guess!',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: AppColors.onGradient.withValues(alpha: 0.9),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
+              MomentCard(
+                mood: MomentMood.recap,
+                gradient: gradient,
+                icon: civilianWon ? MomentIcon.house : MomentIcon.mask,
+                eyebrow: 'Round result',
+                headline: civilianWon ? 'Civilians win!' : 'Imposter wins!',
+                subtitle: result.imposterGuessedRight
+                    ? 'Stolen with a correct guess!'
+                    : null,
               ),
               const SizedBox(height: 16),
               Card(

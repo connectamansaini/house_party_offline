@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/moment_card.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_bloc.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_event.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_state.dart';
@@ -40,46 +41,13 @@ class _ImposterGuessingViewState extends State<ImposterGuessingView> {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-            decoration: BoxDecoration(
-              gradient: AppColors.imposterGradient,
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.imposterGradient.colors.first.withValues(
-                    alpha: 0.4,
-                  ),
-                  blurRadius: 24,
-                  offset: const Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.theater_comedy_rounded,
-                  size: 56,
-                  color: AppColors.onGradient,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Caught!',
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: AppColors.onGradient,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  '${widget.state.guesser.name} was the imposter.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppColors.onGradient.withValues(alpha: 0.9),
-                  ),
-                ),
-              ],
-            ),
+          MomentCard(
+            mood: MomentMood.recap,
+            gradient: AppColors.imposterGradient,
+            icon: MomentIcon.mask,
+            eyebrow: 'Caught',
+            headline: 'Caught!',
+            subtitle: '${widget.state.guesser.name} was the imposter.',
           ),
           const SizedBox(height: 24),
           Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/moment_card.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/role.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_bloc.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_event.dart';
@@ -157,88 +158,36 @@ class _RoleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final (gradient, icon, title, subtitle) = switch (role) {
+    final (gradient, icon, kicker, headline) = switch (role) {
       CivilianRole(:final secretWord) => (
         AppColors.civilianGradient,
-        Icons.vpn_key_rounded,
-        secretWord,
+        MomentIcon.key,
         'Your secret word',
+        secretWord,
       ),
       // Undercover: show the decoy word as the headline;
       // blank: show "IMPOSTER".
       ImposterRole(:final decoyWord) when decoyWord != null => (
         AppColors.imposterGradient,
-        Icons.theater_comedy_rounded,
-        decoyWord,
+        MomentIcon.mask,
         'IMPOSTER — blend in with',
+        decoyWord,
       ),
       ImposterRole() => (
         AppColors.imposterGradient,
-        Icons.theater_comedy_rounded,
-        'IMPOSTER',
+        MomentIcon.mask,
         "You don't know the word. Blend in.",
+        'IMPOSTER',
       ),
     };
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withValues(alpha: 0.4),
-            blurRadius: 28,
-            offset: const Offset(0, 14),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 44),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 60, color: AppColors.onGradient),
-            const SizedBox(height: 20),
-            Text(
-              subtitle,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: AppColors.onGradient.withValues(alpha: 0.9),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: theme.textTheme.displaySmall?.copyWith(
-                color: AppColors.onGradient,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (role.categoryHint != null) ...[
-              const SizedBox(height: 22),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'Hint: ${role.categoryHint}',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: AppColors.onGradient,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
+    return MomentCard(
+      mood: MomentMood.reveal,
+      gradient: gradient,
+      icon: icon,
+      kicker: kicker,
+      headline: headline,
+      hint: role.categoryHint == null ? null : 'Hint: ${role.categoryHint}',
     );
   }
 }

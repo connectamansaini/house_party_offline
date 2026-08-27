@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/moment_card.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_bloc.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_event.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_state.dart';
@@ -18,31 +19,32 @@ class MafiaNightRecapView extends StatelessWidget {
     final reveal = session.config.revealRolesOnDeath;
 
     final Gradient gradient;
-    final IconData icon;
+    final MomentIcon icon;
     final String headline;
     final String detail;
 
     if (resolution.someoneDied) {
       final victim = session.playerOf(resolution.killedId!);
       gradient = AppColors.mafiaGradient;
-      icon = Icons.dark_mode_rounded;
+      icon = MomentIcon.dagger;
       headline = '${victim.name} was killed in the night';
       detail = reveal
           ? 'They were the ${session.roleOf(victim.id).label}.'
           : 'Their role stays a mystery.';
     } else if (resolution.someoneSaved) {
       gradient = AppColors.civilianGradient;
-      icon = Icons.healing_rounded;
+      icon = MomentIcon.shieldCross;
       headline = 'The doctor saved a life!';
       detail = 'The mafia struck, but nobody died.';
     } else {
       gradient = AppColors.nightGradient;
-      icon = Icons.wb_twilight_rounded;
+      icon = MomentIcon.moon;
       headline = 'A quiet night';
       detail = 'Everyone woke up safe.';
     }
 
     return _RecapScaffold(
+      eyebrow: 'Night recap',
       gradient: gradient,
       icon: icon,
       headline: headline,
@@ -66,8 +68,9 @@ class MafiaLynchRecapView extends StatelessWidget {
 
     if (state.lynchedId == null) {
       return _RecapScaffold(
+        eyebrow: 'Day recap',
         gradient: AppColors.nightGradient,
-        icon: Icons.gavel_rounded,
+        icon: MomentIcon.gavel,
         headline: 'No one was lynched',
         detail: 'The town couldn’t agree.',
         aliveCount: session.aliveIds.length,
@@ -77,8 +80,9 @@ class MafiaLynchRecapView extends StatelessWidget {
 
     final victim = session.playerOf(state.lynchedId!);
     return _RecapScaffold(
+      eyebrow: 'Day recap',
       gradient: AppColors.brandGradient,
-      icon: Icons.gavel_rounded,
+      icon: MomentIcon.gavel,
       headline: '${victim.name} was lynched',
       detail: reveal
           ? 'They were the ${session.roleOf(victim.id).label}.'
@@ -91,6 +95,7 @@ class MafiaLynchRecapView extends StatelessWidget {
 
 class _RecapScaffold extends StatelessWidget {
   const _RecapScaffold({
+    required this.eyebrow,
     required this.gradient,
     required this.icon,
     required this.headline,
@@ -99,8 +104,9 @@ class _RecapScaffold extends StatelessWidget {
     required this.buttonLabel,
   });
 
+  final String eyebrow;
   final Gradient gradient;
-  final IconData icon;
+  final MomentIcon icon;
   final String headline;
   final String detail;
   final int aliveCount;
@@ -108,7 +114,6 @@ class _RecapScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(
         24,
@@ -120,52 +125,14 @@ class _RecapScaffold extends StatelessWidget {
         children: [
           Expanded(
             child: Center(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 40,
-                ),
-                decoration: BoxDecoration(
-                  gradient: gradient,
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: gradient.colors.first.withValues(alpha: 0.4),
-                      blurRadius: 24,
-                      offset: const Offset(0, 12),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 60, color: AppColors.onGradient),
-                    const SizedBox(height: 16),
-                    Text(
-                      headline,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        color: AppColors.onGradient,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      detail,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: AppColors.onGradient.withValues(alpha: 0.9),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '$aliveCount players remain',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: AppColors.onGradient.withValues(alpha: 0.85),
-                      ),
-                    ),
-                  ],
-                ),
+              child: MomentCard(
+                mood: MomentMood.recap,
+                gradient: gradient,
+                icon: icon,
+                eyebrow: eyebrow,
+                headline: headline,
+                subtitle: detail,
+                footnote: '$aliveCount players remain',
               ),
             ),
           ),

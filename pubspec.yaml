@@ -42,6 +42,14 @@ flutter:
   assets:
     - assets/word_packs/
 
+  fonts:
+    - family: Unbounded
+      fonts:
+        - asset: assets/fonts/Unbounded-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Unbounded-ExtraBold.ttf
+          weight: 800
+
 flutter_launcher_icons:
   android: true
   ios: true

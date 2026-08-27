@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/moment_card.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/player.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_state.dart';
 
@@ -13,7 +14,6 @@ class GameOverView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final standings = state.session.standings;
     final topScore = standings.isEmpty ? 0 : standings.first.cumulativeScore;
     final winners = standings.where(
@@ -22,39 +22,13 @@ class GameOverView extends StatelessWidget {
 
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          margin: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
-          decoration: BoxDecoration(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+          child: MomentCard(
+            mood: MomentMood.celebration,
             gradient: AppColors.winGradient,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.winGradient.colors.first.withValues(
-                  alpha: 0.4,
-                ),
-                blurRadius: 24,
-                offset: const Offset(0, 12),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              const Icon(
-                Icons.emoji_events_rounded,
-                size: 56,
-                color: AppColors.onGradient,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                topScore == 0 ? 'Game over' : _winnerLine(winners),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: AppColors.onGradient,
-                ),
-              ),
-            ],
+            icon: MomentIcon.laurel,
+            headline: topScore == 0 ? 'Game over' : _winnerLine(winners),
           ),
         ),
         Expanded(
@@ -88,8 +62,8 @@ class GameOverView extends StatelessWidget {
 
   String _winnerLine(Iterable<Player> winners) {
     final names = winners.map((p) => p.name).toList();
-    if (names.length == 1) return '${names.first} wins! 🏆';
-    return "It's a tie! 🏆";
+    if (names.length == 1) return '${names.first} wins!';
+    return "It's a tie!";
   }
 }
 

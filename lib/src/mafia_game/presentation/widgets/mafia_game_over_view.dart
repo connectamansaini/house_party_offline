@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/moment_card.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_role.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_state.dart';
 
@@ -22,36 +23,13 @@ class MafiaGameOverView extends StatelessWidget {
 
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          margin: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
-          decoration: BoxDecoration(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+          child: MomentCard(
+            mood: MomentMood.celebration,
             gradient: gradient,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: gradient.colors.first.withValues(alpha: 0.4),
-                blurRadius: 24,
-                offset: const Offset(0, 12),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Icon(
-                townWon ? Icons.emoji_events_rounded : Icons.dangerous_rounded,
-                size: 56,
-                color: AppColors.onGradient,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                townWon ? 'Town wins! 🎉' : 'Mafia win 🔪',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: AppColors.onGradient,
-                ),
-              ),
-            ],
+            icon: townWon ? MomentIcon.laurel : MomentIcon.dagger,
+            headline: townWon ? 'Town wins!' : 'Mafia wins!',
           ),
         ),
         Expanded(
