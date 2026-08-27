@@ -7,7 +7,7 @@ import 'package:house_party_offline/src/core/constants/app_strings.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
-import 'package:house_party_offline/src/home/presentation/widgets/game_card.dart';
+import 'package:house_party_offline/src/core/widgets/ticket_card.dart';
 
 /// The games hub. Lists available party games as vivid cards.
 class HomePage extends StatelessWidget {
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: Spacing.xl),
-            GameCard(
+            TicketCard(
               title: AppStrings.imposterName,
               subtitle: AppStrings.imposterBlurb,
               icon: Icons.theater_comedy_outlined,
@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
               onTap: () => context.push(AppRoutes.imposter),
             ),
             const SizedBox(height: Spacing.xl),
-            GameCard(
+            TicketCard(
               title: AppStrings.mafiaName,
               subtitle: AppStrings.mafiaBlurb,
               icon: Icons.dangerous_outlined,
