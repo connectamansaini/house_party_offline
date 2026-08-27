@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:house_party_offline/src/core/widgets/selectable_player_tile.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_bloc.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_event.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_state.dart';
@@ -44,58 +45,10 @@ class VotingView extends StatelessWidget {
             separatorBuilder: (_, _) => const SizedBox(height: 8),
             itemBuilder: (context, i) {
               final p = players[i];
-              final isSelected = p.id == selected;
-              return Card(
-                color: isSelected
-                    ? scheme.primary
-                    : scheme.surfaceContainerHigh,
-                child: InkWell(
-                  onTap: () => context.read<GameBloc>().add(VoteSelected(p.id)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: isSelected
-                              ? scheme.onPrimary.withValues(alpha: 0.2)
-                              : scheme.primaryContainer,
-                          foregroundColor: isSelected
-                              ? scheme.onPrimary
-                              : scheme.onPrimaryContainer,
-                          child: Text(
-                            p.name.trim().isEmpty
-                                ? '?'
-                                : p.name.trim()[0].toUpperCase(),
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Text(
-                            p.name,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: isSelected
-                                  ? scheme.onPrimary
-                                  : scheme.onSurface,
-                            ),
-                          ),
-                        ),
-                        Icon(
-                          isSelected
-                              ? Icons.check_circle_rounded
-                              : Icons.circle_outlined,
-                          color: isSelected
-                              ? scheme.onPrimary
-                              : scheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              return SelectablePlayerTile(
+                name: p.name,
+                selected: p.id == selected,
+                onTap: () => context.read<GameBloc>().add(VoteSelected(p.id)),
               );
             },
           ),

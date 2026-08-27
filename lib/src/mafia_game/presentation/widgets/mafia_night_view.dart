@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/selectable_player_tile.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_role.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_bloc.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_event.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_state.dart';
-import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_player_tile.dart';
 
 /// Pass-and-play night. Each living player takes the phone; acting roles pick a
 /// target, villagers just pass — so nobody can tell who acted.
@@ -113,6 +114,7 @@ class _Action extends StatelessWidget {
             .where((p) => !state.session.roleOf(p.id).isMafia)
             .toList(),
         confirmLabel: 'Confirm kill',
+        accentGradient: AppColors.mafiaGradient,
       ),
       MafiaRole.doctor => _TargetPicker(
         state: state,
@@ -126,6 +128,7 @@ class _Action extends StatelessWidget {
             )
             .toList(),
         confirmLabel: 'Confirm protection',
+        accentGradient: AppColors.civilianGradient,
       ),
       MafiaRole.detective => _TargetPicker(
         state: state,
@@ -135,6 +138,7 @@ class _Action extends StatelessWidget {
             .where((p) => p.id != state.currentPlayer.id)
             .toList(),
         confirmLabel: 'Investigate',
+        accentGradient: AppColors.civilianGradient,
       ),
     };
   }
@@ -248,6 +252,7 @@ class _TargetPicker extends StatelessWidget {
     required this.subtitle,
     required this.candidates,
     required this.confirmLabel,
+    required this.accentGradient,
   });
 
   final MafiaNight state;
@@ -255,6 +260,7 @@ class _TargetPicker extends StatelessWidget {
   final String subtitle;
   final List<MafiaPlayer> candidates;
   final String confirmLabel;
+  final Gradient accentGradient;
 
   @override
   Widget build(BuildContext context) {
@@ -287,10 +293,14 @@ class _TargetPicker extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             children: [
               for (final p in candidates)
-                MafiaPlayerTile(
-                  player: p,
-                  selected: p.id == state.selectedId,
-                  onTap: () => bloc.add(NightTargetSelected(p.id)),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SelectablePlayerTile(
+                    name: p.name,
+                    selected: p.id == state.selectedId,
+                    accentGradient: accentGradient,
+                    onTap: () => bloc.add(NightTargetSelected(p.id)),
+                  ),
                 ),
             ],
           ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:house_party_offline/src/core/widgets/selectable_player_tile.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_bloc.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_event.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_state.dart';
-import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_player_tile.dart';
 
 /// Daytime lynch: a shared vote with a skip option.
 class MafiaDayVoteView extends StatelessWidget {
@@ -51,10 +51,13 @@ class MafiaDayVoteView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             children: [
               for (final p in living)
-                MafiaPlayerTile(
-                  player: p,
-                  selected: p.id == selected,
-                  onTap: () => bloc.add(DayTargetSelected(p.id)),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SelectablePlayerTile(
+                    name: p.name,
+                    selected: p.id == selected,
+                    onTap: () => bloc.add(DayTargetSelected(p.id)),
+                  ),
                 ),
             ],
           ),
