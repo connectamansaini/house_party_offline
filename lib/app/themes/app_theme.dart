@@ -86,25 +86,29 @@ abstract final class AppTheme {
   }
 
   static TextTheme _textTheme(TextTheme base) {
-    return base.copyWith(
-      displayLarge: base.displayLarge?.copyWith(
+    // Manrope everywhere as the body/UI face; the weight and tracking
+    // tweaks below are layered back on top per role.
+    final text = base.apply(fontFamily: 'Manrope');
+
+    return text.copyWith(
+      displayLarge: text.displayLarge?.copyWith(
         fontWeight: FontWeight.w800,
         letterSpacing: -1,
       ),
-      displayMedium: base.displayMedium?.copyWith(
+      displayMedium: text.displayMedium?.copyWith(
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
-      displaySmall: base.displaySmall?.copyWith(fontWeight: FontWeight.w800),
-      headlineLarge: base.headlineLarge?.copyWith(
+      displaySmall: text.displaySmall?.copyWith(fontWeight: FontWeight.w800),
+      headlineLarge: text.headlineLarge?.copyWith(
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
-      headlineMedium: base.headlineMedium?.copyWith(
+      headlineMedium: text.headlineMedium?.copyWith(
         fontWeight: FontWeight.w700,
       ),
-      headlineSmall: base.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-      titleLarge: base.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+      headlineSmall: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+      titleLarge: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
     );
   }
 }
