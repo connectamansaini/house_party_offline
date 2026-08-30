@@ -14,6 +14,11 @@ import 'package:house_party_offline/src/mafia_game/presentation/pages/mafia_game
 import 'package:house_party_offline/src/mafia_game/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_home_page.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_setup_page.dart';
+import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
+import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/never_have_i_ever_game_page.dart';
+import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/rules_page.dart';
+import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_home_page.dart';
+import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_setup_page.dart';
 
 /// Named routes. Kept as constants so navigation calls stay typo-safe.
 abstract final class AppRoutes {
@@ -28,6 +33,10 @@ abstract final class AppRoutes {
   static const mafiaSetup = '/mafia/setup';
   static const mafiaGame = '/mafia/game';
   static const mafiaRules = '/mafia/rules';
+  static const neverHaveIEver = '/never-have-i-ever';
+  static const neverHaveIEverSetup = '/never-have-i-ever/setup';
+  static const neverHaveIEverGame = '/never-have-i-ever/game';
+  static const neverHaveIEverRules = '/never-have-i-ever/rules';
 }
 
 /// Application router. The game route receives its [GameSetup] via `extra`.
@@ -79,6 +88,23 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.mafiaRules,
       builder: (context, state) => const MafiaRulesPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.neverHaveIEver,
+      builder: (context, state) => const NeverHaveIEverHomePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.neverHaveIEverSetup,
+      builder: (context, state) => const NeverHaveIEverSetupPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.neverHaveIEverGame,
+      builder: (context, state) =>
+          NeverHaveIEverGamePage(setup: state.extra! as NeverHaveIEverSetup),
+    ),
+    GoRoute(
+      path: AppRoutes.neverHaveIEverRules,
+      builder: (context, state) => const NeverHaveIEverRulesPage(),
     ),
   ],
 );

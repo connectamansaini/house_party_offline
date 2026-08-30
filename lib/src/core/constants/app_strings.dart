@@ -14,5 +14,10 @@ abstract final class AppStrings {
       'Secret roles, night kills, and daytime accusations. Root out the mafia '
       'before they take over the town.';
 
+  static const neverHaveIEverName = 'Never Have I Ever';
+  static const neverHaveIEverBlurb =
+      "Take turns hearing a confession. Anyone who's done it loses a life — "
+      'last player standing wins.';
+
   static const comingSoon = 'Coming soon';
 }

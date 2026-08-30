@@ -4,6 +4,7 @@ import 'package:house_party_offline/src/imposter_game/di/imposter_game_di.dart';
 import 'package:house_party_offline/src/imposter_packs/di/imposter_packs_di.dart';
 import 'package:house_party_offline/src/imposter_setup/di/imposter_setup_di.dart';
 import 'package:house_party_offline/src/mafia_game/di/mafia_game_di.dart';
+import 'package:house_party_offline/src/never_have_i_ever/di/never_have_i_ever_di.dart';
 import 'package:injectable/injectable.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -20,4 +21,5 @@ Future<void> configureInjector(String env) async {
   registerImposterSetupDependencies(getIt);
   registerImposterGameDependencies(getIt);
   registerMafiaGameDependencies(getIt);
+  registerNeverHaveIEverDependencies(getIt);
 }

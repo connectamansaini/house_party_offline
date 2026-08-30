@@ -14,6 +14,7 @@ class SelectablePlayerTile extends StatelessWidget {
     required this.onTap,
     super.key,
     this.accentGradient = AppColors.brandGradient,
+    this.trailing,
   });
 
   final String name;
@@ -24,6 +25,9 @@ class SelectablePlayerTile extends StatelessWidget {
   /// the brand gradient; a screen can pass a contextual one (e.g. the mafia
   /// gradient for a kill-target picker).
   final Gradient accentGradient;
+
+  /// Optional content after the name — e.g. a remaining-lives indicator.
+  final Widget? trailing;
 
   static const _avatarSize = 48.0;
 
@@ -72,6 +76,7 @@ class SelectablePlayerTile extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (trailing != null) trailing!,
               ],
             ),
           ),

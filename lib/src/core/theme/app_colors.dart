@@ -54,6 +54,13 @@ abstract final class AppColors {
     colors: [Color(0xFF3A0CA3), Color(0xFF10002B)],
   );
 
+  /// Never Have I Ever — a cheeky pink-to-violet blush.
+  static const confessionGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFF5FA2), Color(0xFF8E5CF6)],
+  );
+
   /// On-gradient foreground (text/icons sit on the vivid gradients above).
   static const Color onGradient = Colors.white;
 }

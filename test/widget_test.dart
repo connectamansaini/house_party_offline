@@ -9,5 +9,6 @@ void main() {
     expect(find.text('House Party'), findsOneWidget);
     expect(find.text('Imposter'), findsOneWidget);
     expect(find.text('Mafia'), findsOneWidget);
+    expect(find.text('Never Have I Ever'), findsOneWidget);
   });
 }
