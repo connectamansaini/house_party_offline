@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
+import 'package:house_party_offline/src/core/widgets/rules_sections.dart';
 
 // Long copy for the numbered/bulleted lists below. Pulled out to top-level
 // constants (rather than wrapped inline) because a multi-line adjacent-string
@@ -50,7 +51,7 @@ class RulesPage extends StatelessWidget {
               compact: true,
             ),
             SizedBox(height: 20),
-            _Section(
+            RuleSection(
               icon: Icons.flag_rounded,
               title: 'Objective',
               body:
@@ -60,7 +61,7 @@ class RulesPage extends StatelessWidget {
                   'tries to blend in — or, if caught, to guess the secret '
                   'word and steal the win.',
             ),
-            _Section(
+            RuleSection(
               icon: Icons.people_alt_rounded,
               title: 'Setup',
               body:
@@ -69,7 +70,7 @@ class RulesPage extends StatelessWidget {
                   'privately taps to see their role, then hides it and '
                   'passes on.',
             ),
-            _NumberedSection(
+            RuleNumberedSection(
               icon: Icons.route_rounded,
               title: 'A round, step by step',
               steps: [
@@ -80,7 +81,7 @@ class RulesPage extends StatelessWidget {
                 _guessStep,
               ],
             ),
-            _Section(
+            RuleSection(
               icon: Icons.emoji_events_rounded,
               title: 'Winning',
               body:
@@ -90,7 +91,7 @@ class RulesPage extends StatelessWidget {
                   'The winning side banks points each round; play as '
                   'many rounds as you like.',
             ),
-            _BulletSection(
+            RuleBulletSection(
               icon: Icons.tune_rounded,
               title: 'Host options',
               bullets: [
@@ -101,7 +102,7 @@ class RulesPage extends StatelessWidget {
                 'Discussion length and win points per side.',
               ],
             ),
-            _Section(
+            RuleSection(
               icon: Icons.handshake_rounded,
               title: 'Fair play',
               body:
@@ -111,166 +112,6 @@ class RulesPage extends StatelessWidget {
                   'reveal!',
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({
-    required this.icon,
-    required this.title,
-    required this.body,
-  });
-
-  final IconData icon;
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    return _Card(
-      icon: icon,
-      title: title,
-      child: Text(
-        body,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4),
-      ),
-    );
-  }
-}
-
-class _BulletSection extends StatelessWidget {
-  const _BulletSection({
-    required this.icon,
-    required this.title,
-    required this.bullets,
-  });
-
-  final IconData icon;
-  final String title;
-  final List<String> bullets;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return _Card(
-      icon: icon,
-      title: title,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final b in bullets)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('•  ', style: theme.textTheme.bodyMedium),
-                  Expanded(
-                    child: Text(
-                      b,
-                      style: theme.textTheme.bodyMedium?.copyWith(height: 1.35),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NumberedSection extends StatelessWidget {
-  const _NumberedSection({
-    required this.icon,
-    required this.title,
-    required this.steps,
-  });
-
-  final IconData icon;
-  final String title;
-  final List<String> steps;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return _Card(
-      icon: icon,
-      title: title,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (var i = 0; i < steps.length; i++)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 12,
-                    backgroundColor: scheme.primaryContainer,
-                    foregroundColor: scheme.onPrimaryContainer,
-                    child: Text(
-                      '${i + 1}',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        steps[i],
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          height: 1.35,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Card extends StatelessWidget {
-  const _Card({required this.icon, required this.title, required this.child});
-
-  final IconData icon;
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, color: theme.colorScheme.primary),
-                  const SizedBox(width: 10),
-                  Text(title, style: theme.textTheme.titleMedium),
-                ],
-              ),
-              const SizedBox(height: 12),
-              child,
-            ],
-          ),
         ),
       ),
     );

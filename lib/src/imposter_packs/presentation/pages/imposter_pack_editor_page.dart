@@ -42,7 +42,7 @@ class _ImposterPackEditorView extends StatelessWidget {
               title: Text(state.isEditing ? 'Edit pack' : 'New pack'),
             ),
             body: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(Spacing.x3l),
               children: [
                 TextFormField(
                   initialValue: state.name,
@@ -50,7 +50,6 @@ class _ImposterPackEditorView extends StatelessWidget {
                   decoration: const InputDecoration(
                     labelText: 'Pack name',
                     hintText: 'e.g. Movie Villains',
-                    border: OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     bloc.add(ImposterPackNameChanged(value));
@@ -63,7 +62,6 @@ class _ImposterPackEditorView extends StatelessWidget {
                   decoration: const InputDecoration(
                     labelText: 'Category (imposter hint)',
                     hintText: 'e.g. Villain',
-                    border: OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     bloc.add(ImposterPackCategoryChanged(value));
@@ -126,10 +124,10 @@ class _ImposterPackEditorView extends StatelessWidget {
             ),
             bottomNavigationBar: Padding(
               padding: EdgeInsets.fromLTRB(
-                16,
-                8,
-                16,
-                8 + MediaQuery.of(context).padding.bottom,
+                Spacing.x3l,
+                Spacing.md,
+                Spacing.x3l,
+                Spacing.md + MediaQuery.of(context).padding.bottom,
               ),
               child: FilledButton(
                 onPressed:
@@ -190,10 +188,7 @@ class _WordRowState extends State<_WordRow> {
             child: TextField(
               controller: _controller,
               textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                isDense: true,
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(isDense: true),
               onChanged: widget.onChanged,
             ),
           ),
