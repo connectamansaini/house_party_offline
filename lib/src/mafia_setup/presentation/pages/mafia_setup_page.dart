@@ -33,123 +33,126 @@ class _SetupView extends StatelessWidget {
       body: BlocBuilder<MafiaSetupBloc, MafiaSetupState>(
         builder: (context, state) {
           final bloc = context.read<MafiaSetupBloc>();
-          return Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: AppPadding.page,
-                  children: [
-                    Text('Players', style: theme.textTheme.titleLarge),
-                    const SizedBox(height: Spacing.xl),
-                    for (var i = 0; i < state.players.length; i++)
-                      _PlayerRow(
-                        key: ValueKey(state.players[i].id),
-                        number: i + 1,
-                        player: state.players[i],
-                        canRemove:
-                            state.players.length > MafiaConfig.minPlayers,
-                        onChanged: (name) => bloc.add(
-                          MafiaSetupPlayerRenamed(
-                            id: state.players[i].id,
-                            name: name,
+          return SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: AppPadding.page,
+                    children: [
+                      Text('Players', style: theme.textTheme.titleLarge),
+                      const SizedBox(height: Spacing.xl),
+                      for (var i = 0; i < state.players.length; i++)
+                        _PlayerRow(
+                          key: ValueKey(state.players[i].id),
+                          number: i + 1,
+                          player: state.players[i],
+                          canRemove:
+                              state.players.length > MafiaConfig.minPlayers,
+                          onChanged: (name) => bloc.add(
+                            MafiaSetupPlayerRenamed(
+                              id: state.players[i].id,
+                              name: name,
+                            ),
+                          ),
+                          onRemove: () => bloc.add(
+                            MafiaSetupPlayerRemoved(state.players[i].id),
                           ),
                         ),
-                        onRemove: () => bloc.add(
-                          MafiaSetupPlayerRemoved(state.players[i].id),
+                      const SizedBox(height: Spacing.md),
+                      if (state.players.length < MafiaConfig.maxPlayers)
+                        OutlinedButton.icon(
+                          onPressed: () =>
+                              bloc.add(const MafiaSetupPlayerAdded()),
+                          icon: const Icon(Icons.person_add_alt),
+                          label: const Text('Add player'),
                         ),
-                      ),
-                    const SizedBox(height: Spacing.md),
-                    if (state.players.length < MafiaConfig.maxPlayers)
-                      OutlinedButton.icon(
-                        onPressed: () =>
-                            bloc.add(const MafiaSetupPlayerAdded()),
-                        icon: const Icon(Icons.person_add_alt),
-                        label: const Text('Add player'),
-                      ),
-                    if (!state.hasEnoughPlayers)
-                      Padding(
-                        padding: const EdgeInsets.only(top: Spacing.lg),
-                        child: Text(
-                          'Mafia needs at least '
-                          '${MafiaConfig.minPlayers} players.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.error,
+                      if (!state.hasEnoughPlayers)
+                        Padding(
+                          padding: const EdgeInsets.only(top: Spacing.lg),
+                          child: Text(
+                            'Mafia needs at least '
+                            '${MafiaConfig.minPlayers} players.',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
                           ),
                         ),
+                      const Divider(),
+                      Text('Options', style: theme.textTheme.titleLarge),
+                      const SizedBox(height: Spacing.md),
+                      _CountRow(
+                        label: 'Mafia',
+                        value: state.config.mafiaCount,
+                        min: 1,
+                        max: state.maxMafia,
+                        onChanged: (count) =>
+                            bloc.add(MafiaSetupMafiaCountChanged(count)),
                       ),
-                    const Divider(),
-                    Text('Options', style: theme.textTheme.titleLarge),
-                    const SizedBox(height: Spacing.md),
-                    _CountRow(
-                      label: 'Mafia',
-                      value: state.config.mafiaCount,
-                      min: 1,
-                      max: state.maxMafia,
-                      onChanged: (count) =>
-                          bloc.add(MafiaSetupMafiaCountChanged(count)),
-                    ),
-                    _OptionSwitch(
-                      title: 'Reveal role on death',
-                      subtitle: state.config.revealRolesOnDeath
-                          ? 'Announce the role of anyone killed or lynched'
-                          : 'Only announce who died, not their role',
-                      value: state.config.revealRolesOnDeath,
-                      onChanged: (value) => bloc.add(
-                        MafiaSetupRevealRolesOnDeathChanged(enabled: value),
+                      _OptionSwitch(
+                        title: 'Reveal role on death',
+                        subtitle: state.config.revealRolesOnDeath
+                            ? 'Announce the role of anyone killed or lynched'
+                            : 'Only announce who died, not their role',
+                        value: state.config.revealRolesOnDeath,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupRevealRolesOnDeathChanged(enabled: value),
+                        ),
                       ),
-                    ),
-                    _OptionSwitch(
-                      title: 'First night has a kill',
-                      subtitle: state.config.firstNightKill
-                          ? 'Mafia may kill on night one'
-                          : 'Night one is peaceful',
-                      value: state.config.firstNightKill,
-                      onChanged: (value) => bloc.add(
-                        MafiaSetupFirstNightKillChanged(enabled: value),
+                      _OptionSwitch(
+                        title: 'First night has a kill',
+                        subtitle: state.config.firstNightKill
+                            ? 'Mafia may kill on night one'
+                            : 'Night one is peaceful',
+                        value: state.config.firstNightKill,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupFirstNightKillChanged(enabled: value),
+                        ),
                       ),
-                    ),
-                    _OptionSwitch(
-                      title: 'Doctor can self-save',
-                      subtitle: state.config.doctorSelfSave
-                          ? 'The doctor may protect themselves'
-                          : 'The doctor cannot protect themselves',
-                      value: state.config.doctorSelfSave,
-                      onChanged: (value) => bloc.add(
-                        MafiaSetupDoctorSelfSaveChanged(enabled: value),
+                      _OptionSwitch(
+                        title: 'Doctor can self-save',
+                        subtitle: state.config.doctorSelfSave
+                            ? 'The doctor may protect themselves'
+                            : 'The doctor cannot protect themselves',
+                        value: state.config.doctorSelfSave,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupDoctorSelfSaveChanged(enabled: value),
+                        ),
                       ),
-                    ),
-                    _OptionSwitch(
-                      title: 'Detective learns exact role',
-                      subtitle: state.config.detectiveExactRole
-                          ? 'Investigations reveal the exact role'
-                          : "Investigations reveal only 'Mafia' or 'Not Mafia'",
-                      value: state.config.detectiveExactRole,
-                      onChanged: (value) => bloc.add(
-                        MafiaSetupDetectiveExactRoleChanged(enabled: value),
+                      _OptionSwitch(
+                        title: 'Detective learns exact role',
+                        subtitle: state.config.detectiveExactRole
+                            ? 'Investigations reveal the exact role'
+                            : "Investigations reveal only 'Mafia' or "
+                                  "'Not Mafia'",
+                        value: state.config.detectiveExactRole,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupDetectiveExactRoleChanged(enabled: value),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  20,
-                  Spacing.md,
-                  20,
-                  Spacing.md + MediaQuery.of(context).padding.bottom,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    20,
+                    Spacing.md,
+                    20,
+                    Spacing.md + MediaQuery.of(context).padding.bottom,
+                  ),
+                  child: FilledButton.icon(
+                    onPressed: state.canStart
+                        ? () => context.push(
+                            AppRoutes.mafiaGame,
+                            extra: state.buildSetup(),
+                          )
+                        : null,
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: const Text('Start game'),
+                  ),
                 ),
-                child: FilledButton.icon(
-                  onPressed: state.canStart
-                      ? () => context.push(
-                          AppRoutes.mafiaGame,
-                          extra: state.buildSetup(),
-                        )
-                      : null,
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('Start game'),
-                ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
