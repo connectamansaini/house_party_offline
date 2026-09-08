@@ -61,6 +61,13 @@ abstract final class AppColors {
     colors: [Color(0xFFFF5FA2), Color(0xFF8E5CF6)],
   );
 
+  /// Most Likely To — a warm orange-to-teal spotlight.
+  static const spotlightGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFF9F1C), Color(0xFF2EC4B6)],
+  );
+
   /// On-gradient foreground (text/icons sit on the vivid gradients above).
   static const Color onGradient = Colors.white;
 }

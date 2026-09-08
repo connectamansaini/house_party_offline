@@ -14,6 +14,11 @@ import 'package:house_party_offline/src/mafia_game/presentation/pages/mafia_game
 import 'package:house_party_offline/src/mafia_game/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_home_page.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_setup_page.dart';
+import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
+import 'package:house_party_offline/src/most_likely_to/presentation/pages/most_likely_to_game_page.dart';
+import 'package:house_party_offline/src/most_likely_to/presentation/pages/rules_page.dart';
+import 'package:house_party_offline/src/most_likely_to_setup/presentation/pages/most_likely_to_home_page.dart';
+import 'package:house_party_offline/src/most_likely_to_setup/presentation/pages/most_likely_to_setup_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/never_have_i_ever_game_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/rules_page.dart';
@@ -37,6 +42,10 @@ abstract final class AppRoutes {
   static const neverHaveIEverSetup = '/never-have-i-ever/setup';
   static const neverHaveIEverGame = '/never-have-i-ever/game';
   static const neverHaveIEverRules = '/never-have-i-ever/rules';
+  static const mostLikelyTo = '/most-likely-to';
+  static const mostLikelyToSetup = '/most-likely-to/setup';
+  static const mostLikelyToGame = '/most-likely-to/game';
+  static const mostLikelyToRules = '/most-likely-to/rules';
 }
 
 /// Application router. The game route receives its [GameSetup] via `extra`.
@@ -105,6 +114,23 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.neverHaveIEverRules,
       builder: (context, state) => const NeverHaveIEverRulesPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.mostLikelyTo,
+      builder: (context, state) => const MostLikelyToHomePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.mostLikelyToSetup,
+      builder: (context, state) => const MostLikelyToSetupPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.mostLikelyToGame,
+      builder: (context, state) =>
+          MostLikelyToGamePage(setup: state.extra! as MostLikelyToSetup),
+    ),
+    GoRoute(
+      path: AppRoutes.mostLikelyToRules,
+      builder: (context, state) => const MostLikelyToRulesPage(),
     ),
   ],
 );

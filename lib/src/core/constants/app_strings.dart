@@ -19,5 +19,10 @@ abstract final class AppStrings {
       "Take turns hearing a confession. Anyone who's done it loses a life — "
       'last player standing wins.';
 
+  static const mostLikelyToName = 'Most Likely To';
+  static const mostLikelyToBlurb =
+      'Hear a prompt, everyone points at once. Most fingers takes the point — '
+      'top score after the last round wins.';
+
   static const comingSoon = 'Coming soon';
 }
