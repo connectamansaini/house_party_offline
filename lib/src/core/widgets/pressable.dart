@@ -29,7 +29,9 @@ class _PressableState extends State<Pressable> {
       onPointerCancel: (_) => _set(false),
       child: AnimatedScale(
         scale: _pressed ? 0.97 : 1,
-        duration: AppMotion.fast,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : AppMotion.fast,
         curve: AppMotion.curve,
         child: widget.child,
       ),

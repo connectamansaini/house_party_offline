@@ -73,23 +73,21 @@ class GameCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.md),
-                Row(
+                // Wraps to a second line at large text sizes.
+                Wrap(
+                  spacing: Spacing.lg,
+                  runSpacing: Spacing.xs,
                   children: [
-                    Icon(
-                      Icons.people_alt_outlined,
-                      size: 14,
-                      color: scheme.onSurfaceVariant,
+                    _Meta(
+                      icon: Icons.people_alt_outlined,
+                      text: game.playersLabel,
+                      style: meta,
                     ),
-                    const SizedBox(width: Spacing.xs),
-                    Text(game.playersLabel, style: meta),
-                    const SizedBox(width: Spacing.lg),
-                    Icon(
-                      Icons.schedule_rounded,
-                      size: 14,
-                      color: scheme.onSurfaceVariant,
+                    _Meta(
+                      icon: Icons.schedule_rounded,
+                      text: '~${game.minutes} min',
+                      style: meta,
                     ),
-                    const SizedBox(width: Spacing.xs),
-                    Text('~${game.minutes} min', style: meta),
                   ],
                 ),
               ],
@@ -97,6 +95,26 @@ class GameCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Meta extends StatelessWidget {
+  const _Meta({required this.icon, required this.text, required this.style});
+
+  final IconData icon;
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: style?.color),
+        const SizedBox(width: Spacing.xs),
+        Flexible(child: Text(text, style: style)),
+      ],
     );
   }
 }

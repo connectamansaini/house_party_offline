@@ -98,7 +98,12 @@ class _HomeView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text('All games', style: theme.textTheme.titleLarge),
+                      Flexible(
+                        child: Text(
+                          'All games',
+                          style: theme.textTheme.titleLarge,
+                        ),
+                      ),
                       const SizedBox(width: Spacing.md),
                       Text(
                         '${games.length}',
@@ -110,13 +115,18 @@ class _HomeView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.x3l),
-                GridView.count(
-                  crossAxisCount: 2,
+                GridView(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: Spacing.xl,
-                  crossAxisSpacing: Spacing.xl,
-                  childAspectRatio: 1.08,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: Spacing.xl,
+                    crossAxisSpacing: Spacing.xl,
+                    // The cards are mostly text, so their height follows the
+                    // user's text size rather than a fixed aspect ratio.
+                    mainAxisExtent:
+                        176 * MediaQuery.textScalerOf(context).scale(1),
+                  ),
                   children: [
                     for (var i = 0; i < games.length; i++)
                       Entrance(

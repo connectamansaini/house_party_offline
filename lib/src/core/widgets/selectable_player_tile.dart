@@ -41,49 +41,53 @@ class SelectablePlayerTile extends StatelessWidget {
     final accent = AppColors.accentOf(accentGradient);
     final radius = BorderRadius.circular(AppRadii.x3l);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          AppHaptics.select();
-          onTap();
-        },
-        borderRadius: radius,
-        child: AnimatedContainer(
-          duration: AppMotion.fast,
-          curve: AppMotion.curve,
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.x3l,
-            vertical: Spacing.lg,
-          ),
-          decoration: BoxDecoration(
-            color: selected
-                ? AppColors.tint(accent, scheme)
-                : scheme.surfaceContainerLow,
-            borderRadius: radius,
-            border: Border.all(
-              color: selected
-                  ? accent
-                  : scheme.outlineVariant.withValues(alpha: 0.7),
-              width: 1.5,
+    return Semantics(
+      // Announce "selected" to screen readers; the check badge is visual only.
+      selected: selected,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            AppHaptics.select();
+            onTap();
+          },
+          borderRadius: radius,
+          child: AnimatedContainer(
+            duration: AppMotion.fast,
+            curve: AppMotion.curve,
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.x3l,
+              vertical: Spacing.lg,
             ),
-          ),
-          child: Row(
-            children: [
-              _Avatar(name: name, selected: selected, accent: accent),
-              const SizedBox(width: Spacing.x3l),
-              Expanded(
-                child: AnimatedDefaultTextStyle(
-                  duration: AppMotion.fast,
-                  style: theme.textTheme.titleMedium!.copyWith(
-                    color: scheme.onSurface,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                  child: Text(name),
-                ),
+            decoration: BoxDecoration(
+              color: selected
+                  ? AppColors.tint(accent, scheme)
+                  : scheme.surfaceContainerLow,
+              borderRadius: radius,
+              border: Border.all(
+                color: selected
+                    ? accent
+                    : scheme.outlineVariant.withValues(alpha: 0.7),
+                width: 1.5,
               ),
-              if (trailing != null) trailing!,
-            ],
+            ),
+            child: Row(
+              children: [
+                _Avatar(name: name, selected: selected, accent: accent),
+                const SizedBox(width: Spacing.x3l),
+                Expanded(
+                  child: AnimatedDefaultTextStyle(
+                    duration: AppMotion.fast,
+                    style: theme.textTheme.titleMedium!.copyWith(
+                      color: scheme.onSurface,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    ),
+                    child: Text(name),
+                  ),
+                ),
+                if (trailing != null) trailing!,
+              ],
+            ),
           ),
         ),
       ),

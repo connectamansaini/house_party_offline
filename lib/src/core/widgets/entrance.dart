@@ -41,6 +41,13 @@ class _EntranceState extends State<Entrance>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Honour the OS "remove animations" setting: land in place immediately.
+    if (MediaQuery.disableAnimationsOf(context)) _controller.value = 1;
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();

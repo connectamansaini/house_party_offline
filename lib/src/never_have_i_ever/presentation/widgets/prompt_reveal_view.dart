@@ -100,22 +100,28 @@ class _LivesPips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < lives; i++)
-          Padding(
-            padding: const EdgeInsets.only(left: 3),
-            child: Container(
-              width: 7,
-              height: 7,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: scheme.primary,
+    // The dots are visual; screen readers get the number instead.
+    return Semantics(
+      label: lives == 1 ? '1 life left' : '$lives lives left',
+      child: ExcludeSemantics(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < lives; i++)
+              Padding(
+                padding: const EdgeInsets.only(left: 3),
+                child: Container(
+                  width: 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: scheme.primary,
+                  ),
+                ),
               ),
-            ),
-          ),
-      ],
+          ],
+        ),
+      ),
     );
   }
 }
