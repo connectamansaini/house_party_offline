@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/engine/most_likely_to_engine.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
 import 'package:house_party_offline/src/most_likely_to/presentation/bloc/most_likely_to_game_bloc.dart';
@@ -62,7 +61,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
             final leave = await _confirmQuit(context);
             if (leave && context.mounted) context.go(AppRoutes.home);
           },
-          child: AppScaffold(
+          child: Scaffold(
             appBar: AppBar(
               title: Text(isOver ? 'Game over' : 'Most Likely To'),
               automaticallyImplyLeading: false,

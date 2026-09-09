@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/bloc/mafia_setup_bloc.dart';
@@ -28,7 +27,7 @@ class _SetupView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return AppScaffold(
+    return Scaffold(
       appBar: AppBar(title: const Text('New Mafia game')),
       body: BlocBuilder<MafiaSetupBloc, MafiaSetupState>(
         builder: (context, state) {

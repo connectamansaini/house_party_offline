@@ -23,6 +23,4 @@ abstract final class AppStrings {
   static const mostLikelyToBlurb =
       'Hear a prompt, everyone points at once. Most fingers takes the point — '
       'top score after the last round wins.';
-
-  static const comingSoon = 'Coming soon';
 }

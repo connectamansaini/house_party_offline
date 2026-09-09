@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/engine/never_have_i_ever_engine.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/bloc/never_have_i_ever_game_bloc.dart';
@@ -62,7 +61,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
             final leave = await _confirmQuit(context);
             if (leave && context.mounted) context.go(AppRoutes.home);
           },
-          child: AppScaffold(
+          child: Scaffold(
             appBar: AppBar(
               title: Text(isOver ? 'Game over' : 'Never Have I Ever'),
               automaticallyImplyLeading: false,

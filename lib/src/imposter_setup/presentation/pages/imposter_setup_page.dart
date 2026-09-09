@@ -9,7 +9,6 @@ import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/core/widgets/loader.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/imposter_mode.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/player.dart';
 import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
@@ -70,7 +69,7 @@ class _ImposterSetupViewState extends State<_ImposterSetupView> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
+    return Scaffold(
       appBar: AppBar(title: const Text('New game')),
       body: BlocBuilder<ImposterSetupBloc, ImposterSetupState>(
         builder: (context, state) {

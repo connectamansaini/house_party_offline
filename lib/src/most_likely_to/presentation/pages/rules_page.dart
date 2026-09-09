@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
 import 'package:house_party_offline/src/core/widgets/rules_sections.dart';
 
@@ -19,7 +18,7 @@ class MostLikelyToRulesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
+    return Scaffold(
       appBar: AppBar(title: const Text('How to play')),
       body: SafeArea(
         top: false,

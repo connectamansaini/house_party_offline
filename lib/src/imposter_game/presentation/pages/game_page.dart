@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/imposter_game/domain/engine/round_engine.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/game_setup.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_bloc.dart';
@@ -65,7 +64,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
             final leave = await _confirmQuit(context);
             if (leave && context.mounted) context.go(AppRoutes.home);
           },
-          child: AppScaffold(
+          child: Scaffold(
             appBar: AppBar(
               title: Text(
                 isOver ? 'Game over' : 'Round ${state.session.roundNumber}',

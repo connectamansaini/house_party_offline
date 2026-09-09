@@ -30,11 +30,6 @@ abstract final class AppColors {
     scheme.surfaceContainerLow,
   );
 
-  static const violet = Color(0xFF7C4DFF);
-  static const magenta = Color(0xFFFF4D8D);
-  static const cyan = Color(0xFF19E3D2);
-  static const amber = Color(0xFFFFB020);
-
   /// Civilian / "the good guys" — cool and confident.
   static const civilianGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -90,7 +85,4 @@ abstract final class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFFFF9F1C), Color(0xFF2EC4B6)],
   );
-
-  /// On-gradient foreground (text/icons sit on the vivid gradients above).
-  static const Color onGradient = Colors.white;
 }

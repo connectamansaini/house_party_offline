@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/core/constants/app_strings.dart';
-import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/entrance.dart';
 import 'package:house_party_offline/src/home/domain/entities/home_game.dart';
 import 'package:house_party_offline/src/home/domain/repositories/recent_games_repository.dart';
@@ -43,7 +42,7 @@ class _HomeView extends StatelessWidget {
     final scheme = theme.colorScheme;
     const games = GameCatalog.games;
 
-    return AppScaffold(
+    return Scaffold(
       appBar: AppBar(
         // A tall, left-aligned large title in the display face, so the app
         // name reads as a headline rather than a toolbar label.
