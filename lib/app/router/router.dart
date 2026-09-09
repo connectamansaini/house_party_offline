@@ -26,6 +26,11 @@ import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/nev
 import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_home_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_setup_page.dart';
+import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_setup.dart';
+import 'package:house_party_offline/src/truth_or_dare/presentation/pages/rules_page.dart';
+import 'package:house_party_offline/src/truth_or_dare/presentation/pages/truth_or_dare_game_page.dart';
+import 'package:house_party_offline/src/truth_or_dare_setup/presentation/pages/truth_or_dare_home_page.dart';
+import 'package:house_party_offline/src/truth_or_dare_setup/presentation/pages/truth_or_dare_setup_page.dart';
 
 /// Named routes. Kept as constants so navigation calls stay typo-safe.
 abstract final class AppRoutes {
@@ -48,6 +53,10 @@ abstract final class AppRoutes {
   static const mostLikelyToSetup = '/most-likely-to/setup';
   static const mostLikelyToGame = '/most-likely-to/game';
   static const mostLikelyToRules = '/most-likely-to/rules';
+  static const truthOrDare = '/truth-or-dare';
+  static const truthOrDareSetup = '/truth-or-dare/setup';
+  static const truthOrDareGame = '/truth-or-dare/game';
+  static const truthOrDareRules = '/truth-or-dare/rules';
 }
 
 /// Every route uses the same short fade-and-rise so navigation feels like
@@ -174,6 +183,28 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.mostLikelyToRules,
       pageBuilder: (context, state) =>
           _page(state, const MostLikelyToRulesPage()),
+    ),
+    GoRoute(
+      path: AppRoutes.truthOrDare,
+      pageBuilder: (context, state) =>
+          _page(state, const TruthOrDareHomePage()),
+    ),
+    GoRoute(
+      path: AppRoutes.truthOrDareSetup,
+      pageBuilder: (context, state) =>
+          _page(state, const TruthOrDareSetupPage()),
+    ),
+    GoRoute(
+      path: AppRoutes.truthOrDareGame,
+      pageBuilder: (context, state) => _page(
+        state,
+        TruthOrDareGamePage(setup: state.extra! as TruthOrDareSetup),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.truthOrDareRules,
+      pageBuilder: (context, state) =>
+          _page(state, const TruthOrDareRulesPage()),
     ),
   ],
 );

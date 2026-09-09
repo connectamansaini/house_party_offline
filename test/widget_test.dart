@@ -99,7 +99,10 @@ void main() {
 
     expect(find.text('Works fully offline'), findsOneWidget);
     expect(find.text('One phone for the room'), findsOneWidget);
-    expect(find.text('4 games and counting'), findsOneWidget);
+    expect(
+      find.text('${GameCatalog.games.length} games and counting'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('opening a game from the grid remembers it', (tester) async {

@@ -6,6 +6,7 @@ import 'package:house_party_offline/src/imposter_setup/presentation/bloc/imposte
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
+import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 
 /// One entry in the games hub: everything the home screen needs to present
 /// a game and route into it. Player ranges come from each game's own config
@@ -105,6 +106,19 @@ abstract final class GameCatalog {
       minutes: 10,
       route: AppRoutes.mostLikelyTo,
       setupRoute: AppRoutes.mostLikelyToSetup,
+    ),
+    HomeGame(
+      id: 'truth_or_dare',
+      title: AppStrings.truthOrDareName,
+      blurb: AppStrings.truthOrDareBlurb,
+      tag: 'Party',
+      icon: Icons.local_fire_department_rounded,
+      gradient: AppColors.dareGradient,
+      minPlayers: TruthOrDareConfig.minPlayers,
+      maxPlayers: TruthOrDareConfig.maxPlayers,
+      minutes: 15,
+      route: AppRoutes.truthOrDare,
+      setupRoute: AppRoutes.truthOrDareSetup,
     ),
   ];
 

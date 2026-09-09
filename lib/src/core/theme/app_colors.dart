@@ -85,4 +85,11 @@ abstract final class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFFFF9F1C), Color(0xFF2EC4B6)],
   );
+
+  /// Truth or Dare — a bold green-to-sky dare.
+  static const dareGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF22C55E), Color(0xFF0EA5E9)],
+  );
 }

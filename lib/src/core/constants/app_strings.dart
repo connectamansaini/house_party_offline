@@ -23,4 +23,9 @@ abstract final class AppStrings {
   static const mostLikelyToBlurb =
       'Hear a prompt, everyone points at once. Most fingers takes the point — '
       'top score after the last round wins.';
+
+  static const truthOrDareName = 'Truth or Dare';
+  static const truthOrDareBlurb =
+      'Pick truth or dare, face the prompt, and earn a point for going '
+      'through with it. The most daring player wins.';
 }
