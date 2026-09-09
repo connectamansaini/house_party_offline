@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import 'package:house_party_offline/src/roster/domain/roster_seed.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_player.dart';
@@ -11,11 +13,11 @@ part 'truth_or_dare_setup_state.dart';
 
 /// Drives the Truth or Dare setup form: roster, round count and spice level.
 ///
-/// Nothing to load — the roster is seeded fresh on every visit, so the
-/// initial state is computed directly rather than via a `Started` event.
+/// Seeds numbered defaults synchronously, then [TruthOrDareSetupStarted]
+/// swaps in the shared roster's names if any are saved.
 class TruthOrDareSetupBloc
     extends Bloc<TruthOrDareSetupEvent, TruthOrDareSetupState> {
-  TruthOrDareSetupBloc()
+  TruthOrDareSetupBloc(this._roster)
     : super(
         TruthOrDareSetupState(
           players: _defaultRoster(TruthOrDareConfig.minPlayers),
@@ -26,7 +28,36 @@ class TruthOrDareSetupBloc
     on<TruthOrDareSetupPlayerRenamed>(_onPlayerRenamed);
     on<TruthOrDareSetupRoundCountChanged>(_onRoundCountChanged);
     on<TruthOrDareSetupLevelChanged>(_onLevelChanged);
+    on<TruthOrDareSetupStarted>(_onStarted);
+    on<TruthOrDareSetupRosterSaved>(_onRosterSaved);
   }
+
+  final RosterRepository _roster;
+
+  Future<void> _onStarted(
+    TruthOrDareSetupStarted event,
+    Emitter<TruthOrDareSetupState> emit,
+  ) async {
+    final saved = await _roster.loadNames();
+    if (saved.isEmpty) return;
+    emit(
+      state.copyWith(
+        players: [
+          for (final name in seedRosterNames(
+            saved,
+            min: TruthOrDareConfig.minPlayers,
+            max: TruthOrDareConfig.maxPlayers,
+          ))
+            TruthOrDarePlayer(id: newId(), name: name),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onRosterSaved(
+    TruthOrDareSetupRosterSaved event,
+    Emitter<TruthOrDareSetupState> emit,
+  ) => _roster.saveNames([for (final p in state.players) p.name]);
 
   void _onPlayerAdded(
     TruthOrDareSetupPlayerAdded event,

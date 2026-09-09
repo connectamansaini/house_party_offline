@@ -7,6 +7,16 @@ sealed class NeverHaveIEverSetupEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Loads the shared roster into the form.
+class NeverHaveIEverSetupStarted extends NeverHaveIEverSetupEvent {
+  const NeverHaveIEverSetupStarted();
+}
+
+/// Saves the current names to the shared roster — sent when a game starts.
+class NeverHaveIEverSetupRosterSaved extends NeverHaveIEverSetupEvent {
+  const NeverHaveIEverSetupRosterSaved();
+}
+
 class NeverHaveIEverSetupPlayerAdded extends NeverHaveIEverSetupEvent {
   const NeverHaveIEverSetupPlayerAdded();
 }

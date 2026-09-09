@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/bloc/never_have_i_ever_setup_bloc.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 Future<NeverHaveIEverSetupState> _emitUntil(
   NeverHaveIEverSetupBloc bloc,
@@ -13,9 +14,36 @@ Future<NeverHaveIEverSetupState> _emitUntil(
 }
 
 void main() {
+  group('roster', () {
+    test('Started seeds the saved roster', () async {
+      final bloc = NeverHaveIEverSetupBloc(
+        FakeRosterRepository(['Ann', 'Bo', 'Cy']),
+      );
+
+      final s = await _emitUntil(
+        bloc,
+        const NeverHaveIEverSetupStarted(),
+        (s) => s.players.first.name == 'Ann',
+      );
+
+      expect(s.players.map((p) => p.name), ['Ann', 'Bo', 'Cy']);
+      await bloc.close();
+    });
+
+    test('RosterSaved writes the current names', () async {
+      final roster = FakeRosterRepository();
+      final bloc = NeverHaveIEverSetupBloc(roster)
+        ..add(const NeverHaveIEverSetupRosterSaved());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(roster.stored, ['Player 1', 'Player 2']);
+      await bloc.close();
+    });
+  });
+
   group('initial state', () {
     test('seeds the minimum default roster', () {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
       expect(bloc.state.players.length, NeverHaveIEverConfig.minPlayers);
       expect(
         bloc.state.players.map((p) => p.name),
@@ -31,7 +59,7 @@ void main() {
 
   group('players', () {
     test('addPlayer appends up to the max', () async {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
       final before = bloc.state.players.length;
 
       final s = await _emitUntil(
@@ -45,7 +73,7 @@ void main() {
     });
 
     test('addPlayer is capped at maxPlayers', () async {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
       for (var i = 0; i < 20; i++) {
         bloc.add(const NeverHaveIEverSetupPlayerAdded());
       }
@@ -58,7 +86,7 @@ void main() {
     });
 
     test('removePlayer removes the target', () async {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
       final firstId = bloc.state.players.first.id;
 
       final s = await _emitUntil(
@@ -72,7 +100,7 @@ void main() {
     });
 
     test('renamePlayer updates only the target', () async {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
       final id = bloc.state.players[1].id;
 
       final s = await _emitUntil(
@@ -90,7 +118,7 @@ void main() {
 
   group('config', () {
     test('setLivesCount clamps within min/max', () async {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
 
       final capped = await _emitUntil(
         bloc,
@@ -110,7 +138,7 @@ void main() {
     });
 
     test('buildSetup produces a matching NeverHaveIEverSetup', () async {
-      final bloc = NeverHaveIEverSetupBloc();
+      final bloc = NeverHaveIEverSetupBloc(FakeRosterRepository());
       await _emitUntil(
         bloc,
         const NeverHaveIEverSetupLivesCountChanged(5),

@@ -16,6 +16,7 @@ import 'package:house_party_offline/src/imposter_packs/domain/usecases/get_impos
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/load_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/save_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/presentation/bloc/imposter_setup_bloc.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 
 /// Setup flow: enter players, pick a word pack, choose options, then start.
 class ImposterSetupPage extends StatelessWidget {
@@ -28,6 +29,7 @@ class ImposterSetupPage extends StatelessWidget {
         getIt<LoadImposterSetupPreferencesUseCase>(),
         getIt<SaveImposterSetupPreferencesUseCase>(),
         getIt<GetImposterPacksUseCase>(),
+        getIt<RosterRepository>(),
       )..add(const ImposterSetupStarted()),
       child: const _ImposterSetupView(),
     );

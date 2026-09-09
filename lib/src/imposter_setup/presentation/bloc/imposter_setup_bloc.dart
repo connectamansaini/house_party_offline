@@ -11,6 +11,8 @@ import 'package:house_party_offline/src/imposter_packs/domain/usecases/get_impos
 import 'package:house_party_offline/src/imposter_setup/domain/entities/imposter_setup_preferences_entity.dart';
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/load_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/save_imposter_setup_preferences_usecase.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import 'package:house_party_offline/src/roster/domain/roster_seed.dart';
 
 part 'imposter_setup_event.dart';
 part 'imposter_setup_state.dart';
@@ -28,6 +30,7 @@ class ImposterSetupBloc extends Bloc<ImposterSetupEvent, ImposterSetupState> {
     this._loadPreferences,
     this._savePreferences,
     this._getPacks,
+    this._roster,
   ) : super(const ImposterSetupState()) {
     on<ImposterSetupStarted>(_onStarted);
     on<ImposterSetupPacksRefreshRequested>(_onPacksRefreshRequested);
@@ -49,6 +52,7 @@ class ImposterSetupBloc extends Bloc<ImposterSetupEvent, ImposterSetupState> {
   final LoadImposterSetupPreferencesUseCase _loadPreferences;
   final SaveImposterSetupPreferencesUseCase _savePreferences;
   final GetImposterPacksUseCase _getPacks;
+  final RosterRepository _roster;
 
   /// Pack ids to reselect once packs finish loading (from saved prefs).
   List<String> _preferredPackIds = const [];
@@ -60,11 +64,18 @@ class ImposterSetupBloc extends Bloc<ImposterSetupEvent, ImposterSetupState> {
     final prefs = await _loadPreferences();
     _preferredPackIds = prefs?.selectedPackIds ?? const [];
 
-    final players = (prefs != null && prefs.playerNames.isNotEmpty)
-        ? [
-            for (final name in prefs.playerNames)
-              Player(id: newId(), name: name),
-          ]
+    // Names come from the roster shared with every game; the names in this
+    // game's own preferences are only a fallback from before it existed.
+    final rosterNames = await _roster.loadNames();
+    final names = rosterNames.isNotEmpty
+        ? seedRosterNames(
+            rosterNames,
+            min: ImposterSetupState.minPlayers,
+            max: ImposterSetupState.maxPlayers,
+          )
+        : prefs?.playerNames ?? const <String>[];
+    final players = names.isNotEmpty
+        ? [for (final name in names) Player(id: newId(), name: name)]
         : _defaultRoster(ImposterSetupState.minPlayers);
 
     var seeded = state.copyWith(
@@ -228,11 +239,14 @@ class ImposterSetupBloc extends Bloc<ImposterSetupEvent, ImposterSetupState> {
     emit(state.copyWith(imposterWinPoints: event.points.clamp(1, 10)));
   }
 
-  /// Saves the current roster and options for next time.
-  Future<void> persist() {
-    return _savePreferences(
+  /// Saves the current roster and options for next time. Names go to the
+  /// shared roster as well, so the other games pick them up.
+  Future<void> persist() async {
+    final names = state.players.map((p) => p.name).toList();
+    await _roster.saveNames(names);
+    await _savePreferences(
       ImposterSetupPreferencesEntity(
-        playerNames: state.players.map((p) => p.name).toList(),
+        playerNames: names,
         imposterCount: state.imposterCount,
         imposterMode: state.imposterMode,
         categoryHintEnabled: state.categoryHintEnabled,

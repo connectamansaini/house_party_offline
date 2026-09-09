@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
 import 'package:house_party_offline/src/truth_or_dare_setup/presentation/pages/truth_or_dare_setup_page.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 /// Exercises the real, wired-up [TruthOrDareSetupPage] end to end — the
 /// roster, both options, and the Start button.
 void main() {
+  setUp(() {
+    getIt.registerSingleton<RosterRepository>(FakeRosterRepository());
+  });
+
+  tearDown(() async {
+    await getIt.reset();
+  });
+
   testWidgets(
     'renders the roster, rounds and spice level, with Start enabled',
     (

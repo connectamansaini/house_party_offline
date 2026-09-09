@@ -4,17 +4,19 @@ import 'package:house_party_offline/src/core/utils/id.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_player.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import 'package:house_party_offline/src/roster/domain/roster_seed.dart';
 
 part 'never_have_i_ever_setup_event.dart';
 part 'never_have_i_ever_setup_state.dart';
 
 /// Drives the Never Have I Ever setup form: roster and lives count.
 ///
-/// Nothing to load — the roster is seeded fresh on every visit, so the
-/// initial state is computed directly rather than via a `Started` event.
+/// Seeds numbered defaults synchronously, then [NeverHaveIEverSetupStarted]
+/// swaps in the shared roster's names if any are saved.
 class NeverHaveIEverSetupBloc
     extends Bloc<NeverHaveIEverSetupEvent, NeverHaveIEverSetupState> {
-  NeverHaveIEverSetupBloc()
+  NeverHaveIEverSetupBloc(this._roster)
     : super(
         NeverHaveIEverSetupState(
           players: _defaultRoster(NeverHaveIEverConfig.minPlayers),
@@ -24,7 +26,36 @@ class NeverHaveIEverSetupBloc
     on<NeverHaveIEverSetupPlayerRemoved>(_onPlayerRemoved);
     on<NeverHaveIEverSetupPlayerRenamed>(_onPlayerRenamed);
     on<NeverHaveIEverSetupLivesCountChanged>(_onLivesCountChanged);
+    on<NeverHaveIEverSetupStarted>(_onStarted);
+    on<NeverHaveIEverSetupRosterSaved>(_onRosterSaved);
   }
+
+  final RosterRepository _roster;
+
+  Future<void> _onStarted(
+    NeverHaveIEverSetupStarted event,
+    Emitter<NeverHaveIEverSetupState> emit,
+  ) async {
+    final saved = await _roster.loadNames();
+    if (saved.isEmpty) return;
+    emit(
+      state.copyWith(
+        players: [
+          for (final name in seedRosterNames(
+            saved,
+            min: NeverHaveIEverConfig.minPlayers,
+            max: NeverHaveIEverConfig.maxPlayers,
+          ))
+            NeverHaveIEverPlayer(id: newId(), name: name),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onRosterSaved(
+    NeverHaveIEverSetupRosterSaved event,
+    Emitter<NeverHaveIEverSetupState> emit,
+  ) => _roster.saveNames([for (final p in state.players) p.name]);
 
   void _onPlayerAdded(
     NeverHaveIEverSetupPlayerAdded event,

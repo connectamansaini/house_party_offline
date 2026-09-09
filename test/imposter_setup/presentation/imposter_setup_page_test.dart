@@ -9,6 +9,8 @@ import 'package:house_party_offline/src/imposter_setup/domain/repositories/impos
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/load_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/save_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/presentation/pages/imposter_setup_page.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 /// This exercises the real, wired-up [ImposterSetupPage] end to end — the
 /// wizard widgets, the bloc it creates via `getIt`, and the step
@@ -59,7 +61,8 @@ void main() {
       )
       ..registerFactory<GetImposterPacksUseCase>(
         () => GetImposterPacksUseCase(_FakePacksRepo([_foods])),
-      );
+      )
+      ..registerSingleton<RosterRepository>(FakeRosterRepository());
   });
 
   tearDown(() async {

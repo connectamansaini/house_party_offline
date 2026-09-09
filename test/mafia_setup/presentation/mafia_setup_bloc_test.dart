@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/bloc/mafia_setup_bloc.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 /// Subscribes for the next state matching [predicate] *before* adding
 /// [event], then adds it — avoiding the race of adding first and hoping the
@@ -16,9 +17,40 @@ Future<MafiaSetupState> _emitUntil(
 }
 
 void main() {
+  group('roster', () {
+    test('Started seeds the saved roster, padded to the minimum', () async {
+      final bloc = MafiaSetupBloc(FakeRosterRepository(['Ann', 'Bo']));
+
+      final s = await _emitUntil(
+        bloc,
+        const MafiaSetupStarted(),
+        (s) => s.players.first.name == 'Ann',
+      );
+
+      expect(s.players.map((p) => p.name), [
+        'Ann',
+        'Bo',
+        'Player 3',
+        'Player 4',
+        'Player 5',
+      ]);
+      await bloc.close();
+    });
+
+    test('RosterSaved writes the current names', () async {
+      final roster = FakeRosterRepository();
+      final bloc = MafiaSetupBloc(roster)..add(const MafiaSetupRosterSaved());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(roster.stored.length, MafiaConfig.minPlayers);
+      expect(roster.stored.first, 'Player 1');
+      await bloc.close();
+    });
+  });
+
   group('initial state', () {
     test('seeds the minimum default roster', () {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       expect(bloc.state.players.length, MafiaConfig.minPlayers);
       expect(
         bloc.state.players.map((p) => p.name),
@@ -30,7 +62,7 @@ void main() {
 
   group('players', () {
     test('addPlayer appends up to the max', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       final before = bloc.state.players.length;
 
       final s = await _emitUntil(
@@ -44,7 +76,7 @@ void main() {
     });
 
     test('addPlayer is capped at maxPlayers', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       for (var i = 0; i < 20; i++) {
         bloc.add(const MafiaSetupPlayerAdded());
       }
@@ -57,7 +89,7 @@ void main() {
     });
 
     test('removePlayer clamps the mafia count', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       // 5 default players → max mafia is maxMafia(5).
       final maxMafia = MafiaConfig.maxMafia(bloc.state.players.length);
       await _emitUntil(
@@ -80,7 +112,7 @@ void main() {
     });
 
     test('renamePlayer updates only the target', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       final id = bloc.state.players[1].id;
 
       final s = await _emitUntil(
@@ -98,7 +130,7 @@ void main() {
 
   group('config', () {
     test('setMafiaCount clamps within maxMafia', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       final maxMafia = MafiaConfig.maxMafia(bloc.state.players.length);
 
       final capped = await _emitUntil(
@@ -119,7 +151,7 @@ void main() {
     });
 
     test('option switches flip independently', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
 
       var s = await _emitUntil(
         bloc,
@@ -154,7 +186,7 @@ void main() {
     });
 
     test('buildSetup produces a matching MafiaSetup', () async {
-      final bloc = MafiaSetupBloc();
+      final bloc = MafiaSetupBloc(FakeRosterRepository());
       await _emitUntil(
         bloc,
         const MafiaSetupMafiaCountChanged(2),

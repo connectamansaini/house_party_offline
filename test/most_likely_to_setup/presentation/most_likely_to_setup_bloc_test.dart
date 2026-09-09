@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/bloc/most_likely_to_setup_bloc.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 Future<MostLikelyToSetupState> _emitUntil(
   MostLikelyToSetupBloc bloc,
@@ -13,9 +14,34 @@ Future<MostLikelyToSetupState> _emitUntil(
 }
 
 void main() {
+  group('roster', () {
+    test('Started seeds the saved roster, padded to the minimum', () async {
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository(['Ann', 'Bo']));
+
+      final s = await _emitUntil(
+        bloc,
+        const MostLikelyToSetupStarted(),
+        (s) => s.players.first.name == 'Ann',
+      );
+
+      expect(s.players.map((p) => p.name), ['Ann', 'Bo', 'Player 3']);
+      await bloc.close();
+    });
+
+    test('RosterSaved writes the current names', () async {
+      final roster = FakeRosterRepository();
+      final bloc = MostLikelyToSetupBloc(roster)
+        ..add(const MostLikelyToSetupRosterSaved());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(roster.stored, ['Player 1', 'Player 2', 'Player 3']);
+      await bloc.close();
+    });
+  });
+
   group('initial state', () {
     test('seeds the minimum default roster', () {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
       expect(bloc.state.players.length, MostLikelyToConfig.minPlayers);
       expect(
         bloc.state.players.map((p) => p.name),
@@ -31,7 +57,7 @@ void main() {
 
   group('players', () {
     test('addPlayer appends up to the max', () async {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
       final before = bloc.state.players.length;
 
       final s = await _emitUntil(
@@ -45,7 +71,7 @@ void main() {
     });
 
     test('addPlayer is capped at maxPlayers', () async {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
       for (var i = 0; i < 20; i++) {
         bloc.add(const MostLikelyToSetupPlayerAdded());
       }
@@ -58,7 +84,7 @@ void main() {
     });
 
     test('removePlayer removes the target', () async {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
       final firstId = bloc.state.players.first.id;
 
       final s = await _emitUntil(
@@ -73,7 +99,7 @@ void main() {
     });
 
     test('renamePlayer updates only the target', () async {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
       final id = bloc.state.players[1].id;
 
       final s = await _emitUntil(
@@ -91,7 +117,7 @@ void main() {
 
   group('config', () {
     test('setRoundCount clamps within min/max', () async {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
 
       final capped = await _emitUntil(
         bloc,
@@ -111,7 +137,7 @@ void main() {
     });
 
     test('buildSetup produces a matching MostLikelyToSetup', () async {
-      final bloc = MostLikelyToSetupBloc();
+      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
       await _emitUntil(
         bloc,
         const MostLikelyToSetupRoundCountChanged(15),

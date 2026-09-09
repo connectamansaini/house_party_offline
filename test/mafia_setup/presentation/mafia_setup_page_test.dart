@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_setup_page.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 /// Exercises the real, wired-up [MafiaSetupPage] end to end — the roster
 /// list, the options, and the Start button — the same path a live app
 /// takes, just without a browser.
 void main() {
+  setUp(() {
+    getIt.registerSingleton<RosterRepository>(FakeRosterRepository());
+  });
+
+  tearDown(() async {
+    await getIt.reset();
+  });
+
   testWidgets(
     'renders the default roster and options, with Start game enabled',
     (tester) async {

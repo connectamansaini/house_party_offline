@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/bloc/mafia_setup_bloc.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 
 /// Setup for a Mafia match: roster and options, then start.
 class MafiaSetupPage extends StatelessWidget {
@@ -15,7 +17,9 @@ class MafiaSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MafiaSetupBloc(),
+      create: (_) =>
+          MafiaSetupBloc(getIt<RosterRepository>())
+            ..add(const MafiaSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -141,10 +145,13 @@ class _SetupView extends StatelessWidget {
                   ),
                   child: FilledButton.icon(
                     onPressed: state.canStart
-                        ? () => context.push(
-                            AppRoutes.mafiaGame,
-                            extra: state.buildSetup(),
-                          )
+                        ? () {
+                            bloc.add(const MafiaSetupRosterSaved());
+                            context.push(
+                              AppRoutes.mafiaGame,
+                              extra: state.buildSetup(),
+                            );
+                          }
                         : null,
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: const Text('Start game'),

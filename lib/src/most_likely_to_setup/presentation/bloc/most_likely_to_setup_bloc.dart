@@ -4,17 +4,19 @@ import 'package:house_party_offline/src/core/utils/id.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_player.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import 'package:house_party_offline/src/roster/domain/roster_seed.dart';
 
 part 'most_likely_to_setup_event.dart';
 part 'most_likely_to_setup_state.dart';
 
 /// Drives the Most Likely To setup form: roster and round count.
 ///
-/// Nothing to load — the roster is seeded fresh on every visit, so the
-/// initial state is computed directly rather than via a `Started` event.
+/// Seeds numbered defaults synchronously, then [MostLikelyToSetupStarted]
+/// swaps in the shared roster's names if any are saved.
 class MostLikelyToSetupBloc
     extends Bloc<MostLikelyToSetupEvent, MostLikelyToSetupState> {
-  MostLikelyToSetupBloc()
+  MostLikelyToSetupBloc(this._roster)
     : super(
         MostLikelyToSetupState(
           players: _defaultRoster(MostLikelyToConfig.minPlayers),
@@ -24,7 +26,36 @@ class MostLikelyToSetupBloc
     on<MostLikelyToSetupPlayerRemoved>(_onPlayerRemoved);
     on<MostLikelyToSetupPlayerRenamed>(_onPlayerRenamed);
     on<MostLikelyToSetupRoundCountChanged>(_onRoundCountChanged);
+    on<MostLikelyToSetupStarted>(_onStarted);
+    on<MostLikelyToSetupRosterSaved>(_onRosterSaved);
   }
+
+  final RosterRepository _roster;
+
+  Future<void> _onStarted(
+    MostLikelyToSetupStarted event,
+    Emitter<MostLikelyToSetupState> emit,
+  ) async {
+    final saved = await _roster.loadNames();
+    if (saved.isEmpty) return;
+    emit(
+      state.copyWith(
+        players: [
+          for (final name in seedRosterNames(
+            saved,
+            min: MostLikelyToConfig.minPlayers,
+            max: MostLikelyToConfig.maxPlayers,
+          ))
+            MostLikelyToPlayer(id: newId(), name: name),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onRosterSaved(
+    MostLikelyToSetupRosterSaved event,
+    Emitter<MostLikelyToSetupState> emit,
+  ) => _roster.saveNames([for (final p in state.players) p.name]);
 
   void _onPlayerAdded(
     MostLikelyToSetupPlayerAdded event,

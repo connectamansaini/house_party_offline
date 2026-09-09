@@ -4,18 +4,21 @@ import 'package:house_party_offline/src/core/utils/id.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_setup.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import 'package:house_party_offline/src/roster/domain/roster_seed.dart';
 
 part 'mafia_setup_event.dart';
 part 'mafia_setup_state.dart';
 
 /// Drives the Mafia setup form: roster and match options.
 ///
-/// Unlike the Imposter setup, there is nothing to load — the roster is
-/// seeded fresh on every visit, so the initial state is computed directly
-/// rather than via a `Started` event.
+/// Seeds numbered defaults synchronously, then [MafiaSetupStarted] swaps in
+/// the shared roster's names if any are saved.
 class MafiaSetupBloc extends Bloc<MafiaSetupEvent, MafiaSetupState> {
-  MafiaSetupBloc()
+  MafiaSetupBloc(this._roster)
     : super(MafiaSetupState(players: _defaultRoster(MafiaConfig.minPlayers))) {
+    on<MafiaSetupStarted>(_onStarted);
+    on<MafiaSetupRosterSaved>(_onRosterSaved);
     on<MafiaSetupPlayerAdded>(_onPlayerAdded);
     on<MafiaSetupPlayerRemoved>(_onPlayerRemoved);
     on<MafiaSetupPlayerRenamed>(_onPlayerRenamed);
@@ -25,6 +28,37 @@ class MafiaSetupBloc extends Bloc<MafiaSetupEvent, MafiaSetupState> {
     on<MafiaSetupDoctorSelfSaveChanged>(_onDoctorSelfSaveChanged);
     on<MafiaSetupDetectiveExactRoleChanged>(_onDetectiveExactRoleChanged);
   }
+
+  final RosterRepository _roster;
+
+  Future<void> _onStarted(
+    MafiaSetupStarted event,
+    Emitter<MafiaSetupState> emit,
+  ) async {
+    final saved = await _roster.loadNames();
+    if (saved.isEmpty) return;
+    final players = [
+      for (final name in seedRosterNames(
+        saved,
+        min: MafiaConfig.minPlayers,
+        max: MafiaConfig.maxPlayers,
+      ))
+        MafiaPlayer(id: newId(), name: name),
+    ];
+    emit(
+      state.copyWith(
+        players: players,
+        config: state.config.copyWith(
+          mafiaCount: _clampMafia(state.config.mafiaCount, players.length),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onRosterSaved(
+    MafiaSetupRosterSaved event,
+    Emitter<MafiaSetupState> emit,
+  ) => _roster.saveNames([for (final p in state.players) p.name]);
 
   void _onPlayerAdded(
     MafiaSetupPlayerAdded event,

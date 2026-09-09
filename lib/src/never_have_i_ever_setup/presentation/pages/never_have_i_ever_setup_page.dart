@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_player.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/bloc/never_have_i_ever_setup_bloc.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 
 /// Setup for a Never Have I Ever match: roster and lives, then start.
 class NeverHaveIEverSetupPage extends StatelessWidget {
@@ -15,7 +17,9 @@ class NeverHaveIEverSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => NeverHaveIEverSetupBloc(),
+      create: (_) =>
+          NeverHaveIEverSetupBloc(getIt<RosterRepository>())
+            ..add(const NeverHaveIEverSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -106,10 +110,13 @@ class _SetupView extends StatelessWidget {
                   ),
                   child: FilledButton.icon(
                     onPressed: state.canStart
-                        ? () => context.push(
-                            AppRoutes.neverHaveIEverGame,
-                            extra: state.buildSetup(),
-                          )
+                        ? () {
+                            bloc.add(const NeverHaveIEverSetupRosterSaved());
+                            context.push(
+                              AppRoutes.neverHaveIEverGame,
+                              extra: state.buildSetup(),
+                            );
+                          }
                         : null,
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: const Text('Start game'),

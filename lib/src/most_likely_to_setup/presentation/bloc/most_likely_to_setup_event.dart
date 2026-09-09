@@ -7,6 +7,16 @@ sealed class MostLikelyToSetupEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Loads the shared roster into the form.
+class MostLikelyToSetupStarted extends MostLikelyToSetupEvent {
+  const MostLikelyToSetupStarted();
+}
+
+/// Saves the current names to the shared roster — sent when a game starts.
+class MostLikelyToSetupRosterSaved extends MostLikelyToSetupEvent {
+  const MostLikelyToSetupRosterSaved();
+}
+
 class MostLikelyToSetupPlayerAdded extends MostLikelyToSetupEvent {
   const MostLikelyToSetupPlayerAdded();
 }

@@ -7,6 +7,7 @@ import 'package:house_party_offline/src/imposter_setup/domain/repositories/impos
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/load_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/domain/usecases/save_imposter_setup_preferences_usecase.dart';
 import 'package:house_party_offline/src/imposter_setup/presentation/bloc/imposter_setup_bloc.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 class _FakePacksRepo implements ImposterPacksRepository {
   _FakePacksRepo(this.packs, {this.throwOnGet = false});
@@ -58,12 +59,14 @@ ImposterSetupBloc _bloc(
   bool throwOnGet = false,
   ImposterSetupPreferencesEntity? prefs,
   _FakePreferencesRepo? preferencesRepo,
+  FakeRosterRepository? roster,
 }) {
   final preferences = preferencesRepo ?? _FakePreferencesRepo(prefs);
   return ImposterSetupBloc(
     LoadImposterSetupPreferencesUseCase(preferences),
     SaveImposterSetupPreferencesUseCase(preferences),
     GetImposterPacksUseCase(_FakePacksRepo(packs, throwOnGet: throwOnGet)),
+    roster ?? FakeRosterRepository(),
   );
 }
 
@@ -89,6 +92,45 @@ Future<ImposterSetupState> _started(ImposterSetupBloc bloc) => _emitUntil(
 );
 
 void main() {
+  group('shared roster', () {
+    test(
+      "roster names take precedence over this game's saved names",
+      () async {
+        final bloc = _bloc(
+          [_foods],
+          prefs: const ImposterSetupPreferencesEntity(
+            playerNames: ['Old', 'Names', 'Here'],
+          ),
+          roster: FakeRosterRepository(['Ann', 'Bo']),
+        );
+
+        final s = await _emitUntil(
+          bloc,
+          const ImposterSetupStarted(),
+          (s) => s.players.isNotEmpty,
+        );
+
+        expect(s.players.map((p) => p.name), ['Ann', 'Bo', 'Player 3']);
+        await bloc.close();
+      },
+    );
+
+    test('persist writes the names to the shared roster too', () async {
+      final roster = FakeRosterRepository();
+      final bloc = _bloc([_foods], roster: roster);
+      await _emitUntil(
+        bloc,
+        const ImposterSetupStarted(),
+        (s) => s.players.isNotEmpty,
+      );
+
+      await bloc.persist();
+
+      expect(roster.stored, ['Player 1', 'Player 2', 'Player 3']);
+      await bloc.close();
+    });
+  });
+
   group('ImposterSetupStarted', () {
     test('seeds a default roster, loads packs, selects the first', () async {
       final bloc = _bloc([_foods, _animals]);

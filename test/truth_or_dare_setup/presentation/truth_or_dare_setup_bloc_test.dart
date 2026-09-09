@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
 import 'package:house_party_offline/src/truth_or_dare_setup/presentation/bloc/truth_or_dare_setup_bloc.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 Future<TruthOrDareSetupState> _emitUntil(
   TruthOrDareSetupBloc bloc,
@@ -14,8 +15,35 @@ Future<TruthOrDareSetupState> _emitUntil(
 }
 
 void main() {
+  group('roster', () {
+    test('Started seeds the saved roster, cut to the maximum', () async {
+      final names = List.generate(15, (i) => 'P$i');
+      final bloc = TruthOrDareSetupBloc(FakeRosterRepository(names));
+
+      final s = await _emitUntil(
+        bloc,
+        const TruthOrDareSetupStarted(),
+        (s) => s.players.first.name == 'P0',
+      );
+
+      expect(s.players.length, TruthOrDareConfig.maxPlayers);
+      expect(s.players.last.name, 'P11');
+      await bloc.close();
+    });
+
+    test('RosterSaved writes the current names', () async {
+      final roster = FakeRosterRepository();
+      final bloc = TruthOrDareSetupBloc(roster)
+        ..add(const TruthOrDareSetupRosterSaved());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(roster.stored, ['Player 1', 'Player 2']);
+      await bloc.close();
+    });
+  });
+
   test('seeds the minimum roster with mild, three-round defaults', () {
-    final bloc = TruthOrDareSetupBloc();
+    final bloc = TruthOrDareSetupBloc(FakeRosterRepository());
     expect(bloc.state.players.length, TruthOrDareConfig.minPlayers);
     expect(bloc.state.config.roundCount, 3);
     expect(bloc.state.config.level, TruthOrDareLevel.mild);
@@ -24,7 +52,7 @@ void main() {
   });
 
   test('addPlayer is capped at maxPlayers', () async {
-    final bloc = TruthOrDareSetupBloc();
+    final bloc = TruthOrDareSetupBloc(FakeRosterRepository());
     for (var i = 0; i < 20; i++) {
       bloc.add(const TruthOrDareSetupPlayerAdded());
     }
@@ -36,7 +64,7 @@ void main() {
   });
 
   test('removing below the minimum blocks starting', () async {
-    final bloc = TruthOrDareSetupBloc();
+    final bloc = TruthOrDareSetupBloc(FakeRosterRepository());
     final firstId = bloc.state.players.first.id;
 
     final s = await _emitUntil(
@@ -50,7 +78,7 @@ void main() {
   });
 
   test('renamePlayer updates only the target', () async {
-    final bloc = TruthOrDareSetupBloc();
+    final bloc = TruthOrDareSetupBloc(FakeRosterRepository());
     final id = bloc.state.players[1].id;
 
     final s = await _emitUntil(
@@ -64,7 +92,7 @@ void main() {
   });
 
   test('round count clamps and level switches', () async {
-    final bloc = TruthOrDareSetupBloc();
+    final bloc = TruthOrDareSetupBloc(FakeRosterRepository());
 
     final capped = await _emitUntil(
       bloc,

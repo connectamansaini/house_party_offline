@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_setup_page.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import '../../helpers/fake_roster_repository.dart';
 
 /// Exercises the real, wired-up [NeverHaveIEverSetupPage] end to end — the
 /// roster list, the options, and the Start button.
 void main() {
+  setUp(() {
+    getIt.registerSingleton<RosterRepository>(FakeRosterRepository());
+  });
+
+  tearDown(() async {
+    await getIt.reset();
+  });
+
   testWidgets(
     'renders the default roster and options, with Start game enabled',
     (tester) async {

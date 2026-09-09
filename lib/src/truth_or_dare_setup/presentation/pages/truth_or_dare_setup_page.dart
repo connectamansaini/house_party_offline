@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_player.dart';
@@ -16,7 +18,9 @@ class TruthOrDareSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => TruthOrDareSetupBloc(),
+      create: (_) =>
+          TruthOrDareSetupBloc(getIt<RosterRepository>())
+            ..add(const TruthOrDareSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -125,10 +129,13 @@ class _SetupView extends StatelessWidget {
                   ),
                   child: FilledButton.icon(
                     onPressed: state.canStart
-                        ? () => context.push(
-                            AppRoutes.truthOrDareGame,
-                            extra: state.buildSetup(),
-                          )
+                        ? () {
+                            bloc.add(const TruthOrDareSetupRosterSaved());
+                            context.push(
+                              AppRoutes.truthOrDareGame,
+                              extra: state.buildSetup(),
+                            );
+                          }
                         : null,
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: const Text('Start game'),

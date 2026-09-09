@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_player.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/bloc/most_likely_to_setup_bloc.dart';
+import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 
 /// Setup for a Most Likely To match: roster and round count, then start.
 class MostLikelyToSetupPage extends StatelessWidget {
@@ -15,7 +17,9 @@ class MostLikelyToSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MostLikelyToSetupBloc(),
+      create: (_) =>
+          MostLikelyToSetupBloc(getIt<RosterRepository>())
+            ..add(const MostLikelyToSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -105,10 +109,13 @@ class _SetupView extends StatelessWidget {
                   ),
                   child: FilledButton.icon(
                     onPressed: state.canStart
-                        ? () => context.push(
-                            AppRoutes.mostLikelyToGame,
-                            extra: state.buildSetup(),
-                          )
+                        ? () {
+                            bloc.add(const MostLikelyToSetupRosterSaved());
+                            context.push(
+                              AppRoutes.mostLikelyToGame,
+                              extra: state.buildSetup(),
+                            );
+                          }
                         : null,
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: const Text('Start game'),

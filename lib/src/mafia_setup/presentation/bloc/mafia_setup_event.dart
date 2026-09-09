@@ -7,6 +7,16 @@ sealed class MafiaSetupEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Loads the shared roster into the form.
+class MafiaSetupStarted extends MafiaSetupEvent {
+  const MafiaSetupStarted();
+}
+
+/// Saves the current names to the shared roster — sent when a game starts.
+class MafiaSetupRosterSaved extends MafiaSetupEvent {
+  const MafiaSetupRosterSaved();
+}
+
 class MafiaSetupPlayerAdded extends MafiaSetupEvent {
   const MafiaSetupPlayerAdded();
 }

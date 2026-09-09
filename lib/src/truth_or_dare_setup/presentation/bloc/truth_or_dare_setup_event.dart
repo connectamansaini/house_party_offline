@@ -7,6 +7,16 @@ sealed class TruthOrDareSetupEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Loads the shared roster into the form.
+class TruthOrDareSetupStarted extends TruthOrDareSetupEvent {
+  const TruthOrDareSetupStarted();
+}
+
+/// Saves the current names to the shared roster — sent when a game starts.
+class TruthOrDareSetupRosterSaved extends TruthOrDareSetupEvent {
+  const TruthOrDareSetupRosterSaved();
+}
+
 class TruthOrDareSetupPlayerAdded extends TruthOrDareSetupEvent {
   const TruthOrDareSetupPlayerAdded();
 }
