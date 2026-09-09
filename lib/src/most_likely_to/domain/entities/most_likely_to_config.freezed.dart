@@ -16,7 +16,8 @@ mixin _$MostLikelyToConfig {
 
 /// How many prompts are played before the scores are final.
  int get roundCount;/// Whether the host's own prompts join the bundled deck.
- bool get includeCustomPrompts;
+ bool get includeCustomPrompts;/// Which bundled deck to deal from.
+ PromptLanguage get language;
 /// Create a copy of MostLikelyToConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $MostLikelyToConfigCopyWith<MostLikelyToConfig> get copyWith => _$MostLikelyToCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MostLikelyToConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MostLikelyToConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,roundCount,includeCustomPrompts);
+int get hashCode => Object.hash(runtimeType,roundCount,includeCustomPrompts,language);
 
 @override
 String toString() {
-  return 'MostLikelyToConfig(roundCount: $roundCount, includeCustomPrompts: $includeCustomPrompts)';
+  return 'MostLikelyToConfig(roundCount: $roundCount, includeCustomPrompts: $includeCustomPrompts, language: $language)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $MostLikelyToConfigCopyWith<$Res>  {
   factory $MostLikelyToConfigCopyWith(MostLikelyToConfig value, $Res Function(MostLikelyToConfig) _then) = _$MostLikelyToConfigCopyWithImpl;
 @useResult
 $Res call({
- int roundCount, bool includeCustomPrompts
+ int roundCount, bool includeCustomPrompts, PromptLanguage language
 });
 
 
@@ -64,11 +65,12 @@ class _$MostLikelyToConfigCopyWithImpl<$Res>
 
 /// Create a copy of MostLikelyToConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? roundCount = null,Object? includeCustomPrompts = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? roundCount = null,Object? includeCustomPrompts = null,Object? language = null,}) {
   return _then(_self.copyWith(
 roundCount: null == roundCount ? _self.roundCount : roundCount // ignore: cast_nullable_to_non_nullable
 as int,includeCustomPrompts: null == includeCustomPrompts ? _self.includeCustomPrompts : includeCustomPrompts // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as PromptLanguage,
   ));
 }
 
@@ -153,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int roundCount,  bool includeCustomPrompts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int roundCount,  bool includeCustomPrompts,  PromptLanguage language)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MostLikelyToConfig() when $default != null:
-return $default(_that.roundCount,_that.includeCustomPrompts);case _:
+return $default(_that.roundCount,_that.includeCustomPrompts,_that.language);case _:
   return orElse();
 
 }
@@ -174,10 +176,10 @@ return $default(_that.roundCount,_that.includeCustomPrompts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int roundCount,  bool includeCustomPrompts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int roundCount,  bool includeCustomPrompts,  PromptLanguage language)  $default,) {final _that = this;
 switch (_that) {
 case _MostLikelyToConfig():
-return $default(_that.roundCount,_that.includeCustomPrompts);case _:
+return $default(_that.roundCount,_that.includeCustomPrompts,_that.language);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +196,10 @@ return $default(_that.roundCount,_that.includeCustomPrompts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int roundCount,  bool includeCustomPrompts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int roundCount,  bool includeCustomPrompts,  PromptLanguage language)?  $default,) {final _that = this;
 switch (_that) {
 case _MostLikelyToConfig() when $default != null:
-return $default(_that.roundCount,_that.includeCustomPrompts);case _:
+return $default(_that.roundCount,_that.includeCustomPrompts,_that.language);case _:
   return null;
 
 }
@@ -209,13 +211,15 @@ return $default(_that.roundCount,_that.includeCustomPrompts);case _:
 
 
 class _MostLikelyToConfig extends MostLikelyToConfig {
-  const _MostLikelyToConfig({this.roundCount = 10, this.includeCustomPrompts = true}): super._();
+  const _MostLikelyToConfig({this.roundCount = 10, this.includeCustomPrompts = true, this.language = PromptLanguage.english}): super._();
   
 
 /// How many prompts are played before the scores are final.
 @override@JsonKey() final  int roundCount;
 /// Whether the host's own prompts join the bundled deck.
 @override@JsonKey() final  bool includeCustomPrompts;
+/// Which bundled deck to deal from.
+@override@JsonKey() final  PromptLanguage language;
 
 /// Create a copy of MostLikelyToConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +231,16 @@ _$MostLikelyToConfigCopyWith<_MostLikelyToConfig> get copyWith => __$MostLikelyT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MostLikelyToConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MostLikelyToConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,roundCount,includeCustomPrompts);
+int get hashCode => Object.hash(runtimeType,roundCount,includeCustomPrompts,language);
 
 @override
 String toString() {
-  return 'MostLikelyToConfig(roundCount: $roundCount, includeCustomPrompts: $includeCustomPrompts)';
+  return 'MostLikelyToConfig(roundCount: $roundCount, includeCustomPrompts: $includeCustomPrompts, language: $language)';
 }
 
 
@@ -247,7 +251,7 @@ abstract mixin class _$MostLikelyToConfigCopyWith<$Res> implements $MostLikelyTo
   factory _$MostLikelyToConfigCopyWith(_MostLikelyToConfig value, $Res Function(_MostLikelyToConfig) _then) = __$MostLikelyToConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int roundCount, bool includeCustomPrompts
+ int roundCount, bool includeCustomPrompts, PromptLanguage language
 });
 
 
@@ -264,11 +268,12 @@ class __$MostLikelyToConfigCopyWithImpl<$Res>
 
 /// Create a copy of MostLikelyToConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? roundCount = null,Object? includeCustomPrompts = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? roundCount = null,Object? includeCustomPrompts = null,Object? language = null,}) {
   return _then(_MostLikelyToConfig(
 roundCount: null == roundCount ? _self.roundCount : roundCount // ignore: cast_nullable_to_non_nullable
 as int,includeCustomPrompts: null == includeCustomPrompts ? _self.includeCustomPrompts : includeCustomPrompts // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as PromptLanguage,
   ));
 }
 

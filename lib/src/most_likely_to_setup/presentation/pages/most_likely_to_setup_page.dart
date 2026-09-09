@@ -5,6 +5,7 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/core/widgets/prompt_language_row.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_player.dart';
@@ -97,6 +98,12 @@ class _SetupView extends StatelessWidget {
                         max: MostLikelyToConfig.maxRounds,
                         onChanged: (count) => bloc.add(
                           MostLikelyToSetupRoundCountChanged(count),
+                        ),
+                      ),
+                      PromptLanguageRow(
+                        value: state.config.language,
+                        onChanged: (language) => bloc.add(
+                          MostLikelyToSetupLanguageChanged(language),
                         ),
                       ),
                       if (state.customPromptCount > 0)

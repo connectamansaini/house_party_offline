@@ -5,6 +5,7 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/core/widgets/prompt_language_row.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_player.dart';
@@ -98,6 +99,12 @@ class _SetupView extends StatelessWidget {
                         max: NeverHaveIEverConfig.maxLives,
                         onChanged: (count) => bloc.add(
                           NeverHaveIEverSetupLivesCountChanged(count),
+                        ),
+                      ),
+                      PromptLanguageRow(
+                        value: state.config.language,
+                        onChanged: (language) => bloc.add(
+                          NeverHaveIEverSetupLanguageChanged(language),
                         ),
                       ),
                       if (state.customPromptCount > 0)

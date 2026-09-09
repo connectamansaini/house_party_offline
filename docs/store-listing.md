@@ -44,8 +44,9 @@ Phone on your forehead, clues from the room, a clock ticking down. Tilt down for
 MADE FOR THE ROOM
 
 • One roster. Type the players' names once and every game's setup fills them in.
+• English and Hinglish decks for Never Have I Ever, Most Likely To and Truth or Dare. Pick the one your room speaks.
 • Your own prompts. Add inside jokes to Never Have I Ever, Most Likely To and Truth or Dare, kept alongside the bundled decks and switched on per match.
-• Custom word packs for Imposter and Heads Up.
+• Seven word packs for Imposter and Heads Up, Bollywood included, plus any you create.
 • A built-in "How to play" for every game, so nobody has to explain the rules.
 • Haptic feedback on turns, reveals and wins. The screen stays awake while you play.
 • A clean, near-monochrome design with one accent colour per game. Light and dark.
@@ -64,6 +65,7 @@ For the next release after 1.3.0.
 
 ```
 • Two new games: Truth or Dare and Heads Up
+• Hinglish decks for the prompt games and a Bollywood word pack
 • One shared player roster across every game
 • Add your own prompts to Never Have I Ever, Most Likely To and Truth or Dare
 • Haptic feedback on turns, reveals and wins

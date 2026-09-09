@@ -1,5 +1,15 @@
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
+import 'package:house_party_offline/src/never_have_i_ever/domain/prompts_hinglish.dart';
+
+/// The bundled deck for [language].
+List<String> neverHaveIEverPromptsFor(PromptLanguage language) =>
+    switch (language) {
+      PromptLanguage.english => kNeverHaveIEverPrompts,
+      PromptLanguage.hinglish => kNeverHaveIEverPromptsHinglish,
+    };
+
 /// Bundled "Never have I ever..." prompts. Kept as plain Dart (not an asset
-/// pack) — v1 has no pack selection, so there's nothing to justify the
+/// pack) — the only pick is the language, so there's nothing to justify the
 /// asset-loading machinery the word-pack games use.
 const kNeverHaveIEverPrompts = <String>[
   'Never have I ever cried during a movie.',

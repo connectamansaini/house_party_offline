@@ -21,7 +21,7 @@ Across all of them:
 - 👥 **One roster** — type the names once; every game's setup pre-fills them.
 - ✍️ **Your own prompts** for the prompt games, kept alongside the bundled decks
   and toggled per match.
-- 🃏 **Word packs** shared by Imposter and Heads Up — six bundled, plus any you
+- 🃏 **Word packs** shared by Imposter and Heads Up — seven bundled, plus any you
   create in the app.
 - 📳 Haptics on selection, turns, reveals and wins; screen kept awake in play.
 - 🎨 Near-monochrome design with one accent per game, light and dark.

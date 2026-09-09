@@ -1,6 +1,16 @@
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
+import 'package:house_party_offline/src/most_likely_to/domain/prompts_hinglish.dart';
+
+/// The bundled deck for [language].
+List<String> mostLikelyToPromptsFor(PromptLanguage language) =>
+    switch (language) {
+      PromptLanguage.english => kMostLikelyToPrompts,
+      PromptLanguage.hinglish => kMostLikelyToPromptsHinglish,
+    };
+
 /// Bundled "Most likely to..." prompts. Kept as plain Dart (not an asset
-/// pack) for the same reason as Never Have I Ever — v1 has no pack
-/// selection, so the asset-loading machinery would be unused complexity.
+/// pack) for the same reason as Never Have I Ever — the only pick is the
+/// language, so the asset-loading machinery would be unused complexity.
 const kMostLikelyToPrompts = <String>[
   'Most likely to become famous.',
   'Most likely to forget their own birthday.',

@@ -22,7 +22,10 @@ class MostLikelyToGameBloc
            session: engine.deal(
              setup.players,
              setup.config,
-             [...kMostLikelyToPrompts, ...setup.customPrompts],
+             [
+               ...mostLikelyToPromptsFor(setup.config.language),
+               ...setup.customPrompts,
+             ],
            ),
          ),
        ) {

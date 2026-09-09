@@ -5,6 +5,8 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/core/widgets/prompt_language_row.dart';
+import 'package:house_party_offline/src/core/widgets/segmented_option_row.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
@@ -112,27 +114,19 @@ class _SetupView extends StatelessWidget {
                             ),
                           ),
                         ),
-                      Padding(
-                        padding: AppPadding.v4,
-                        child: Row(
-                          children: [
-                            const Expanded(child: Text('Spice level')),
-                            SegmentedButton<TruthOrDareLevel>(
-                              showSelectedIcon: false,
-                              segments: [
-                                for (final level in TruthOrDareLevel.values)
-                                  ButtonSegment(
-                                    value: level,
-                                    label: Text(level.label),
-                                  ),
-                              ],
-                              selected: {state.config.level},
-                              onSelectionChanged: (selection) => bloc.add(
-                                TruthOrDareSetupLevelChanged(selection.first),
-                              ),
-                            ),
-                          ],
+                      PromptLanguageRow(
+                        value: state.config.language,
+                        onChanged: (language) => bloc.add(
+                          TruthOrDareSetupLanguageChanged(language),
                         ),
+                      ),
+                      SegmentedOptionRow<TruthOrDareLevel>(
+                        label: 'Spice level',
+                        values: TruthOrDareLevel.values,
+                        labelOf: (level) => level.label,
+                        value: state.config.level,
+                        onChanged: (level) =>
+                            bloc.add(TruthOrDareSetupLevelChanged(level)),
                       ),
                     ],
                   ),

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 
 part 'most_likely_to_config.freezed.dart';
 
@@ -11,6 +12,9 @@ abstract class MostLikelyToConfig with _$MostLikelyToConfig {
 
     /// Whether the host's own prompts join the bundled deck.
     @Default(true) bool includeCustomPrompts,
+
+    /// Which bundled deck to deal from.
+    @Default(PromptLanguage.english) PromptLanguage language,
   }) = _MostLikelyToConfig;
 
   const MostLikelyToConfig._();

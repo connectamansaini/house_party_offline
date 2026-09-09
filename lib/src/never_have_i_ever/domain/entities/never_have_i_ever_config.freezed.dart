@@ -16,7 +16,8 @@ mixin _$NeverHaveIEverConfig {
 
 /// How many prompts a player can match before they're out.
  int get livesPerPlayer;/// Whether the host's own prompts join the bundled deck.
- bool get includeCustomPrompts;
+ bool get includeCustomPrompts;/// Which bundled deck to deal from.
+ PromptLanguage get language;
 /// Create a copy of NeverHaveIEverConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $NeverHaveIEverConfigCopyWith<NeverHaveIEverConfig> get copyWith => _$NeverHaveI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NeverHaveIEverConfig&&(identical(other.livesPerPlayer, livesPerPlayer) || other.livesPerPlayer == livesPerPlayer)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NeverHaveIEverConfig&&(identical(other.livesPerPlayer, livesPerPlayer) || other.livesPerPlayer == livesPerPlayer)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,livesPerPlayer,includeCustomPrompts);
+int get hashCode => Object.hash(runtimeType,livesPerPlayer,includeCustomPrompts,language);
 
 @override
 String toString() {
-  return 'NeverHaveIEverConfig(livesPerPlayer: $livesPerPlayer, includeCustomPrompts: $includeCustomPrompts)';
+  return 'NeverHaveIEverConfig(livesPerPlayer: $livesPerPlayer, includeCustomPrompts: $includeCustomPrompts, language: $language)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $NeverHaveIEverConfigCopyWith<$Res>  {
   factory $NeverHaveIEverConfigCopyWith(NeverHaveIEverConfig value, $Res Function(NeverHaveIEverConfig) _then) = _$NeverHaveIEverConfigCopyWithImpl;
 @useResult
 $Res call({
- int livesPerPlayer, bool includeCustomPrompts
+ int livesPerPlayer, bool includeCustomPrompts, PromptLanguage language
 });
 
 
@@ -64,11 +65,12 @@ class _$NeverHaveIEverConfigCopyWithImpl<$Res>
 
 /// Create a copy of NeverHaveIEverConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? livesPerPlayer = null,Object? includeCustomPrompts = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? livesPerPlayer = null,Object? includeCustomPrompts = null,Object? language = null,}) {
   return _then(_self.copyWith(
 livesPerPlayer: null == livesPerPlayer ? _self.livesPerPlayer : livesPerPlayer // ignore: cast_nullable_to_non_nullable
 as int,includeCustomPrompts: null == includeCustomPrompts ? _self.includeCustomPrompts : includeCustomPrompts // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as PromptLanguage,
   ));
 }
 
@@ -153,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int livesPerPlayer,  bool includeCustomPrompts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int livesPerPlayer,  bool includeCustomPrompts,  PromptLanguage language)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NeverHaveIEverConfig() when $default != null:
-return $default(_that.livesPerPlayer,_that.includeCustomPrompts);case _:
+return $default(_that.livesPerPlayer,_that.includeCustomPrompts,_that.language);case _:
   return orElse();
 
 }
@@ -174,10 +176,10 @@ return $default(_that.livesPerPlayer,_that.includeCustomPrompts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int livesPerPlayer,  bool includeCustomPrompts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int livesPerPlayer,  bool includeCustomPrompts,  PromptLanguage language)  $default,) {final _that = this;
 switch (_that) {
 case _NeverHaveIEverConfig():
-return $default(_that.livesPerPlayer,_that.includeCustomPrompts);case _:
+return $default(_that.livesPerPlayer,_that.includeCustomPrompts,_that.language);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +196,10 @@ return $default(_that.livesPerPlayer,_that.includeCustomPrompts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int livesPerPlayer,  bool includeCustomPrompts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int livesPerPlayer,  bool includeCustomPrompts,  PromptLanguage language)?  $default,) {final _that = this;
 switch (_that) {
 case _NeverHaveIEverConfig() when $default != null:
-return $default(_that.livesPerPlayer,_that.includeCustomPrompts);case _:
+return $default(_that.livesPerPlayer,_that.includeCustomPrompts,_that.language);case _:
   return null;
 
 }
@@ -209,13 +211,15 @@ return $default(_that.livesPerPlayer,_that.includeCustomPrompts);case _:
 
 
 class _NeverHaveIEverConfig extends NeverHaveIEverConfig {
-  const _NeverHaveIEverConfig({this.livesPerPlayer = 3, this.includeCustomPrompts = true}): super._();
+  const _NeverHaveIEverConfig({this.livesPerPlayer = 3, this.includeCustomPrompts = true, this.language = PromptLanguage.english}): super._();
   
 
 /// How many prompts a player can match before they're out.
 @override@JsonKey() final  int livesPerPlayer;
 /// Whether the host's own prompts join the bundled deck.
 @override@JsonKey() final  bool includeCustomPrompts;
+/// Which bundled deck to deal from.
+@override@JsonKey() final  PromptLanguage language;
 
 /// Create a copy of NeverHaveIEverConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +231,16 @@ _$NeverHaveIEverConfigCopyWith<_NeverHaveIEverConfig> get copyWith => __$NeverHa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NeverHaveIEverConfig&&(identical(other.livesPerPlayer, livesPerPlayer) || other.livesPerPlayer == livesPerPlayer)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NeverHaveIEverConfig&&(identical(other.livesPerPlayer, livesPerPlayer) || other.livesPerPlayer == livesPerPlayer)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,livesPerPlayer,includeCustomPrompts);
+int get hashCode => Object.hash(runtimeType,livesPerPlayer,includeCustomPrompts,language);
 
 @override
 String toString() {
-  return 'NeverHaveIEverConfig(livesPerPlayer: $livesPerPlayer, includeCustomPrompts: $includeCustomPrompts)';
+  return 'NeverHaveIEverConfig(livesPerPlayer: $livesPerPlayer, includeCustomPrompts: $includeCustomPrompts, language: $language)';
 }
 
 
@@ -247,7 +251,7 @@ abstract mixin class _$NeverHaveIEverConfigCopyWith<$Res> implements $NeverHaveI
   factory _$NeverHaveIEverConfigCopyWith(_NeverHaveIEverConfig value, $Res Function(_NeverHaveIEverConfig) _then) = __$NeverHaveIEverConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int livesPerPlayer, bool includeCustomPrompts
+ int livesPerPlayer, bool includeCustomPrompts, PromptLanguage language
 });
 
 
@@ -264,11 +268,12 @@ class __$NeverHaveIEverConfigCopyWithImpl<$Res>
 
 /// Create a copy of NeverHaveIEverConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? livesPerPlayer = null,Object? includeCustomPrompts = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? livesPerPlayer = null,Object? includeCustomPrompts = null,Object? language = null,}) {
   return _then(_NeverHaveIEverConfig(
 livesPerPlayer: null == livesPerPlayer ? _self.livesPerPlayer : livesPerPlayer // ignore: cast_nullable_to_non_nullable
 as int,includeCustomPrompts: null == includeCustomPrompts ? _self.includeCustomPrompts : includeCustomPrompts // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as PromptLanguage,
   ));
 }
 

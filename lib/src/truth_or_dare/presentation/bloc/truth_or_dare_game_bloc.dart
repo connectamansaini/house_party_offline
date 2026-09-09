@@ -23,8 +23,14 @@ class TruthOrDareGameBloc
            session: engine.deal(
              setup.players,
              setup.config,
-             truths: [...truthsFor(setup.config.level), ...setup.customTruths],
-             dares: [...daresFor(setup.config.level), ...setup.customDares],
+             truths: [
+               ...truthsFor(setup.config.level, setup.config.language),
+               ...setup.customTruths,
+             ],
+             dares: [
+               ...daresFor(setup.config.level, setup.config.language),
+               ...setup.customDares,
+             ],
            ),
          ),
        ) {

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/core/utils/id.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
@@ -34,6 +35,16 @@ class TruthOrDareSetupBloc
     on<TruthOrDareSetupRosterSaved>(_onRosterSaved);
     on<TruthOrDareSetupIncludeCustomPromptsChanged>(
       _onIncludeCustomPromptsChanged,
+    );
+    on<TruthOrDareSetupLanguageChanged>(_onLanguageChanged);
+  }
+
+  void _onLanguageChanged(
+    TruthOrDareSetupLanguageChanged event,
+    Emitter<TruthOrDareSetupState> emit,
+  ) {
+    emit(
+      state.copyWith(config: state.config.copyWith(language: event.language)),
     );
   }
 

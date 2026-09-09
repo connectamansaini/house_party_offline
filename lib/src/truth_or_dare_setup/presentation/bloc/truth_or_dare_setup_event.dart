@@ -67,3 +67,12 @@ class TruthOrDareSetupLevelChanged extends TruthOrDareSetupEvent {
   @override
   List<Object?> get props => [level];
 }
+
+class TruthOrDareSetupLanguageChanged extends TruthOrDareSetupEvent {
+  const TruthOrDareSetupLanguageChanged(this.language);
+
+  final PromptLanguage language;
+
+  @override
+  List<Object?> get props => [language];
+}

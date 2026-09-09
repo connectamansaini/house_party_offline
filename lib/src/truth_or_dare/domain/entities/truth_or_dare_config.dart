@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
 
 part 'truth_or_dare_config.freezed.dart';
@@ -13,6 +14,9 @@ abstract class TruthOrDareConfig with _$TruthOrDareConfig {
 
     /// Whether the host's own truths and dares join the bundled decks.
     @Default(true) bool includeCustomPrompts,
+
+    /// Which bundled decks to deal from.
+    @Default(PromptLanguage.english) PromptLanguage language,
   }) = _TruthOrDareConfig;
 
   const TruthOrDareConfig._();

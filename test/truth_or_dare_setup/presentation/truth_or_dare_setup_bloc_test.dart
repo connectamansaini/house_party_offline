@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/entities/custom_prompt.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
@@ -165,6 +166,23 @@ void main() {
     );
     expect(spicy.buildSetup().config.level, TruthOrDareLevel.spicy);
     expect(spicy.buildSetup().config.roundCount, TruthOrDareConfig.maxRounds);
+
+    await bloc.close();
+  });
+
+  test('the deck language is carried into the setup', () async {
+    final bloc = TruthOrDareSetupBloc(
+      FakeRosterRepository(),
+      FakeCustomPromptsRepository(),
+    );
+    expect(bloc.state.config.language, PromptLanguage.english);
+
+    final hinglish = await _emitUntil(
+      bloc,
+      const TruthOrDareSetupLanguageChanged(PromptLanguage.hinglish),
+      (s) => s.config.language == PromptLanguage.hinglish,
+    );
+    expect(hinglish.buildSetup().config.language, PromptLanguage.hinglish);
 
     await bloc.close();
   });

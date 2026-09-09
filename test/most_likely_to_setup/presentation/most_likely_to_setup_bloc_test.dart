@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/entities/custom_prompt.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
@@ -209,5 +210,22 @@ void main() {
 
       await bloc.close();
     });
+  });
+
+  test('the deck language is carried into the setup', () async {
+    final bloc = MostLikelyToSetupBloc(
+      FakeRosterRepository(),
+      FakeCustomPromptsRepository(),
+    );
+    expect(bloc.state.config.language, PromptLanguage.english);
+
+    final hinglish = await _emitUntil(
+      bloc,
+      const MostLikelyToSetupLanguageChanged(PromptLanguage.hinglish),
+      (s) => s.config.language == PromptLanguage.hinglish,
+    );
+    expect(hinglish.buildSetup().config.language, PromptLanguage.hinglish);
+
+    await bloc.close();
   });
 }

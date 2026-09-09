@@ -63,3 +63,12 @@ class NeverHaveIEverSetupLivesCountChanged extends NeverHaveIEverSetupEvent {
   @override
   List<Object?> get props => [count];
 }
+
+class NeverHaveIEverSetupLanguageChanged extends NeverHaveIEverSetupEvent {
+  const NeverHaveIEverSetupLanguageChanged(this.language);
+
+  final PromptLanguage language;
+
+  @override
+  List<Object?> get props => [language];
+}

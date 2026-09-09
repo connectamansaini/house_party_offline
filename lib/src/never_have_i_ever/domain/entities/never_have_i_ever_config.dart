@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 
 part 'never_have_i_ever_config.freezed.dart';
 
@@ -11,6 +12,9 @@ abstract class NeverHaveIEverConfig with _$NeverHaveIEverConfig {
 
     /// Whether the host's own prompts join the bundled deck.
     @Default(true) bool includeCustomPrompts,
+
+    /// Which bundled deck to deal from.
+    @Default(PromptLanguage.english) PromptLanguage language,
   }) = _NeverHaveIEverConfig;
 
   const NeverHaveIEverConfig._();

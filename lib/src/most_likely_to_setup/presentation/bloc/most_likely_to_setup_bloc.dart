@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/core/utils/id.dart';
 import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/custom_prompt_deck.dart';
@@ -33,10 +34,20 @@ class MostLikelyToSetupBloc
     on<MostLikelyToSetupIncludeCustomPromptsChanged>(
       _onIncludeCustomPromptsChanged,
     );
+    on<MostLikelyToSetupLanguageChanged>(_onLanguageChanged);
   }
 
   final RosterRepository _roster;
   final CustomPromptsRepository _customPrompts;
+
+  void _onLanguageChanged(
+    MostLikelyToSetupLanguageChanged event,
+    Emitter<MostLikelyToSetupState> emit,
+  ) {
+    emit(
+      state.copyWith(config: state.config.copyWith(language: event.language)),
+    );
+  }
 
   Future<void> _onStarted(
     MostLikelyToSetupStarted event,

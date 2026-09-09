@@ -16,7 +16,8 @@ mixin _$TruthOrDareConfig {
 
 /// Full rounds to play — every player gets one turn per round.
  int get roundCount; TruthOrDareLevel get level;/// Whether the host's own truths and dares join the bundled decks.
- bool get includeCustomPrompts;
+ bool get includeCustomPrompts;/// Which bundled decks to deal from.
+ PromptLanguage get language;
 /// Create a copy of TruthOrDareConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $TruthOrDareConfigCopyWith<TruthOrDareConfig> get copyWith => _$TruthOrDareConfi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TruthOrDareConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.level, level) || other.level == level)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TruthOrDareConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.level, level) || other.level == level)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,roundCount,level,includeCustomPrompts);
+int get hashCode => Object.hash(runtimeType,roundCount,level,includeCustomPrompts,language);
 
 @override
 String toString() {
-  return 'TruthOrDareConfig(roundCount: $roundCount, level: $level, includeCustomPrompts: $includeCustomPrompts)';
+  return 'TruthOrDareConfig(roundCount: $roundCount, level: $level, includeCustomPrompts: $includeCustomPrompts, language: $language)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $TruthOrDareConfigCopyWith<$Res>  {
   factory $TruthOrDareConfigCopyWith(TruthOrDareConfig value, $Res Function(TruthOrDareConfig) _then) = _$TruthOrDareConfigCopyWithImpl;
 @useResult
 $Res call({
- int roundCount, TruthOrDareLevel level, bool includeCustomPrompts
+ int roundCount, TruthOrDareLevel level, bool includeCustomPrompts, PromptLanguage language
 });
 
 
@@ -64,12 +65,13 @@ class _$TruthOrDareConfigCopyWithImpl<$Res>
 
 /// Create a copy of TruthOrDareConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? roundCount = null,Object? level = null,Object? includeCustomPrompts = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? roundCount = null,Object? level = null,Object? includeCustomPrompts = null,Object? language = null,}) {
   return _then(_self.copyWith(
 roundCount: null == roundCount ? _self.roundCount : roundCount // ignore: cast_nullable_to_non_nullable
 as int,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as TruthOrDareLevel,includeCustomPrompts: null == includeCustomPrompts ? _self.includeCustomPrompts : includeCustomPrompts // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as PromptLanguage,
   ));
 }
 
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int roundCount,  TruthOrDareLevel level,  bool includeCustomPrompts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int roundCount,  TruthOrDareLevel level,  bool includeCustomPrompts,  PromptLanguage language)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TruthOrDareConfig() when $default != null:
-return $default(_that.roundCount,_that.level,_that.includeCustomPrompts);case _:
+return $default(_that.roundCount,_that.level,_that.includeCustomPrompts,_that.language);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.roundCount,_that.level,_that.includeCustomPrompts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int roundCount,  TruthOrDareLevel level,  bool includeCustomPrompts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int roundCount,  TruthOrDareLevel level,  bool includeCustomPrompts,  PromptLanguage language)  $default,) {final _that = this;
 switch (_that) {
 case _TruthOrDareConfig():
-return $default(_that.roundCount,_that.level,_that.includeCustomPrompts);case _:
+return $default(_that.roundCount,_that.level,_that.includeCustomPrompts,_that.language);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +197,10 @@ return $default(_that.roundCount,_that.level,_that.includeCustomPrompts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int roundCount,  TruthOrDareLevel level,  bool includeCustomPrompts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int roundCount,  TruthOrDareLevel level,  bool includeCustomPrompts,  PromptLanguage language)?  $default,) {final _that = this;
 switch (_that) {
 case _TruthOrDareConfig() when $default != null:
-return $default(_that.roundCount,_that.level,_that.includeCustomPrompts);case _:
+return $default(_that.roundCount,_that.level,_that.includeCustomPrompts,_that.language);case _:
   return null;
 
 }
@@ -210,7 +212,7 @@ return $default(_that.roundCount,_that.level,_that.includeCustomPrompts);case _:
 
 
 class _TruthOrDareConfig extends TruthOrDareConfig {
-  const _TruthOrDareConfig({this.roundCount = 3, this.level = TruthOrDareLevel.mild, this.includeCustomPrompts = true}): super._();
+  const _TruthOrDareConfig({this.roundCount = 3, this.level = TruthOrDareLevel.mild, this.includeCustomPrompts = true, this.language = PromptLanguage.english}): super._();
   
 
 /// Full rounds to play — every player gets one turn per round.
@@ -218,6 +220,8 @@ class _TruthOrDareConfig extends TruthOrDareConfig {
 @override@JsonKey() final  TruthOrDareLevel level;
 /// Whether the host's own truths and dares join the bundled decks.
 @override@JsonKey() final  bool includeCustomPrompts;
+/// Which bundled decks to deal from.
+@override@JsonKey() final  PromptLanguage language;
 
 /// Create a copy of TruthOrDareConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +233,16 @@ _$TruthOrDareConfigCopyWith<_TruthOrDareConfig> get copyWith => __$TruthOrDareCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TruthOrDareConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.level, level) || other.level == level)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TruthOrDareConfig&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount)&&(identical(other.level, level) || other.level == level)&&(identical(other.includeCustomPrompts, includeCustomPrompts) || other.includeCustomPrompts == includeCustomPrompts)&&(identical(other.language, language) || other.language == language));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,roundCount,level,includeCustomPrompts);
+int get hashCode => Object.hash(runtimeType,roundCount,level,includeCustomPrompts,language);
 
 @override
 String toString() {
-  return 'TruthOrDareConfig(roundCount: $roundCount, level: $level, includeCustomPrompts: $includeCustomPrompts)';
+  return 'TruthOrDareConfig(roundCount: $roundCount, level: $level, includeCustomPrompts: $includeCustomPrompts, language: $language)';
 }
 
 
@@ -249,7 +253,7 @@ abstract mixin class _$TruthOrDareConfigCopyWith<$Res> implements $TruthOrDareCo
   factory _$TruthOrDareConfigCopyWith(_TruthOrDareConfig value, $Res Function(_TruthOrDareConfig) _then) = __$TruthOrDareConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int roundCount, TruthOrDareLevel level, bool includeCustomPrompts
+ int roundCount, TruthOrDareLevel level, bool includeCustomPrompts, PromptLanguage language
 });
 
 
@@ -266,12 +270,13 @@ class __$TruthOrDareConfigCopyWithImpl<$Res>
 
 /// Create a copy of TruthOrDareConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? roundCount = null,Object? level = null,Object? includeCustomPrompts = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? roundCount = null,Object? level = null,Object? includeCustomPrompts = null,Object? language = null,}) {
   return _then(_TruthOrDareConfig(
 roundCount: null == roundCount ? _self.roundCount : roundCount // ignore: cast_nullable_to_non_nullable
 as int,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as TruthOrDareLevel,includeCustomPrompts: null == includeCustomPrompts ? _self.includeCustomPrompts : includeCustomPrompts // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
+as PromptLanguage,
   ));
 }
 

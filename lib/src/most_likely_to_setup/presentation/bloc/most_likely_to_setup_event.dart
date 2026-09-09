@@ -61,3 +61,12 @@ class MostLikelyToSetupRoundCountChanged extends MostLikelyToSetupEvent {
   @override
   List<Object?> get props => [count];
 }
+
+class MostLikelyToSetupLanguageChanged extends MostLikelyToSetupEvent {
+  const MostLikelyToSetupLanguageChanged(this.language);
+
+  final PromptLanguage language;
+
+  @override
+  List<Object?> get props => [language];
+}

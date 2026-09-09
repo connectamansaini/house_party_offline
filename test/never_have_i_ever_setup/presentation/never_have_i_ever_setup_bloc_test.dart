@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/bloc/never_have_i_ever_setup_bloc.dart';
 import '../../helpers/fake_custom_prompts_repository.dart';
@@ -177,5 +178,22 @@ void main() {
 
       await bloc.close();
     });
+  });
+
+  test('the deck language is carried into the setup', () async {
+    final bloc = NeverHaveIEverSetupBloc(
+      FakeRosterRepository(),
+      FakeCustomPromptsRepository(),
+    );
+    expect(bloc.state.config.language, PromptLanguage.english);
+
+    final hinglish = await _emitUntil(
+      bloc,
+      const NeverHaveIEverSetupLanguageChanged(PromptLanguage.hinglish),
+      (s) => s.config.language == PromptLanguage.hinglish,
+    );
+    expect(hinglish.buildSetup().config.language, PromptLanguage.hinglish);
+
+    await bloc.close();
   });
 }

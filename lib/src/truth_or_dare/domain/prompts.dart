@@ -1,17 +1,37 @@
+import 'package:house_party_offline/src/core/prompts/prompt_language.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
+import 'package:house_party_offline/src/truth_or_dare/domain/prompts_hinglish.dart';
 
 /// Bundled prompts, kept as plain Dart like the other prompt games — v1 has
 /// no pack selection beyond the spice level. Dares are all doable in a
 /// living room with nothing but the people in it.
-List<String> truthsFor(TruthOrDareLevel level) => switch (level) {
-  TruthOrDareLevel.mild => kMildTruths,
-  TruthOrDareLevel.spicy => [...kMildTruths, ...kSpicyTruths],
-};
+List<String> truthsFor(
+  TruthOrDareLevel level, [
+  PromptLanguage language = PromptLanguage.english,
+]) {
+  final (mild, spicy) = switch (language) {
+    PromptLanguage.english => (kMildTruths, kSpicyTruths),
+    PromptLanguage.hinglish => (kMildTruthsHinglish, kSpicyTruthsHinglish),
+  };
+  return switch (level) {
+    TruthOrDareLevel.mild => mild,
+    TruthOrDareLevel.spicy => [...mild, ...spicy],
+  };
+}
 
-List<String> daresFor(TruthOrDareLevel level) => switch (level) {
-  TruthOrDareLevel.mild => kMildDares,
-  TruthOrDareLevel.spicy => [...kMildDares, ...kSpicyDares],
-};
+List<String> daresFor(
+  TruthOrDareLevel level, [
+  PromptLanguage language = PromptLanguage.english,
+]) {
+  final (mild, spicy) = switch (language) {
+    PromptLanguage.english => (kMildDares, kSpicyDares),
+    PromptLanguage.hinglish => (kMildDaresHinglish, kSpicyDaresHinglish),
+  };
+  return switch (level) {
+    TruthOrDareLevel.mild => mild,
+    TruthOrDareLevel.spicy => [...mild, ...spicy],
+  };
+}
 
 const kMildTruths = <String>[
   "What's the most embarrassing thing on your phone right now?",
