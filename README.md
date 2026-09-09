@@ -105,6 +105,16 @@ flutter test
 
 Generated files are committed; CI fails if a rebuild changes them.
 
+### Store listing
+
+The Play listing copy lives in [`docs/store-listing.md`](docs/store-listing.md).
+The screenshots next to it are rendered from the real widgets, so after a UI
+change regenerate them with:
+
+```bash
+flutter test tool/screenshots/store_screenshots_test.dart --update-goldens
+```
+
 ### Adding a bundled word pack
 
 Drop a JSON file in `assets/word_packs/` and add its filename to `index.json`:
