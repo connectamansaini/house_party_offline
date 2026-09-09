@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// The app's page scaffold: a flat, theme-derived surface. It used to paint a
-/// tinted gradient behind every screen; the name stuck because every page
-/// already uses it, but the background is now deliberately plain so the
-/// content — and each game's single accent — is the only thing with color.
-class GradientScaffold extends StatelessWidget {
-  const GradientScaffold({
+/// The app's page scaffold: a [Scaffold] on the flat theme surface, so every
+/// page shares one background and the content — and each game's single
+/// accent — is the only thing with color.
+class AppScaffold extends StatelessWidget {
+  const AppScaffold({
     required this.body,
     super.key,
     this.appBar,

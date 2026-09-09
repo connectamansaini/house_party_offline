@@ -9,7 +9,7 @@ import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/core/widgets/loader.dart';
 import 'package:house_party_offline/core/widgets/page_failure_view.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
-import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
+import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
 import 'package:house_party_offline/src/imposter_packs/domain/entities/imposter_pack_entity.dart';
 import 'package:house_party_offline/src/imposter_packs/domain/status/imposter_packs_status.dart';
@@ -37,7 +37,7 @@ class _ImposterPacksView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientScaffold(
+    return AppScaffold(
       appBar: AppBar(title: const Text('Word Packs')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openEditor(context),

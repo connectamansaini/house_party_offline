@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
@@ -49,6 +50,11 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
         titleTextStyle: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        // A transparent app bar makes Flutter guess light status-bar icons;
+        // pin them to the page surface instead so the clock stays legible.
+        systemOverlayStyle: isDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
       cardTheme: CardThemeData(
         elevation: 0,

@@ -4,8 +4,8 @@ import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/core/constants/app_strings.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/app_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/entrance.dart';
-import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
 import 'package:house_party_offline/src/core/widgets/hero_banner.dart';
 import 'package:house_party_offline/src/core/widgets/ticket_card.dart';
 
@@ -15,7 +15,7 @@ class NeverHaveIEverHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientScaffold(
+    return AppScaffold(
       appBar: AppBar(),
       extendBodyBehindAppBar: true,
       body: SafeArea(
