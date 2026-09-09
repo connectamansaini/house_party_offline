@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/engine/most_likely_to_engine.dart';
@@ -56,6 +57,41 @@ void main() {
     expect(find.text('Ann wins!'), findsOneWidget);
     expect(find.text('Game over'), findsOneWidget);
     expect(find.text('${MostLikelyToConfig.minRounds} pts'), findsOneWidget);
+  });
+
+  testWidgets('selecting a player and confirming a round give haptics', (
+    tester,
+  ) async {
+    final methods = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        methods.add(call.method);
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+
+    await tester.pumpWidget(
+      const MaterialApp(home: MostLikelyToGamePage(setup: setup)),
+    );
+    await tester.pumpAndSettle();
+    methods.clear();
+
+    await tester.tap(find.text('Ann'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Confirm & continue'));
+    await tester.pumpAndSettle();
+
+    expect(
+      methods.where((m) => m == 'HapticFeedback.vibrate').length,
+      2, // one selection click, one round-confirm tap
+    );
   });
 
   testWidgets('quitting asks for confirmation before leaving', (

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
+import 'package:house_party_offline/src/core/haptics/app_haptics.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/engine/never_have_i_ever_engine.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/bloc/never_have_i_ever_game_bloc.dart';
@@ -51,50 +52,59 @@ class _GameScaffoldState extends State<_GameScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NeverHaveIEverGameBloc, NeverHaveIEverGameState>(
-      builder: (context, state) {
-        final isOver = state.session.isOver;
-        return PopScope(
-          canPop: isOver,
-          onPopInvokedWithResult: (didPop, _) async {
-            if (didPop) return;
-            final leave = await _confirmQuit(context);
-            if (leave && context.mounted) context.go(AppRoutes.home);
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(isOver ? 'Game over' : 'Never Have I Ever'),
-              automaticallyImplyLeading: false,
-              actions: [
-                if (!isOver)
-                  IconButton(
-                    tooltip: 'Quit game',
-                    icon: const Icon(Icons.close),
-                    onPressed: () async {
-                      final leave = await _confirmQuit(context);
-                      if (leave && context.mounted) context.go(AppRoutes.home);
-                    },
-                  ),
-              ],
-            ),
-            body: SafeArea(
-              child: AnimatedSwitcher(
-                duration: AppMotion.base,
-                transitionBuilder: AppMotion.fadeRise,
-                child: isOver
-                    ? NeverHaveIEverGameOverView(
-                        key: const ValueKey('over'),
-                        session: state.session,
-                      )
-                    : PromptRevealView(
-                        key: ValueKey(state.session.promptIndex),
-                        state: state,
-                      ),
+    return BlocListener<NeverHaveIEverGameBloc, NeverHaveIEverGameState>(
+      // A round resolving is a light tap; the match ending, a heavy one.
+      listenWhen: (prev, cur) =>
+          prev.session.promptIndex != cur.session.promptIndex,
+      listener: (_, state) =>
+          state.session.isOver ? AppHaptics.win() : AppHaptics.confirm(),
+      child: BlocBuilder<NeverHaveIEverGameBloc, NeverHaveIEverGameState>(
+        builder: (context, state) {
+          final isOver = state.session.isOver;
+          return PopScope(
+            canPop: isOver,
+            onPopInvokedWithResult: (didPop, _) async {
+              if (didPop) return;
+              final leave = await _confirmQuit(context);
+              if (leave && context.mounted) context.go(AppRoutes.home);
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(isOver ? 'Game over' : 'Never Have I Ever'),
+                automaticallyImplyLeading: false,
+                actions: [
+                  if (!isOver)
+                    IconButton(
+                      tooltip: 'Quit game',
+                      icon: const Icon(Icons.close),
+                      onPressed: () async {
+                        final leave = await _confirmQuit(context);
+                        if (leave && context.mounted) {
+                          context.go(AppRoutes.home);
+                        }
+                      },
+                    ),
+                ],
+              ),
+              body: SafeArea(
+                child: AnimatedSwitcher(
+                  duration: AppMotion.base,
+                  transitionBuilder: AppMotion.fadeRise,
+                  child: isOver
+                      ? NeverHaveIEverGameOverView(
+                          key: const ValueKey('over'),
+                          session: state.session,
+                        )
+                      : PromptRevealView(
+                          key: ValueKey(state.session.promptIndex),
+                          state: state,
+                        ),
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

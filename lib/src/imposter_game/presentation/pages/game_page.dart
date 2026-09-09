@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
+import 'package:house_party_offline/src/core/haptics/app_haptics.dart';
 import 'package:house_party_offline/src/imposter_game/domain/engine/round_engine.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/game_setup.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/bloc/game_bloc.dart';
@@ -54,46 +55,71 @@ class _GameScaffoldState extends State<_GameScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GameBloc, GameState>(
-      builder: (context, state) {
-        final isOver = state is GameOver;
-        return PopScope(
-          canPop: isOver,
-          onPopInvokedWithResult: (didPop, _) async {
-            if (didPop) return;
-            final leave = await _confirmQuit(context);
-            if (leave && context.mounted) context.go(AppRoutes.home);
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                isOver ? 'Game over' : 'Round ${state.session.roundNumber}',
-              ),
-              automaticallyImplyLeading: false,
-              actions: [
-                if (!isOver)
-                  IconButton(
-                    tooltip: 'Quit game',
-                    icon: const Icon(Icons.close),
-                    onPressed: () async {
-                      final leave = await _confirmQuit(context);
-                      if (leave && context.mounted) context.go(AppRoutes.home);
-                    },
-                  ),
-              ],
-            ),
-            body: SafeArea(
-              child: AnimatedSwitcher(
-                duration: AppMotion.base,
-                transitionBuilder: AppMotion.fadeRise,
-                child: _buildPhase(state),
-              ),
-            ),
-          ),
-        );
+    return BlocListener<GameBloc, GameState>(
+      // Phase changes and card flips are reveals; passing the phone to the
+      // next player is a light tap; the match ending, a heavy one.
+      listenWhen: (prev, cur) =>
+          prev.runtimeType != cur.runtimeType ||
+          _revealed(prev) != _revealed(cur) ||
+          _revealIndex(prev) != _revealIndex(cur),
+      listener: (_, state) {
+        if (state is GameOver) {
+          AppHaptics.win();
+        } else if (_revealed(state) || state is! RoleReveal) {
+          AppHaptics.reveal();
+        } else {
+          AppHaptics.confirm();
+        }
       },
+      child: BlocBuilder<GameBloc, GameState>(
+        builder: (context, state) {
+          final isOver = state is GameOver;
+          return PopScope(
+            canPop: isOver,
+            onPopInvokedWithResult: (didPop, _) async {
+              if (didPop) return;
+              final leave = await _confirmQuit(context);
+              if (leave && context.mounted) context.go(AppRoutes.home);
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  isOver ? 'Game over' : 'Round ${state.session.roundNumber}',
+                ),
+                automaticallyImplyLeading: false,
+                actions: [
+                  if (!isOver)
+                    IconButton(
+                      tooltip: 'Quit game',
+                      icon: const Icon(Icons.close),
+                      onPressed: () async {
+                        final leave = await _confirmQuit(context);
+                        if (leave && context.mounted) {
+                          context.go(AppRoutes.home);
+                        }
+                      },
+                    ),
+                ],
+              ),
+              body: SafeArea(
+                child: AnimatedSwitcher(
+                  duration: AppMotion.base,
+                  transitionBuilder: AppMotion.fadeRise,
+                  child: _buildPhase(state),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
+
+  static bool _revealed(GameState state) =>
+      state is RoleReveal && state.isRevealed;
+
+  static int _revealIndex(GameState state) =>
+      state is RoleReveal ? state.currentIndex : -1;
 
   Widget _buildPhase(GameState state) {
     return switch (state) {

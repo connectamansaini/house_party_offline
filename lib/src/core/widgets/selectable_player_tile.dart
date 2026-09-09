@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/core/haptics/app_haptics.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 /// A tappable player row used everywhere someone picks a target — voting,
@@ -43,7 +44,10 @@ class SelectablePlayerTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          AppHaptics.select();
+          onTap();
+        },
         borderRadius: radius,
         child: AnimatedContainer(
           duration: AppMotion.fast,

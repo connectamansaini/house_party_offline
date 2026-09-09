@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
+import 'package:house_party_offline/src/core/haptics/app_haptics.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/engine/truth_or_dare_engine.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_setup.dart';
 import 'package:house_party_offline/src/truth_or_dare/presentation/bloc/truth_or_dare_game_bloc.dart';
@@ -52,50 +53,68 @@ class _GameScaffoldState extends State<_GameScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TruthOrDareGameBloc, TruthOrDareGameState>(
-      builder: (context, state) {
-        final isOver = state.session.isOver;
-        final turn = state.session.turnsPlayed;
-        return PopScope(
-          canPop: isOver,
-          onPopInvokedWithResult: (didPop, _) async {
-            if (didPop) return;
-            final leave = await _confirmQuit(context);
-            if (leave && context.mounted) context.go(AppRoutes.home);
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(isOver ? 'Game over' : 'Truth or Dare'),
-              automaticallyImplyLeading: false,
-              actions: [
-                if (!isOver)
-                  IconButton(
-                    tooltip: 'Quit game',
-                    icon: const Icon(Icons.close),
-                    onPressed: () async {
-                      final leave = await _confirmQuit(context);
-                      if (leave && context.mounted) context.go(AppRoutes.home);
-                    },
-                  ),
-              ],
-            ),
-            body: SafeArea(
-              child: AnimatedSwitcher(
-                duration: AppMotion.base,
-                transitionBuilder: AppMotion.fadeRise,
-                child: isOver
-                    ? TruthOrDareGameOverView(
-                        key: const ValueKey('over'),
-                        session: state.session,
-                      )
-                    : state.isChoosing
-                    ? ChooseView(key: ValueKey('choose-$turn'), state: state)
-                    : PromptView(key: ValueKey('prompt-$turn'), state: state),
+    return BlocListener<TruthOrDareGameBloc, TruthOrDareGameState>(
+      // A prompt appearing is a reveal; a turn resolving, a light tap; the
+      // match ending, a heavy one.
+      listenWhen: (prev, cur) =>
+          prev.prompt != cur.prompt ||
+          prev.session.turnsPlayed != cur.session.turnsPlayed,
+      listener: (_, state) {
+        if (state.session.isOver) {
+          AppHaptics.win();
+        } else if (state.prompt != null) {
+          AppHaptics.reveal();
+        } else {
+          AppHaptics.confirm();
+        }
+      },
+      child: BlocBuilder<TruthOrDareGameBloc, TruthOrDareGameState>(
+        builder: (context, state) {
+          final isOver = state.session.isOver;
+          final turn = state.session.turnsPlayed;
+          return PopScope(
+            canPop: isOver,
+            onPopInvokedWithResult: (didPop, _) async {
+              if (didPop) return;
+              final leave = await _confirmQuit(context);
+              if (leave && context.mounted) context.go(AppRoutes.home);
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(isOver ? 'Game over' : 'Truth or Dare'),
+                automaticallyImplyLeading: false,
+                actions: [
+                  if (!isOver)
+                    IconButton(
+                      tooltip: 'Quit game',
+                      icon: const Icon(Icons.close),
+                      onPressed: () async {
+                        final leave = await _confirmQuit(context);
+                        if (leave && context.mounted) {
+                          context.go(AppRoutes.home);
+                        }
+                      },
+                    ),
+                ],
+              ),
+              body: SafeArea(
+                child: AnimatedSwitcher(
+                  duration: AppMotion.base,
+                  transitionBuilder: AppMotion.fadeRise,
+                  child: isOver
+                      ? TruthOrDareGameOverView(
+                          key: const ValueKey('over'),
+                          session: state.session,
+                        )
+                      : state.isChoosing
+                      ? ChooseView(key: ValueKey('choose-$turn'), state: state)
+                      : PromptView(key: ValueKey('prompt-$turn'), state: state),
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
