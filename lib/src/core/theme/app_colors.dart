@@ -92,4 +92,11 @@ abstract final class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFF22C55E), Color(0xFF0EA5E9)],
   );
+
+  /// Heads Up — a clear blue-to-violet signal.
+  static const signalGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+  );
 }

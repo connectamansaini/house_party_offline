@@ -3,6 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/src/custom_prompts/presentation/pages/custom_prompts_page.dart';
+import 'package:house_party_offline/src/heads_up/domain/entities/heads_up_setup.dart';
+import 'package:house_party_offline/src/heads_up/presentation/pages/heads_up_game_page.dart';
+import 'package:house_party_offline/src/heads_up/presentation/pages/rules_page.dart';
+import 'package:house_party_offline/src/heads_up_setup/presentation/pages/heads_up_home_page.dart';
+import 'package:house_party_offline/src/heads_up_setup/presentation/pages/heads_up_setup_page.dart';
 import 'package:house_party_offline/src/home/presentation/home_page.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/game_setup.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/pages/game_page.dart';
@@ -64,6 +69,10 @@ abstract final class AppRoutes {
   static const truthOrDareGame = '/truth-or-dare/game';
   static const truthOrDareRules = '/truth-or-dare/rules';
   static const truthOrDarePrompts = '/truth-or-dare/prompts';
+  static const headsUp = '/heads-up';
+  static const headsUpSetup = '/heads-up/setup';
+  static const headsUpGame = '/heads-up/game';
+  static const headsUpRules = '/heads-up/rules';
 }
 
 /// Every route uses the same short fade-and-rise so navigation feels like
@@ -229,6 +238,23 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.truthOrDarePrompts,
       pageBuilder: (context, state) =>
           _page(state, const CustomPromptsPage(spec: kTruthOrDarePromptDeck)),
+    ),
+    GoRoute(
+      path: AppRoutes.headsUp,
+      pageBuilder: (context, state) => _page(state, const HeadsUpHomePage()),
+    ),
+    GoRoute(
+      path: AppRoutes.headsUpSetup,
+      pageBuilder: (context, state) => _page(state, const HeadsUpSetupPage()),
+    ),
+    GoRoute(
+      path: AppRoutes.headsUpGame,
+      pageBuilder: (context, state) =>
+          _page(state, HeadsUpGamePage(setup: state.extra! as HeadsUpSetup)),
+    ),
+    GoRoute(
+      path: AppRoutes.headsUpRules,
+      pageBuilder: (context, state) => _page(state, const HeadsUpRulesPage()),
     ),
   ],
 );

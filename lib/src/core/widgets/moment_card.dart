@@ -372,12 +372,17 @@ class _Stars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _Star(top: 24, right: 32, size: 6, color: accent, opacity: 0.5),
-        _Star(top: 50, right: 60, size: 4, color: accent, opacity: 0.35),
-        _Star(top: 74, right: 38, size: 5, color: accent, opacity: 0.42),
-      ],
+    // Fill the card: a Stack of only Positioned children has no size of its
+    // own, so without this it needs bounded height from the parent and
+    // throws inside a plain Column.
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          _Star(top: 24, right: 32, size: 6, color: accent, opacity: 0.5),
+          _Star(top: 50, right: 60, size: 4, color: accent, opacity: 0.35),
+          _Star(top: 74, right: 38, size: 5, color: accent, opacity: 0.42),
+        ],
+      ),
     );
   }
 }

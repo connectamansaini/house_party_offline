@@ -21,6 +21,7 @@ dependencies:
   in_app_review: ^2.0.12
   injectable: ^2.5.0
   json_annotation: ^4.9.0
+  sensors_plus: ^7.1.0
   uuid: ^4.6.0
   wakelock_plus: ^1.7.0
 

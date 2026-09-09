@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/src/core/constants/app_strings.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/heads_up/domain/entities/heads_up_config.dart';
 import 'package:house_party_offline/src/imposter_setup/presentation/bloc/imposter_setup_bloc.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
@@ -119,6 +120,19 @@ abstract final class GameCatalog {
       minutes: 15,
       route: AppRoutes.truthOrDare,
       setupRoute: AppRoutes.truthOrDareSetup,
+    ),
+    HomeGame(
+      id: 'heads_up',
+      title: AppStrings.headsUpName,
+      blurb: AppStrings.headsUpBlurb,
+      tag: 'Guessing',
+      icon: Icons.emoji_people_rounded,
+      gradient: AppColors.signalGradient,
+      minPlayers: HeadsUpConfig.minPlayers,
+      maxPlayers: HeadsUpConfig.maxPlayers,
+      minutes: 15,
+      route: AppRoutes.headsUp,
+      setupRoute: AppRoutes.headsUpSetup,
     ),
   ];
 

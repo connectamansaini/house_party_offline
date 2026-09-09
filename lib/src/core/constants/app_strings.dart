@@ -28,4 +28,9 @@ abstract final class AppStrings {
   static const truthOrDareBlurb =
       'Pick truth or dare, face the prompt, and earn a point for going '
       'through with it. The most daring player wins.';
+
+  static const headsUpName = 'Heads Up';
+  static const headsUpBlurb =
+      'Phone on your forehead, clues from the room, a clock ticking down. '
+      'Guess the most words to win.';
 }
