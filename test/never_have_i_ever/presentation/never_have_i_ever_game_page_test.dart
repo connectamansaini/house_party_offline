@@ -6,6 +6,7 @@ import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_player.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/never_have_i_ever_game_page.dart';
+import '../../helpers/fake_review_gate.dart';
 
 /// Exercises the real, wired-up [NeverHaveIEverGamePage] — selecting a
 /// player, confirming a round, and reaching the winner screen — the same
@@ -13,6 +14,7 @@ import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/nev
 void main() {
   setUp(() {
     getIt.registerFactory<NeverHaveIEverEngine>(NeverHaveIEverEngine.new);
+    registerFakeReviewGate();
   });
 
   tearDown(() async {

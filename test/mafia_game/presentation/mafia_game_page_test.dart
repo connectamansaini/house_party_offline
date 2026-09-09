@@ -6,6 +6,7 @@ import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_setup.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/pages/mafia_game_page.dart';
+import '../../helpers/fake_review_gate.dart';
 
 /// Exercises the real, wired-up [MafiaGamePage] — role reveal through the
 /// pass-and-play loop — the same widget tree a live match renders, just
@@ -16,6 +17,7 @@ import 'package:house_party_offline/src/mafia_game/presentation/pages/mafia_game
 void main() {
   setUp(() {
     getIt.registerFactory<MafiaEngine>(MafiaEngine.new);
+    registerFakeReviewGate();
   });
 
   tearDown(() async {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/src/core/haptics/app_haptics.dart';
+import 'package:house_party_offline/src/review/domain/review_gate.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/engine/truth_or_dare_engine.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_setup.dart';
 import 'package:house_party_offline/src/truth_or_dare/presentation/bloc/truth_or_dare_game_bloc.dart';
@@ -62,6 +65,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
       listener: (_, state) {
         if (state.session.isOver) {
           AppHaptics.win();
+          unawaited(getIt<ReviewGate>().onMatchCompleted());
         } else if (state.prompt != null) {
           AppHaptics.reveal();
         } else {

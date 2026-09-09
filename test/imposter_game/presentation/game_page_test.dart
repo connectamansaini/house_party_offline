@@ -7,6 +7,7 @@ import 'package:house_party_offline/src/imposter_game/domain/entities/game_setup
 import 'package:house_party_offline/src/imposter_game/domain/entities/player.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/word_pack.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/pages/game_page.dart';
+import '../../helpers/fake_review_gate.dart';
 
 /// Exercises the real, wired-up [GamePage] — role reveal through a full
 /// pass-and-play round — the same widget tree a live game renders, just
@@ -17,6 +18,7 @@ import 'package:house_party_offline/src/imposter_game/presentation/pages/game_pa
 void main() {
   setUp(() {
     getIt.registerFactory<RoundEngine>(RoundEngine.new);
+    registerFakeReviewGate();
   });
 
   tearDown(() async {

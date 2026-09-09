@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +16,7 @@ import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_ga
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_night_view.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_recap_view.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_role_reveal_view.dart';
+import 'package:house_party_offline/src/review/domain/review_gate.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// Single-route host for a whole Mafia match. The [MafiaGameBloc] FSM is
@@ -65,6 +68,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
       listener: (_, state) {
         if (state is MafiaGameOver) {
           AppHaptics.win();
+          unawaited(getIt<ReviewGate>().onMatchCompleted());
         } else if (_revealed(state) || state is! MafiaRoleReveal) {
           AppHaptics.reveal();
         } else {

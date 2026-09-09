@@ -6,12 +6,14 @@ import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_d
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_player.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_setup.dart';
 import 'package:house_party_offline/src/truth_or_dare/presentation/pages/truth_or_dare_game_page.dart';
+import '../../helpers/fake_review_gate.dart';
 
 /// Exercises the real, wired-up [TruthOrDareGamePage] through a full
 /// one-round match: choose, face the prompt, resolve, next player, winner.
 void main() {
   setUp(() {
     getIt.registerFactory<TruthOrDareEngine>(TruthOrDareEngine.new);
+    registerFakeReviewGate();
   });
 
   tearDown(() async {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +12,7 @@ import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_
 import 'package:house_party_offline/src/never_have_i_ever/presentation/bloc/never_have_i_ever_game_bloc.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/widgets/game_over_view.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/widgets/prompt_reveal_view.dart';
+import 'package:house_party_offline/src/review/domain/review_gate.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// Single-route host for a whole Never Have I Ever match.
@@ -56,8 +59,14 @@ class _GameScaffoldState extends State<_GameScaffold> {
       // A round resolving is a light tap; the match ending, a heavy one.
       listenWhen: (prev, cur) =>
           prev.session.promptIndex != cur.session.promptIndex,
-      listener: (_, state) =>
-          state.session.isOver ? AppHaptics.win() : AppHaptics.confirm(),
+      listener: (_, state) {
+        if (state.session.isOver) {
+          AppHaptics.win();
+          unawaited(getIt<ReviewGate>().onMatchCompleted());
+        } else {
+          AppHaptics.confirm();
+        }
+      },
       child: BlocBuilder<NeverHaveIEverGameBloc, NeverHaveIEverGameState>(
         builder: (context, state) {
           final isOver = state.session.isOver;

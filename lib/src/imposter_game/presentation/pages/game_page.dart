@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +18,7 @@ import 'package:house_party_offline/src/imposter_game/presentation/widgets/role_
 import 'package:house_party_offline/src/imposter_game/presentation/widgets/round_result_view.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/widgets/secret_voting_view.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/widgets/voting_view.dart';
+import 'package:house_party_offline/src/review/domain/review_gate.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class GamePage extends StatelessWidget {
@@ -65,6 +68,7 @@ class _GameScaffoldState extends State<_GameScaffold> {
       listener: (_, state) {
         if (state is GameOver) {
           AppHaptics.win();
+          unawaited(getIt<ReviewGate>().onMatchCompleted());
         } else if (_revealed(state) || state is! RoleReveal) {
           AppHaptics.reveal();
         } else {

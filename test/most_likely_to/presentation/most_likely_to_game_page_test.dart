@@ -7,6 +7,7 @@ import 'package:house_party_offline/src/most_likely_to/domain/entities/most_like
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_player.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
 import 'package:house_party_offline/src/most_likely_to/presentation/pages/most_likely_to_game_page.dart';
+import '../../helpers/fake_review_gate.dart';
 
 /// Exercises the real, wired-up [MostLikelyToGamePage] — selecting a player,
 /// confirming a round, and reaching the winner screen — the same widget tree
@@ -14,6 +15,7 @@ import 'package:house_party_offline/src/most_likely_to/presentation/pages/most_l
 void main() {
   setUp(() {
     getIt.registerFactory<MostLikelyToEngine>(MostLikelyToEngine.new);
+    registerFakeReviewGate();
   });
 
   tearDown(() async {
