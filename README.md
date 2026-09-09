@@ -1,109 +1,86 @@
 # House Party 🎉
 
-A collection of **offline, pass-and-play party games** built with Flutter. One
-phone gets passed around the room — no accounts, no internet, no second device.
+[![CI](https://github.com/connectamansaini/house_party_offline/actions/workflows/ci.yml/badge.svg)](https://github.com/connectamansaini/house_party_offline/actions/workflows/ci.yml)
 
-Games in the hub: **Imposter** (a social word-and-bluffing game) and **Mafia**
-(the classic night/day social-deduction game). More will join over time.
+A collection of **offline party games** built with Flutter. One phone for the
+room — no accounts, no internet, no second device.
 
----
+## The games
 
-## The Mafia game
+| Game | How it plays | Players |
+| --- | --- | --- |
+| **Imposter** | Everyone gets the same secret word except the imposter. One-word clues, a vote, and one chance for the imposter to steal the win. Bundled + custom word packs, Undercover mode, secret ballots. | 3–12 |
+| **Mafia** | App-moderated social deduction, no narrator: role reveal, pass-and-play nights (Mafia, Doctor, Detective), morning recaps, daytime lynch. | 5–15 |
+| **Never Have I Ever** | A confession is read to the room; everyone who's done it loses a life. Last player standing wins. | 2–12 |
+| **Most Likely To** | A prompt, everyone points at once, the most fingers takes the point. Top score after the last round wins. | 3–12 |
+| **Truth or Dare** | Pick truth or dare, face the prompt, a point for going through with it. Mild and spicy decks. | 2–12 |
+| **Heads Up** | Phone on your forehead, clues from the room, a clock ticking down. Tilt down for "got it", up to pass. | 2–12 |
 
-A fully **app-moderated** game of Mafia — no narrator needed. The app deals
-secret roles, runs each night by passing the phone to every player, resolves the
-kills, and runs the daytime lynch vote.
+Across all of them:
 
-**Features**
-- 🌙 Night/day loop: role reveal → night actions → morning recap → lynch vote,
-  until a faction wins
-- 🕵️ Classic roles: **Mafia** (night kill), **Doctor** (protect), **Detective**
-  (investigate), and Villagers
-- 🔒 Pass-and-play night — the phone goes to *every* player so nobody can tell who
-  acted; villagers just see a "you sleep" screen
-- 🗳️ Daytime shared lynch vote with a **skip** option
-- ⚙️ Host options: mafia count, reveal-role-on-death, first-night kill,
-  doctor self-save, detective learns exact role vs. alignment
-- 📖 Built-in **How to play** rules screen
-
----
-
-## The Imposter game
-
-Everyone secretly gets the same word — except the **imposter**, who gets nothing
-(or just a category hint). Players take turns giving one-word clues, then vote on
-who they think the imposter is. If the imposter is caught, they get one chance to guess
-the secret word and steal the win.
-
-**Features**
-- 🎭 Full round loop: role reveal → discussion timer → voting → imposter guess → scoring
-- 👥 3–12 players, host-configurable **1…N imposter** per game
-- 🃏 Bundled word packs (Foods, Animals, Places, Movie Genres, Sports, Jobs) plus
-  **create/edit/delete your own** custom packs
-- ✅ **Multi-select packs** (with "Select all") — the secret word is drawn across
-  every selected pack, and the category hint reflects the chosen word's pack
-- 🕵️ **Imposter mode** — host's choice: the imposter gets *nothing* (Word
-  Imposter) or a *decoy word* from the same category to blend in (Undercover)
-- 🗳️ **Secret voting** (optional) — a private pass-and-play ballot that's tallied,
-  instead of one shared group vote
-- ⚙️ Configurable options: imposter count, category hint on/off, discussion length,
-  and win points for each side
-- 📖 Built-in **How to play** rules screen
-- 💾 Remembers your last roster and settings between launches
-- 🔒 Pass-and-play privacy covers, screen kept awake during play
-- 🌗 Light & dark themes
+- 👥 **One roster** — type the names once; every game's setup pre-fills them.
+- ✍️ **Your own prompts** for the prompt games, kept alongside the bundled decks
+  and toggled per match.
+- 🃏 **Word packs** shared by Imposter and Heads Up — six bundled, plus any you
+  create in the app.
+- 📳 Haptics on selection, turns, reveals and wins; screen kept awake in play.
+- 🎨 Near-monochrome design with one accent per game, light and dark.
+- 📖 A built-in **How to play** for every game.
 
 ---
 
 ## Tech stack
 
 - **Flutter** (Material 3) — Dart SDK `^3.11`
-- **flutter_bloc** — state management (Cubits for forms, a Bloc FSM for the game)
-- **go_router** — navigation
-- **get_it** — dependency injection
-- **hive_ce** — local persistence (custom packs, settings)
-- **equatable**, **uuid**, **wakelock_plus**
+- **flutter_bloc** — presentation state (a flat bloc per game, an FSM for the
+  phase-based ones)
+- **freezed** — immutable domain entities; **injectable** + **get_it** — DI
+- **go_router** — navigation with one shared page transition
+- **hive_ce** — local persistence (roster, custom prompts, packs, settings)
+- **sensors_plus** — Heads Up tilt gestures; **in_app_review** — the one-time
+  review ask; **wakelock_plus**
 - Testing: **flutter_test**, **bloc_test**, **mocktail**
 
 ---
 
 ## Architecture
 
-**Feature-first**, with each feature internally layered into `data` / `domain` /
-`presentation`. BLoC lives only in the presentation layer; it talks to
-repositories (domain interfaces) whose implementations live in `data`. The game
-rules are **pure Dart** (`RoundEngine`) with no Flutter or BLoC dependency, so
-the trickiest logic is fully unit-testable in isolation.
+**Feature-first**, each feature layered into `data` / `domain` /
+`presentation`. Game rules are **pure Dart engines** with no Flutter, BLoC, IO
+or timers, so the trickiest logic is unit-tested in isolation; blocs own only
+the presentation-side flow. Anything touching hardware or the platform (the
+Heads Up clock and tilt sensor, the store review flow) sits behind a small
+interface so tests can drive it by hand.
 
 ```
-UI (widgets) → Bloc/Cubit → Repository (interface) → DataSource (Hive / assets)
-                   │
-                   └─ pure-Dart domain: entities + RoundEngine (rules)
+UI (widgets) → Bloc → Repository (interface) → DataSource (Hive / assets)
+                 │
+                 └─ pure-Dart domain: entities + engine (rules)
 ```
 
-The game itself is a **finite state machine** (`GameBloc`) hosted on a single
-route, so the phases (reveal → discussion → voting → guessing → result → game
-over) can't be corrupted by the OS back button.
+Each game is hosted on a **single route**, so the OS back button can't corrupt
+a match mid-phase.
 
 ### Project structure
 
 ```
 lib/
-  main.dart                     # init storage + DI, run app
+  main_*.dart                   # entrypoints per flavour
+  app/                          # App root, router, DI, theme
+  core/design/                  # spacing, radii, motion tokens
   src/
-    app/                        # App root, go_router, get_it wiring
-    core/                       # theme, shared widgets, storage, utils, constants
-    home/                       # the games hub
-    imposter/                   # the Imposter game feature
-      data/                     # DTOs, sources (assets + Hive), repositories
-      domain/                   # entities, engine (rules), repository interfaces
-      presentation/             # setup, game (FSM + phase views), packs
-    mafia/                      # the Mafia game feature
-      domain/                   # entities, engine (rules)
-      presentation/             # setup, game (FSM + phase views)
+    core/                       # theme, shared widgets, haptics, storage
+    home/                       # the games hub (featured card, grid, About)
+    roster/                     # the shared player roster
+    custom_prompts/             # host-written prompt decks + editor
+    review/                     # the one-time store review gate
+    <game>/                     # one feature per game …
+      domain/                   #   entities, engine (rules)
+      presentation/             #   bloc, pages, phase views
+    <game>_setup/               # … and its setup form
 assets/
   word_packs/                   # bundled pack JSON + index.json
-test/                           # mirrors lib/ — engine, blocs/cubits, repos
+test/                           # mirrors lib/ — engines, blocs, pages, repos
 ```
 
 ---
@@ -112,15 +89,21 @@ test/                           # mirrors lib/ — engine, blocs/cubits, repos
 
 ```bash
 flutter pub get
-flutter run
+dart run build_runner build --delete-conflicting-outputs   # freezed / injectable
+flutter run -t lib/main_development.dart
 ```
 
 ### Run the checks
 
+The same three CI runs on every push:
+
 ```bash
-flutter analyze
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze --fatal-infos
 flutter test
 ```
+
+Generated files are committed; CI fails if a rebuild changes them.
 
 ### Adding a bundled word pack
 
@@ -131,12 +114,13 @@ Drop a JSON file in `assets/word_packs/` and add its filename to `index.json`:
   "words": ["Joker", "Thanos", "Sauron"] }
 ```
 
-No Dart changes needed — bundled packs are read from assets at runtime.
+No Dart changes needed — bundled packs are read from assets at runtime, and
+both Imposter and Heads Up pick them up.
 
----
+### Adding a game
 
-## Roadmap
-
-- More games in the hub (the "More games" tile is a placeholder)
-- All-time leaderboard / match history
-- App icon & branded launch screen
+Mirror an existing game folder (`most_likely_to` is the smallest): a pure
+engine, freezed entities, a bloc, pages, and a setup bloc. Then register it in
+`app/injector`, add its routes in `app/router`, and add one entry to
+`home/domain/entities/home_game.dart` — the hub, the About sheet and the
+roster pick it up from there.
