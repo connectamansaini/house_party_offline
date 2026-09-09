@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/src/custom_prompts/presentation/pages/custom_prompts_page.dart';
 import 'package:house_party_offline/src/heads_up/domain/entities/heads_up_setup.dart';
 import 'package:house_party_offline/src/heads_up/presentation/pages/heads_up_game_page.dart';
@@ -75,32 +74,11 @@ abstract final class AppRoutes {
   static const headsUpRules = '/heads-up/rules';
 }
 
-/// Every route uses the same short fade-and-rise so navigation feels like
-/// one system, instead of the platform's default zoom.
-CustomTransitionPage<T> _page<T>(GoRouterState state, Widget child) {
-  return CustomTransitionPage<T>(
-    key: state.pageKey,
-    child: child,
-    transitionDuration: AppMotion.base,
-    reverseTransitionDuration: AppMotion.fast,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final curved = CurvedAnimation(
-        parent: animation,
-        curve: AppMotion.curve,
-        reverseCurve: AppMotion.reverseCurve,
-      );
-      return FadeTransition(
-        opacity: curved,
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 0.03),
-            end: Offset.zero,
-          ).animate(curved),
-          child: child,
-        ),
-      );
-    },
-  );
+/// Every route is a plain [MaterialPage]; the theme's page transitions
+/// (see `AppPageTransitionsBuilder`) give them all the same fade-and-rise
+/// and, on Android, the predictive back peek.
+MaterialPage<T> _page<T>(GoRouterState state, Widget child) {
+  return MaterialPage<T>(key: state.pageKey, child: child);
 }
 
 /// Application router. Game routes receive their setup via `extra`.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:house_party_offline/core/design/app_page_transitions.dart';
 import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
@@ -40,6 +41,14 @@ abstract final class AppTheme {
 
     return base.copyWith(
       textTheme: text,
+      // One transition for every route on every platform; on Android it
+      // also follows the predictive back gesture.
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          for (final platform in TargetPlatform.values)
+            platform: const AppPageTransitionsBuilder(),
+        },
+      ),
       scaffoldBackgroundColor: colorScheme.surface,
       splashFactory: InkRipple.splashFactory,
       appBarTheme: AppBarTheme(
