@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:house_party_offline/core/design/app_radii.dart';
+import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
-/// A bold gradient banner for the top of a screen — an icon, a title, and an
-/// optional subtitle sitting on a vivid brand gradient.
+/// The top of a screen: a small accent-tinted icon, a large title, and an
+/// optional subtitle — set directly on the page background, no box. The
+/// [gradient] is kept for call-site compatibility and only supplies the
+/// accent (see [AppColors.accentOf]).
 class HeroBanner extends StatelessWidget {
   const HeroBanner({
     required this.title,
@@ -23,39 +27,32 @@ class HeroBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final accent = AppColors.accentOf(gradient);
+    final chip = compact ? 40.0 : 52.0;
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(
-        24,
-        compact ? 16 : 24,
-        24,
-        compact ? 16 : 24,
-      ),
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withValues(alpha: 0.35),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: compact ? Spacing.md : Spacing.xl,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (icon != null) ...[
             Container(
-              padding: const EdgeInsets.all(10),
+              width: chip,
+              height: chip,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.tint(accent, scheme),
+                borderRadius: BorderRadius.circular(AppRadii.x3l),
               ),
-              child: Icon(icon, color: AppColors.onGradient, size: 28),
+              child: Icon(
+                icon,
+                color: AppColors.legible(accent, theme.brightness),
+                size: compact ? 20 : 26,
+              ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: compact ? Spacing.xl : Spacing.x5l),
           ],
           Text(
             title,
@@ -63,14 +60,15 @@ class HeroBanner extends StatelessWidget {
                 (compact
                         ? theme.textTheme.headlineSmall
                         : theme.textTheme.headlineLarge)
-                    ?.copyWith(color: AppColors.onGradient),
+                    ?.copyWith(color: scheme.onSurface),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: Spacing.sm),
             Text(
               subtitle!,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: AppColors.onGradient.withValues(alpha: 0.9),
+                color: scheme.onSurfaceVariant,
+                height: 1.4,
               ),
             ),
           ],

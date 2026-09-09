@@ -131,9 +131,9 @@ class _PackTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final gradient = pack.isCustom
-        ? AppColors.brandGradient
-        : AppColors.civilianGradient;
+    final accent = AppColors.accentOf(
+      pack.isCustom ? AppColors.brandGradient : AppColors.civilianGradient,
+    );
 
     return Card(
       child: InkWell(
@@ -147,14 +147,14 @@ class _PackTile extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  gradient: gradient,
+                  color: AppColors.tint(accent, scheme),
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   '${pack.words.length}',
                   style: const TextStyle(fontFamily: 'Unbounded').copyWith(
-                    color: AppColors.onGradient,
+                    color: AppColors.legible(accent, theme.brightness),
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                   ),

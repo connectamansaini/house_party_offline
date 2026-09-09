@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
+import 'package:house_party_offline/src/core/widgets/prompt_card.dart';
 import 'package:house_party_offline/src/core/widgets/selectable_player_tile.dart';
 import 'package:house_party_offline/src/most_likely_to/presentation/bloc/most_likely_to_game_bloc.dart';
 
@@ -22,10 +22,11 @@ class VoteView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(20, Spacing.md, 20, 0),
-          child: _PromptBanner(
-            round: session.promptIndex + 1,
-            totalRounds: session.totalRounds,
-            prompt: session.currentPrompt,
+          child: PromptCard(
+            eyebrow:
+                'Round ${session.promptIndex + 1} of ${session.totalRounds}',
+            text: session.currentPrompt,
+            accent: AppColors.accentOf(AppColors.spotlightGradient),
           ),
         ),
         const SizedBox(height: Spacing.x3l),
@@ -74,66 +75,6 @@ class VoteView extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PromptBanner extends StatelessWidget {
-  const _PromptBanner({
-    required this.round,
-    required this.totalRounds,
-    required this.prompt,
-  });
-
-  final int round;
-  final int totalRounds;
-  final String prompt;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.x7l,
-        vertical: Spacing.x8l,
-      ),
-      decoration: BoxDecoration(
-        gradient: AppColors.spotlightGradient,
-        borderRadius: BorderRadius.circular(AppRadii.x6l),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.spotlightGradient.colors.first.withValues(
-              alpha: 0.35,
-            ),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Round $round of $totalRounds',
-            style: const TextStyle(fontFamily: 'Unbounded').copyWith(
-              color: AppColors.onGradient.withValues(alpha: 0.75),
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
-            ),
-          ),
-          const SizedBox(height: Spacing.x4l),
-          Text(
-            prompt,
-            style: const TextStyle(fontFamily: 'Unbounded').copyWith(
-              color: AppColors.onGradient,
-              fontSize: 22,
-              height: 1.25,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

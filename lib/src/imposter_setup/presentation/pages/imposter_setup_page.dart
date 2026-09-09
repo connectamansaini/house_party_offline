@@ -25,13 +25,11 @@ class ImposterSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          ImposterSetupBloc(
-              getIt<LoadImposterSetupPreferencesUseCase>(),
-              getIt<SaveImposterSetupPreferencesUseCase>(),
-              getIt<GetImposterPacksUseCase>(),
-            )
-            ..add(const ImposterSetupStarted()),
+      create: (_) => ImposterSetupBloc(
+        getIt<LoadImposterSetupPreferencesUseCase>(),
+        getIt<SaveImposterSetupPreferencesUseCase>(),
+        getIt<GetImposterPacksUseCase>(),
+      )..add(const ImposterSetupStarted()),
       child: const _ImposterSetupView(),
     );
   }

@@ -14,7 +14,7 @@ export 'package:house_party_offline/src/core/widgets/moment_icon.dart'
 /// different icon swapped in.
 enum MomentMood {
   /// A private, secretive pass-and-play reveal (a role, a secret word).
-  /// Bottom-anchored text, an asymmetric "peeled corner", a diagonal sheen.
+  /// Bottom-anchored text, an asymmetric "peeled corner".
   reveal,
 
   /// An explosive, shared end-of-game moment. Centered, radiating energy.
@@ -24,9 +24,10 @@ enum MomentMood {
   recap,
 }
 
-/// A dramatic full-bleed gradient card — the app's one shared language for
-/// every reveal, win, and recap moment, in place of the ad-hoc gradient
-/// containers each screen used to build for itself.
+/// The app's one shared language for every reveal, win, and recap moment.
+/// A faintly accent-tinted card with a hairline edge: the [gradient] only
+/// supplies the accent (see [AppColors.accentOf]), which colors the glyph,
+/// the eyebrow and the background decoration — the words stay in ink.
 class MomentCard extends StatelessWidget {
   const MomentCard({
     required this.mood,
@@ -68,50 +69,50 @@ class MomentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final baseColor = gradient.colors.first;
+    final scheme = theme.colorScheme;
+    final accent = AppColors.accentOf(gradient);
+    final ink = AppColors.legible(accent, theme.brightness);
 
     return Container(
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        gradient: gradient,
+        color: AppColors.tint(accent, scheme),
         borderRadius: BorderRadius.circular(AppRadii.x6l),
-        boxShadow: [
-          BoxShadow(
-            color: baseColor.withValues(alpha: 0.38),
-            blurRadius: 28,
-            offset: const Offset(0, 14),
-          ),
-        ],
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
       ),
       child: Stack(
         children: [
-          ..._decorations(baseColor),
+          ..._decorations(accent),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: Spacing.x8l,
               vertical: Spacing.x7l,
             ),
-            child: _content(theme),
+            child: _content(theme, accent: accent, ink: ink),
           ),
         ],
       ),
     );
   }
 
-  List<Widget> _decorations(Color baseColor) {
+  List<Widget> _decorations(Color accent) {
     switch (mood) {
       case MomentMood.reveal:
-        return [_PeelCorner(baseColor: baseColor), const _Sweep()];
+        return [_PeelCorner(accent: accent)];
       case MomentMood.celebration:
-        return const [_Rays()];
+        return [_Rays(accent: accent)];
       case MomentMood.recap:
-        return const [_Stars()];
+        return [_Stars(accent: accent)];
     }
   }
 
-  Widget _content(ThemeData theme) {
-    const onGradient = AppColors.onGradient;
+  Widget _content(
+    ThemeData theme, {
+    required Color accent,
+    required Color ink,
+  }) {
+    final scheme = theme.colorScheme;
 
     switch (mood) {
       case MomentMood.reveal:
@@ -119,35 +120,35 @@ class MomentCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (eyebrow != null) Text(eyebrow!, style: _eyebrowStyle()),
+            if (eyebrow != null) Text(eyebrow!, style: _eyebrowStyle(ink)),
             if (icon != null) ...[
               const SizedBox(height: Spacing.x4l),
-              MomentGlyph(icon: icon!, color: onGradient),
+              MomentGlyph(icon: icon!, color: ink),
             ],
             const SizedBox(height: Spacing.x6l),
             if (kicker != null) ...[
               Text(
                 kicker!,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: onGradient.withValues(alpha: 0.85),
+                  color: scheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: Spacing.sm),
             ],
-            Text(headline, style: _headlineStyle(32)),
+            Text(headline, style: _headlineStyle(32, scheme.onSurface)),
             if (subtitle != null) ...[
               const SizedBox(height: Spacing.md),
               Text(
                 subtitle!,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: onGradient.withValues(alpha: 0.9),
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
             ],
             if (hint != null) ...[
               const SizedBox(height: Spacing.x6l),
-              _HintChip(text: hint!),
+              _HintChip(text: hint!, accent: accent),
             ],
           ],
         );
@@ -157,13 +158,13 @@ class MomentCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              MomentGlyph(icon: icon!, size: 52, color: onGradient),
+              MomentGlyph(icon: icon!, size: 52, color: ink),
               const SizedBox(height: Spacing.x4l),
             ],
             Text(
               headline,
               textAlign: TextAlign.center,
-              style: _headlineStyle(28),
+              style: _headlineStyle(28, scheme.onSurface),
             ),
             if (subtitle != null) ...[
               const SizedBox(height: Spacing.sm),
@@ -171,7 +172,7 @@ class MomentCard extends StatelessWidget {
                 subtitle!,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: onGradient.withValues(alpha: 0.9),
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -183,29 +184,21 @@ class MomentCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (eyebrow != null) Text(eyebrow!, style: _eyebrowStyle()),
+            if (eyebrow != null) Text(eyebrow!, style: _eyebrowStyle(ink)),
             if (icon != null) ...[
               const SizedBox(height: Spacing.x4l),
-              MomentGlyph(
-                icon: icon!,
-                size: 38,
-                color: onGradient.withValues(alpha: 0.95),
-              ),
+              MomentGlyph(icon: icon!, size: 38, color: ink),
             ],
             const SizedBox(height: Spacing.x6l),
-            Container(
-              width: 30,
-              height: 1,
-              color: onGradient.withValues(alpha: 0.35),
-            ),
+            Container(width: 30, height: 1, color: scheme.outlineVariant),
             const SizedBox(height: Spacing.x4l),
-            Text(headline, style: _headlineStyle(23)),
+            Text(headline, style: _headlineStyle(23, scheme.onSurface)),
             if (subtitle != null) ...[
               const SizedBox(height: Spacing.sm),
               Text(
                 subtitle!,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: onGradient.withValues(alpha: 0.78),
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -214,7 +207,7 @@ class MomentCard extends StatelessWidget {
               Text(
                 footnote!,
                 style: theme.textTheme.labelLarge?.copyWith(
-                  color: onGradient.withValues(alpha: 0.7),
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -223,18 +216,18 @@ class MomentCard extends StatelessWidget {
     }
   }
 
-  TextStyle _headlineStyle(double size) {
+  TextStyle _headlineStyle(double size, Color color) {
     return const TextStyle(fontFamily: 'Unbounded').copyWith(
-      color: AppColors.onGradient,
+      color: color,
       fontSize: size,
       height: 1.08,
       fontWeight: FontWeight.w800,
     );
   }
 
-  TextStyle _eyebrowStyle() {
+  TextStyle _eyebrowStyle(Color color) {
     return const TextStyle(fontFamily: 'Unbounded').copyWith(
-      color: AppColors.onGradient.withValues(alpha: 0.75),
+      color: color,
       fontSize: 11,
       fontWeight: FontWeight.w700,
       letterSpacing: 1.6,
@@ -243,26 +236,28 @@ class MomentCard extends StatelessWidget {
 }
 
 class _HintChip extends StatelessWidget {
-  const _HintChip({required this.text});
+  const _HintChip({required this.text, required this.accent});
 
   final String text;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.x3l,
         vertical: Spacing.md,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
+        color: accent.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(AppRadii.xl),
       ),
       child: Text(
         text,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: AppColors.onGradient,
+          color: scheme.onSurface,
         ),
       ),
     );
@@ -271,19 +266,18 @@ class _HintChip extends StatelessWidget {
 
 /// A folded-paper corner — something being peeled back to reveal a secret.
 class _PeelCorner extends StatelessWidget {
-  const _PeelCorner({required this.baseColor});
+  const _PeelCorner({required this.accent});
 
-  final Color baseColor;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    final fold = Color.lerp(baseColor, Colors.white, 0.55)!;
     return Positioned(
       top: 0,
       right: 0,
       child: CustomPaint(
         size: const Size(84, 84),
-        painter: _PeelCornerPainter(foldColor: fold),
+        painter: _PeelCornerPainter(foldColor: accent.withValues(alpha: 0.2)),
       ),
     );
   }
@@ -304,7 +298,7 @@ class _PeelCornerPainter extends CustomPainter {
       ..lineTo(0, 0)
       ..lineTo(w, h)
       ..close();
-    canvas.drawPath(fold, Paint()..color = foldColor.withValues(alpha: 0.9));
+    canvas.drawPath(fold, Paint()..color = foldColor);
 
     final crease = Path()
       ..moveTo(w, 0)
@@ -313,7 +307,7 @@ class _PeelCornerPainter extends CustomPainter {
       ..close();
     canvas.drawPath(
       crease,
-      Paint()..color = Colors.black.withValues(alpha: 0.1),
+      Paint()..color = Colors.black.withValues(alpha: 0.06),
     );
   }
 
@@ -322,50 +316,29 @@ class _PeelCornerPainter extends CustomPainter {
       oldDelegate.foldColor != foldColor;
 }
 
-/// A faint diagonal light sweep across the whole card.
-class _Sweep extends StatelessWidget {
-  const _Sweep();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: const Alignment(-0.8, -1),
-            end: const Alignment(0.8, 1),
-            colors: [
-              Colors.white.withValues(alpha: 0),
-              Colors.white.withValues(alpha: 0.09),
-              Colors.white.withValues(alpha: 0),
-            ],
-            stops: const [0.35, 0.5, 0.65],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Rays bursting from the bottom-right corner — an explosive win moment.
 class _Rays extends StatelessWidget {
-  const _Rays();
+  const _Rays({required this.accent});
+
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return const Positioned(
+    return Positioned(
       right: -50,
       bottom: -50,
       child: CustomPaint(
-        size: Size(220, 220),
-        painter: _RaysPainter(),
+        size: const Size(220, 220),
+        painter: _RaysPainter(color: accent.withValues(alpha: 0.14)),
       ),
     );
   }
 }
 
 class _RaysPainter extends CustomPainter {
-  const _RaysPainter();
+  const _RaysPainter({required this.color});
+
+  final Color color;
 
   static const _angles = [0, 30, 60, 90, 120, 150];
 
@@ -374,7 +347,7 @@ class _RaysPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 * 0.92;
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.32)
+      ..color = color
       ..strokeWidth = 9
       ..strokeCap = StrokeCap.round;
 
@@ -387,20 +360,23 @@ class _RaysPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _RaysPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _RaysPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 /// A few faint stars — a quiet night-time recap.
 class _Stars extends StatelessWidget {
-  const _Stars();
+  const _Stars({required this.accent});
+
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return const Stack(
+    return Stack(
       children: [
-        _Star(top: 24, right: 32, size: 6, opacity: 0.8),
-        _Star(top: 50, right: 60, size: 4, opacity: 0.6),
-        _Star(top: 74, right: 38, size: 5, opacity: 0.7),
+        _Star(top: 24, right: 32, size: 6, color: accent, opacity: 0.5),
+        _Star(top: 50, right: 60, size: 4, color: accent, opacity: 0.35),
+        _Star(top: 74, right: 38, size: 5, color: accent, opacity: 0.42),
       ],
     );
   }
@@ -411,12 +387,14 @@ class _Star extends StatelessWidget {
     required this.top,
     required this.right,
     required this.size,
+    required this.color,
     required this.opacity,
   });
 
   final double top;
   final double right;
   final double size;
+  final Color color;
   final double opacity;
 
   @override
@@ -429,7 +407,7 @@ class _Star extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: const Color(0xFFC9BEFF).withValues(alpha: opacity),
+          color: color.withValues(alpha: opacity),
         ),
       ),
     );

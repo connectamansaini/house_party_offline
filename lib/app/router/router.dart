@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/src/home/presentation/home_page.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/game_setup.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/pages/game_page.dart';
@@ -48,89 +50,130 @@ abstract final class AppRoutes {
   static const mostLikelyToRules = '/most-likely-to/rules';
 }
 
-/// Application router. The game route receives its [GameSetup] via `extra`.
+/// Every route uses the same short fade-and-rise so navigation feels like
+/// one system, instead of the platform's default zoom.
+CustomTransitionPage<T> _page<T>(GoRouterState state, Widget child) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: AppMotion.base,
+    reverseTransitionDuration: AppMotion.fast,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: AppMotion.curve,
+        reverseCurve: AppMotion.reverseCurve,
+      );
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.03),
+            end: Offset.zero,
+          ).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
+/// Application router. Game routes receive their setup via `extra`.
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.home,
   routes: [
     GoRoute(
       path: AppRoutes.home,
-      builder: (context, state) => const HomePage(),
+      pageBuilder: (context, state) => _page(state, const HomePage()),
     ),
     GoRoute(
       path: AppRoutes.imposter,
-      builder: (context, state) => const ImposterHomePage(),
+      pageBuilder: (context, state) => _page(state, const ImposterHomePage()),
     ),
     GoRoute(
       path: AppRoutes.imposterSetup,
-      builder: (context, state) => const ImposterSetupPage(),
+      pageBuilder: (context, state) => _page(state, const ImposterSetupPage()),
     ),
     GoRoute(
       path: AppRoutes.imposterGame,
-      builder: (context, state) => GamePage(setup: state.extra! as GameSetup),
+      pageBuilder: (context, state) =>
+          _page(state, GamePage(setup: state.extra! as GameSetup)),
     ),
     GoRoute(
       path: AppRoutes.imposterPacks,
-      builder: (context, state) => const ImposterPacksPage(),
+      pageBuilder: (context, state) => _page(state, const ImposterPacksPage()),
     ),
     GoRoute(
       path: AppRoutes.imposterPackEditor,
-      builder: (context, state) =>
-          ImposterPackEditorPage(pack: state.extra as ImposterPackEntity?),
+      pageBuilder: (context, state) => _page<bool>(
+        state,
+        ImposterPackEditorPage(pack: state.extra as ImposterPackEntity?),
+      ),
     ),
     GoRoute(
       path: AppRoutes.imposterRules,
-      builder: (context, state) => const RulesPage(),
+      pageBuilder: (context, state) => _page(state, const RulesPage()),
     ),
     GoRoute(
       path: AppRoutes.mafia,
-      builder: (context, state) => const MafiaHomePage(),
+      pageBuilder: (context, state) => _page(state, const MafiaHomePage()),
     ),
     GoRoute(
       path: AppRoutes.mafiaSetup,
-      builder: (context, state) => const MafiaSetupPage(),
+      pageBuilder: (context, state) => _page(state, const MafiaSetupPage()),
     ),
     GoRoute(
       path: AppRoutes.mafiaGame,
-      builder: (context, state) =>
-          MafiaGamePage(setup: state.extra! as MafiaSetup),
+      pageBuilder: (context, state) =>
+          _page(state, MafiaGamePage(setup: state.extra! as MafiaSetup)),
     ),
     GoRoute(
       path: AppRoutes.mafiaRules,
-      builder: (context, state) => const MafiaRulesPage(),
+      pageBuilder: (context, state) => _page(state, const MafiaRulesPage()),
     ),
     GoRoute(
       path: AppRoutes.neverHaveIEver,
-      builder: (context, state) => const NeverHaveIEverHomePage(),
+      pageBuilder: (context, state) =>
+          _page(state, const NeverHaveIEverHomePage()),
     ),
     GoRoute(
       path: AppRoutes.neverHaveIEverSetup,
-      builder: (context, state) => const NeverHaveIEverSetupPage(),
+      pageBuilder: (context, state) =>
+          _page(state, const NeverHaveIEverSetupPage()),
     ),
     GoRoute(
       path: AppRoutes.neverHaveIEverGame,
-      builder: (context, state) =>
-          NeverHaveIEverGamePage(setup: state.extra! as NeverHaveIEverSetup),
+      pageBuilder: (context, state) => _page(
+        state,
+        NeverHaveIEverGamePage(setup: state.extra! as NeverHaveIEverSetup),
+      ),
     ),
     GoRoute(
       path: AppRoutes.neverHaveIEverRules,
-      builder: (context, state) => const NeverHaveIEverRulesPage(),
+      pageBuilder: (context, state) =>
+          _page(state, const NeverHaveIEverRulesPage()),
     ),
     GoRoute(
       path: AppRoutes.mostLikelyTo,
-      builder: (context, state) => const MostLikelyToHomePage(),
+      pageBuilder: (context, state) =>
+          _page(state, const MostLikelyToHomePage()),
     ),
     GoRoute(
       path: AppRoutes.mostLikelyToSetup,
-      builder: (context, state) => const MostLikelyToSetupPage(),
+      pageBuilder: (context, state) =>
+          _page(state, const MostLikelyToSetupPage()),
     ),
     GoRoute(
       path: AppRoutes.mostLikelyToGame,
-      builder: (context, state) =>
-          MostLikelyToGamePage(setup: state.extra! as MostLikelyToSetup),
+      pageBuilder: (context, state) => _page(
+        state,
+        MostLikelyToGamePage(setup: state.extra! as MostLikelyToSetup),
+      ),
     ),
     GoRoute(
       path: AppRoutes.mostLikelyToRules,
-      builder: (context, state) => const MostLikelyToRulesPage(),
+      pageBuilder: (context, state) =>
+          _page(state, const MostLikelyToRulesPage()),
     ),
   ],
 );

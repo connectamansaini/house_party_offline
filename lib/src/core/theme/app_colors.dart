@@ -1,11 +1,34 @@
 import 'package:flutter/material.dart';
 
-/// Brand accents and the vivid gradients used on hero surfaces and gameplay
-/// cards. These are intentionally fixed (not scheme-derived) so the dramatic
-/// moments — the imposter reveal, a win banner — read the same punch in both
-/// light and dark themes.
+/// Brand accents and each game's signature gradient. The UI is deliberately
+/// near-monochrome: surfaces are neutral, and a game's gradient is reduced
+/// to a single accent (its first stop — see [accentOf]) that appears only in
+/// small doses: an icon tint, a selection ring, an eyebrow label. The
+/// gradients themselves stay defined so a game's identity lives in one place.
 abstract final class AppColors {
   static const seed = Color(0xFF7C4DFF);
+
+  /// The one accent a surface is allowed to use for a game.
+  static Color accentOf(Gradient gradient) => gradient.colors.first;
+
+  /// Nudges an accent toward the foreground so it stays readable as small
+  /// text on that [brightness]'s surfaces (amber and teal accents in
+  /// particular wash out on white).
+  static Color legible(Color accent, Brightness brightness) {
+    final isLight = brightness == Brightness.light;
+    return Color.alphaBlend(
+      (isLight ? Colors.black : Colors.white).withValues(
+        alpha: isLight ? 0.28 : 0.18,
+      ),
+      accent,
+    );
+  }
+
+  /// Faint tint of an accent for chips and card fills.
+  static Color tint(Color accent, ColorScheme scheme) => Color.alphaBlend(
+    accent.withValues(alpha: scheme.brightness == Brightness.dark ? 0.18 : 0.1),
+    scheme.surfaceContainerLow,
+  );
 
   static const violet = Color(0xFF7C4DFF);
   static const magenta = Color(0xFFFF4D8D);

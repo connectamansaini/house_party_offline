@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
 /// A tappable player row used everywhere someone picks a target — voting,
-/// night actions, the day lynch. Selection reads as a gradient ring and a
-/// checkmark badge on the avatar, not a flat color flood across the whole
-/// row, so the player's name stays legible in both states.
+/// night actions, the day lynch. Selection reads as an accent hairline, a
+/// filled avatar and a checkmark badge, all animated in, so the row never
+/// jumps and the name stays legible in both states.
 class SelectablePlayerTile extends StatelessWidget {
   const SelectablePlayerTile({
     required this.name,
@@ -21,64 +22,64 @@ class SelectablePlayerTile extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  /// Gradient used for the ring and the selected avatar fill. Defaults to
-  /// the brand gradient; a screen can pass a contextual one (e.g. the mafia
-  /// gradient for a kill-target picker).
+  /// Source of the accent for the ring and the selected avatar fill (only
+  /// its first stop is used — see [AppColors.accentOf]). Defaults to the
+  /// brand; a screen can pass a contextual one (e.g. the mafia gradient for
+  /// a kill-target picker).
   final Gradient accentGradient;
 
   /// Optional content after the name — e.g. a remaining-lives indicator.
   final Widget? trailing;
 
-  static const _avatarSize = 48.0;
+  static const _avatarSize = 44.0;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final surface = scheme.surfaceContainerHigh;
-    const ringWidth = 2.0;
+    final accent = AppColors.accentOf(accentGradient);
+    final radius = BorderRadius.circular(AppRadii.x3l);
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadii.x3l),
-        child: Container(
-          padding: EdgeInsets.all(selected ? ringWidth : 0),
-          decoration: BoxDecoration(
-            gradient: selected ? accentGradient : null,
-            borderRadius: BorderRadius.circular(AppRadii.x3l),
+        borderRadius: radius,
+        child: AnimatedContainer(
+          duration: AppMotion.fast,
+          curve: AppMotion.curve,
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.x3l,
+            vertical: Spacing.lg,
           ),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: selected ? Spacing.x3l : Spacing.x4l,
-              vertical: selected ? Spacing.md : Spacing.lg,
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.tint(accent, scheme)
+                : scheme.surfaceContainerLow,
+            borderRadius: radius,
+            border: Border.all(
+              color: selected
+                  ? accent
+                  : scheme.outlineVariant.withValues(alpha: 0.7),
+              width: 1.5,
             ),
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(
-                AppRadii.x3l - (selected ? ringWidth : 0),
-              ),
-            ),
-            child: Row(
-              children: [
-                _Avatar(
-                  name: name,
-                  selected: selected,
-                  gradient: accentGradient,
-                ),
-                const SizedBox(width: Spacing.x3l),
-                Expanded(
-                  child: Text(
-                    name,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: selected ? FontWeight.w700 : null,
-                    ),
+          ),
+          child: Row(
+            children: [
+              _Avatar(name: name, selected: selected, accent: accent),
+              const SizedBox(width: Spacing.x3l),
+              Expanded(
+                child: AnimatedDefaultTextStyle(
+                  duration: AppMotion.fast,
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: scheme.onSurface,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   ),
+                  child: Text(name),
                 ),
-                if (trailing != null) trailing!,
-              ],
-            ),
+              ),
+              if (trailing != null) trailing!,
+            ],
           ),
         ),
       ),
@@ -90,12 +91,12 @@ class _Avatar extends StatelessWidget {
   const _Avatar({
     required this.name,
     required this.selected,
-    required this.gradient,
+    required this.accent,
   });
 
   final String name;
   final bool selected;
-  final Gradient gradient;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
@@ -108,39 +109,43 @@ class _Avatar extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
+          AnimatedContainer(
+            duration: AppMotion.fast,
+            curve: AppMotion.curve,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: selected ? gradient : AppColors.civilianGradient,
+              color: selected ? accent : scheme.surfaceContainerHighest,
             ),
             alignment: Alignment.center,
-            child: Text(
-              initial,
+            child: AnimatedDefaultTextStyle(
+              duration: AppMotion.fast,
               style: const TextStyle(fontFamily: 'Unbounded').copyWith(
-                color: AppColors.onGradient,
+                color: selected ? Colors.white : scheme.onSurface,
                 fontWeight: FontWeight.w700,
-                fontSize: 16,
+                fontSize: 15,
               ),
+              child: Text(initial),
             ),
           ),
-          if (selected)
-            Positioned(
-              right: -2,
-              bottom: -2,
+          Positioned(
+            right: -2,
+            bottom: -2,
+            child: AnimatedScale(
+              scale: selected ? 1 : 0,
+              duration: AppMotion.fast,
+              curve: AppMotion.curve,
               child: Container(
                 width: 18,
                 height: 18,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: gradient,
-                  border: Border.all(
-                    color: scheme.surfaceContainerHigh,
-                    width: 2,
-                  ),
+                  color: accent,
+                  border: Border.all(color: scheme.surface, width: 2),
                 ),
                 child: const CustomPaint(painter: _CheckPainter()),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -159,7 +164,7 @@ class _CheckPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = AppColors.onGradient
+        ..color = Colors.white
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.6
         ..strokeCap = StrokeCap.round

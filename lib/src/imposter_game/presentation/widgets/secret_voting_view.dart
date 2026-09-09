@@ -137,8 +137,7 @@ class _Ballot extends StatelessWidget {
               return SelectablePlayerTile(
                 name: p.name,
                 selected: p.id == selected,
-                onTap: () =>
-                    context.read<GameBloc>().add(BallotSelected(p.id)),
+                onTap: () => context.read<GameBloc>().add(BallotSelected(p.id)),
               );
             },
           ),

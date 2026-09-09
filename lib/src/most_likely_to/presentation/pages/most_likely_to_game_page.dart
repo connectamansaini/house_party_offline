@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
+import 'package:house_party_offline/core/design/app_motion.dart';
 import 'package:house_party_offline/src/core/widgets/gradient_scaffold.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/engine/most_likely_to_engine.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
@@ -79,7 +80,8 @@ class _GameScaffoldState extends State<_GameScaffold> {
             ),
             body: SafeArea(
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
+                duration: AppMotion.base,
+                transitionBuilder: AppMotion.fadeRise,
                 child: isOver
                     ? MostLikelyToGameOverView(
                         key: const ValueKey('over'),

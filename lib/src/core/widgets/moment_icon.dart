@@ -50,7 +50,9 @@ class MomentGlyph extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(painter: _MomentIconPainter(icon: icon, color: color)),
+      child: CustomPaint(
+        painter: _MomentIconPainter(icon: icon, color: color),
+      ),
     );
   }
 }

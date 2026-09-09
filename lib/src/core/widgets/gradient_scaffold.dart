@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// A [Scaffold] painted over a subtle, theme-derived vertical gradient. Used on
-/// the app's main screens so backgrounds feel alive without overpowering
-/// content. The [AppBarTheme] is transparent, so the gradient shows through.
+/// The app's page scaffold: a flat, theme-derived surface. It used to paint a
+/// tinted gradient behind every screen; the name stuck because every page
+/// already uses it, but the background is now deliberately plain so the
+/// content — and each game's single accent — is the only thing with color.
 class GradientScaffold extends StatelessWidget {
   const GradientScaffold({
     required this.body,
@@ -23,37 +24,14 @@ class GradientScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color.alphaBlend(
-              scheme.primary.withValues(alpha: isDark ? 0.16 : 0.09),
-              scheme.surface,
-            ),
-            Color.alphaBlend(
-              scheme.tertiary.withValues(alpha: isDark ? 0.10 : 0.05),
-              scheme.surface,
-            ),
-            scheme.surface,
-          ],
-          stops: const [0.0, 0.35, 0.75],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: appBar,
-        extendBodyBehindAppBar: extendBodyBehindAppBar,
-        floatingActionButton: floatingActionButton,
-        floatingActionButtonLocation: floatingActionButtonLocation,
-        bottomNavigationBar: bottomNavigationBar,
-        body: body,
-      ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: appBar,
+      extendBodyBehindAppBar: extendBodyBehindAppBar,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
+      bottomNavigationBar: bottomNavigationBar,
+      body: body,
     );
   }
 }

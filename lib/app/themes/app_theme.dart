@@ -3,15 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:house_party_offline/core/design/app_radii.dart';
 import 'package:house_party_offline/src/core/theme/app_colors.dart';
 
+/// Near-monochrome Material theme. The seed only tints the neutrals; the
+/// primary role is "ink" (near-black on light, near-white on dark) so filled
+/// buttons, pips and selection reads are colorless and the per-game accents
+/// are the only real color on screen.
 abstract final class AppTheme {
   static ThemeData light() => _base(Brightness.light);
   static ThemeData dark() => _base(Brightness.dark);
 
+  static const _inkLight = Color(0xFF17151C);
+  static const _inkDark = Color(0xFFF3F1F7);
+
   static ThemeData _base(Brightness brightness) {
-    final colorScheme = ColorScheme.fromSeed(
+    final isDark = brightness == Brightness.dark;
+    final seeded = ColorScheme.fromSeed(
       seedColor: AppColors.seed,
       brightness: brightness,
-      dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
+      dynamicSchemeVariant: DynamicSchemeVariant.neutral,
+    );
+    final colorScheme = seeded.copyWith(
+      primary: isDark ? _inkDark : _inkLight,
+      onPrimary: isDark ? _inkLight : Colors.white,
+      primaryContainer: seeded.surfaceContainerHighest,
+      onPrimaryContainer: seeded.onSurface,
     );
     final base = ThemeData(
       useMaterial3: true,
@@ -19,11 +33,14 @@ abstract final class AppTheme {
       brightness: brightness,
     );
     final text = _textTheme(base.textTheme);
+    final hairline = BorderSide(
+      color: colorScheme.outlineVariant.withValues(alpha: 0.7),
+    );
 
     return base.copyWith(
       textTheme: text,
       scaffoldBackgroundColor: colorScheme.surface,
-      splashFactory: InkSparkle.splashFactory,
+      splashFactory: InkRipple.splashFactory,
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
@@ -34,8 +51,12 @@ abstract final class AppTheme {
         titleTextStyle: text.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       cardTheme: CardThemeData(
+        elevation: 0,
+        color: colorScheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.x3l),
+          side: hairline,
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -51,7 +72,7 @@ abstract final class AppTheme {
         style: OutlinedButton.styleFrom(
           minimumSize: const Size.fromHeight(56),
           textStyle: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          side: BorderSide(color: colorScheme.outlineVariant),
+          side: hairline,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.x4l),
           ),
@@ -63,8 +84,19 @@ abstract final class AppTheme {
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surfaceContainerLow,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderSide: hairline,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderSide: hairline,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
         ),
       ),
       chipTheme: base.chipTheme.copyWith(
