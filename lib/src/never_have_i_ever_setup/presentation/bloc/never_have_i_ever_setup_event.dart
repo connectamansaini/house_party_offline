@@ -17,6 +17,18 @@ class NeverHaveIEverSetupRosterSaved extends NeverHaveIEverSetupEvent {
   const NeverHaveIEverSetupRosterSaved();
 }
 
+class NeverHaveIEverSetupIncludeCustomPromptsChanged
+    extends NeverHaveIEverSetupEvent {
+  const NeverHaveIEverSetupIncludeCustomPromptsChanged({
+    required this.enabled,
+  });
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+}
+
 class NeverHaveIEverSetupPlayerAdded extends NeverHaveIEverSetupEvent {
   const NeverHaveIEverSetupPlayerAdded();
 }

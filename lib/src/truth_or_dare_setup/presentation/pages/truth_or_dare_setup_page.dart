@@ -5,6 +5,7 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
@@ -18,9 +19,10 @@ class TruthOrDareSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          TruthOrDareSetupBloc(getIt<RosterRepository>())
-            ..add(const TruthOrDareSetupStarted()),
+      create: (_) => TruthOrDareSetupBloc(
+        getIt<RosterRepository>(),
+        getIt<CustomPromptsRepository>(),
+      )..add(const TruthOrDareSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -95,6 +97,21 @@ class _SetupView extends StatelessWidget {
                           TruthOrDareSetupRoundCountChanged(count),
                         ),
                       ),
+                      if (state.customPromptCount > 0)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text('Add your prompts'),
+                          subtitle: Text(
+                            '${state.customTruths.length} truths, '
+                            '${state.customDares.length} dares',
+                          ),
+                          value: state.config.includeCustomPrompts,
+                          onChanged: (enabled) => bloc.add(
+                            TruthOrDareSetupIncludeCustomPromptsChanged(
+                              enabled: enabled,
+                            ),
+                          ),
+                        ),
                       Padding(
                         padding: AppPadding.v4,
                         child: Row(

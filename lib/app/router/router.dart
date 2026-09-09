@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:house_party_offline/core/design/app_motion.dart';
+import 'package:house_party_offline/src/custom_prompts/presentation/pages/custom_prompts_page.dart';
 import 'package:house_party_offline/src/home/presentation/home_page.dart';
 import 'package:house_party_offline/src/imposter_game/domain/entities/game_setup.dart';
 import 'package:house_party_offline/src/imposter_game/presentation/pages/game_page.dart';
@@ -16,16 +17,19 @@ import 'package:house_party_offline/src/mafia_game/presentation/pages/mafia_game
 import 'package:house_party_offline/src/mafia_game/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_home_page.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/pages/mafia_setup_page.dart';
+import 'package:house_party_offline/src/most_likely_to/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
 import 'package:house_party_offline/src/most_likely_to/presentation/pages/most_likely_to_game_page.dart';
 import 'package:house_party_offline/src/most_likely_to/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/pages/most_likely_to_home_page.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/pages/most_likely_to_setup_page.dart';
+import 'package:house_party_offline/src/never_have_i_ever/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/never_have_i_ever_game_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_home_page.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/pages/never_have_i_ever_setup_page.dart';
+import 'package:house_party_offline/src/truth_or_dare/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_setup.dart';
 import 'package:house_party_offline/src/truth_or_dare/presentation/pages/rules_page.dart';
 import 'package:house_party_offline/src/truth_or_dare/presentation/pages/truth_or_dare_game_page.dart';
@@ -49,14 +53,17 @@ abstract final class AppRoutes {
   static const neverHaveIEverSetup = '/never-have-i-ever/setup';
   static const neverHaveIEverGame = '/never-have-i-ever/game';
   static const neverHaveIEverRules = '/never-have-i-ever/rules';
+  static const neverHaveIEverPrompts = '/never-have-i-ever/prompts';
   static const mostLikelyTo = '/most-likely-to';
   static const mostLikelyToSetup = '/most-likely-to/setup';
   static const mostLikelyToGame = '/most-likely-to/game';
   static const mostLikelyToRules = '/most-likely-to/rules';
+  static const mostLikelyToPrompts = '/most-likely-to/prompts';
   static const truthOrDare = '/truth-or-dare';
   static const truthOrDareSetup = '/truth-or-dare/setup';
   static const truthOrDareGame = '/truth-or-dare/game';
   static const truthOrDareRules = '/truth-or-dare/rules';
+  static const truthOrDarePrompts = '/truth-or-dare/prompts';
 }
 
 /// Every route uses the same short fade-and-rise so navigation feels like
@@ -205,6 +212,23 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.truthOrDareRules,
       pageBuilder: (context, state) =>
           _page(state, const TruthOrDareRulesPage()),
+    ),
+    GoRoute(
+      path: AppRoutes.neverHaveIEverPrompts,
+      pageBuilder: (context, state) => _page(
+        state,
+        const CustomPromptsPage(spec: kNeverHaveIEverPromptDeck),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.mostLikelyToPrompts,
+      pageBuilder: (context, state) =>
+          _page(state, const CustomPromptsPage(spec: kMostLikelyToPromptDeck)),
+    ),
+    GoRoute(
+      path: AppRoutes.truthOrDarePrompts,
+      pageBuilder: (context, state) =>
+          _page(state, const CustomPromptsPage(spec: kTruthOrDarePromptDeck)),
     ),
   ],
 );

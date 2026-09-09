@@ -17,6 +17,16 @@ class TruthOrDareSetupRosterSaved extends TruthOrDareSetupEvent {
   const TruthOrDareSetupRosterSaved();
 }
 
+class TruthOrDareSetupIncludeCustomPromptsChanged
+    extends TruthOrDareSetupEvent {
+  const TruthOrDareSetupIncludeCustomPromptsChanged({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+}
+
 class TruthOrDareSetupPlayerAdded extends TruthOrDareSetupEvent {
   const TruthOrDareSetupPlayerAdded();
 }

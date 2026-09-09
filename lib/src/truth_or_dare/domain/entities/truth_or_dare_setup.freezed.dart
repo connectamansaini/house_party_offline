@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TruthOrDareSetup {
 
- List<TruthOrDarePlayer> get players; TruthOrDareConfig get config;
+ List<TruthOrDarePlayer> get players; TruthOrDareConfig get config;/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+ List<String> get customTruths; List<String> get customDares;
 /// Create a copy of TruthOrDareSetup
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $TruthOrDareSetupCopyWith<TruthOrDareSetup> get copyWith => _$TruthOrDareSetupCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TruthOrDareSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TruthOrDareSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config)&&const DeepCollectionEquality().equals(other.customTruths, customTruths)&&const DeepCollectionEquality().equals(other.customDares, customDares));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config,const DeepCollectionEquality().hash(customTruths),const DeepCollectionEquality().hash(customDares));
 
 @override
 String toString() {
-  return 'TruthOrDareSetup(players: $players, config: $config)';
+  return 'TruthOrDareSetup(players: $players, config: $config, customTruths: $customTruths, customDares: $customDares)';
 }
 
 
@@ -45,7 +47,7 @@ abstract mixin class $TruthOrDareSetupCopyWith<$Res>  {
   factory $TruthOrDareSetupCopyWith(TruthOrDareSetup value, $Res Function(TruthOrDareSetup) _then) = _$TruthOrDareSetupCopyWithImpl;
 @useResult
 $Res call({
- List<TruthOrDarePlayer> players, TruthOrDareConfig config
+ List<TruthOrDarePlayer> players, TruthOrDareConfig config, List<String> customTruths, List<String> customDares
 });
 
 
@@ -62,11 +64,13 @@ class _$TruthOrDareSetupCopyWithImpl<$Res>
 
 /// Create a copy of TruthOrDareSetup
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,Object? customTruths = null,Object? customDares = null,}) {
   return _then(_self.copyWith(
 players: null == players ? _self.players : players // ignore: cast_nullable_to_non_nullable
 as List<TruthOrDarePlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as TruthOrDareConfig,
+as TruthOrDareConfig,customTruths: null == customTruths ? _self.customTruths : customTruths // ignore: cast_nullable_to_non_nullable
+as List<String>,customDares: null == customDares ? _self.customDares : customDares // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 /// Create a copy of TruthOrDareSetup
@@ -160,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TruthOrDarePlayer> players,  TruthOrDareConfig config)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TruthOrDarePlayer> players,  TruthOrDareConfig config,  List<String> customTruths,  List<String> customDares)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TruthOrDareSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customTruths,_that.customDares);case _:
   return orElse();
 
 }
@@ -181,10 +185,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TruthOrDarePlayer> players,  TruthOrDareConfig config)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TruthOrDarePlayer> players,  TruthOrDareConfig config,  List<String> customTruths,  List<String> customDares)  $default,) {final _that = this;
 switch (_that) {
 case _TruthOrDareSetup():
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customTruths,_that.customDares);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +205,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TruthOrDarePlayer> players,  TruthOrDareConfig config)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TruthOrDarePlayer> players,  TruthOrDareConfig config,  List<String> customTruths,  List<String> customDares)?  $default,) {final _that = this;
 switch (_that) {
 case _TruthOrDareSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customTruths,_that.customDares);case _:
   return null;
 
 }
@@ -216,7 +220,7 @@ return $default(_that.players,_that.config);case _:
 
 
 class _TruthOrDareSetup implements TruthOrDareSetup {
-  const _TruthOrDareSetup({required final  List<TruthOrDarePlayer> players, required this.config}): _players = players;
+  const _TruthOrDareSetup({required final  List<TruthOrDarePlayer> players, required this.config, final  List<String> customTruths = const <String>[], final  List<String> customDares = const <String>[]}): _players = players,_customTruths = customTruths,_customDares = customDares;
   
 
  final  List<TruthOrDarePlayer> _players;
@@ -227,6 +231,24 @@ class _TruthOrDareSetup implements TruthOrDareSetup {
 }
 
 @override final  TruthOrDareConfig config;
+/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+ final  List<String> _customTruths;
+/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+@override@JsonKey() List<String> get customTruths {
+  if (_customTruths is EqualUnmodifiableListView) return _customTruths;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_customTruths);
+}
+
+ final  List<String> _customDares;
+@override@JsonKey() List<String> get customDares {
+  if (_customDares is EqualUnmodifiableListView) return _customDares;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_customDares);
+}
+
 
 /// Create a copy of TruthOrDareSetup
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +260,16 @@ _$TruthOrDareSetupCopyWith<_TruthOrDareSetup> get copyWith => __$TruthOrDareSetu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TruthOrDareSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TruthOrDareSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config)&&const DeepCollectionEquality().equals(other._customTruths, _customTruths)&&const DeepCollectionEquality().equals(other._customDares, _customDares));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config,const DeepCollectionEquality().hash(_customTruths),const DeepCollectionEquality().hash(_customDares));
 
 @override
 String toString() {
-  return 'TruthOrDareSetup(players: $players, config: $config)';
+  return 'TruthOrDareSetup(players: $players, config: $config, customTruths: $customTruths, customDares: $customDares)';
 }
 
 
@@ -258,7 +280,7 @@ abstract mixin class _$TruthOrDareSetupCopyWith<$Res> implements $TruthOrDareSet
   factory _$TruthOrDareSetupCopyWith(_TruthOrDareSetup value, $Res Function(_TruthOrDareSetup) _then) = __$TruthOrDareSetupCopyWithImpl;
 @override @useResult
 $Res call({
- List<TruthOrDarePlayer> players, TruthOrDareConfig config
+ List<TruthOrDarePlayer> players, TruthOrDareConfig config, List<String> customTruths, List<String> customDares
 });
 
 
@@ -275,11 +297,13 @@ class __$TruthOrDareSetupCopyWithImpl<$Res>
 
 /// Create a copy of TruthOrDareSetup
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,Object? customTruths = null,Object? customDares = null,}) {
   return _then(_TruthOrDareSetup(
 players: null == players ? _self._players : players // ignore: cast_nullable_to_non_nullable
 as List<TruthOrDarePlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as TruthOrDareConfig,
+as TruthOrDareConfig,customTruths: null == customTruths ? _self._customTruths : customTruths // ignore: cast_nullable_to_non_nullable
+as List<String>,customDares: null == customDares ? _self._customDares : customDares // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

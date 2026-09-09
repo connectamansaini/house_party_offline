@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/entities/custom_prompt.dart';
+import 'package:house_party_offline/src/most_likely_to/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/bloc/most_likely_to_setup_bloc.dart';
+import '../../helpers/fake_custom_prompts_repository.dart';
 import '../../helpers/fake_roster_repository.dart';
 
 Future<MostLikelyToSetupState> _emitUntil(
@@ -14,9 +17,43 @@ Future<MostLikelyToSetupState> _emitUntil(
 }
 
 void main() {
+  group('custom prompts', () {
+    test(
+      'Started loads them, and the include switch gates buildSetup',
+      () async {
+        final prompts = FakeCustomPromptsRepository({
+          kMostLikelyToPromptDeckId: const [
+            CustomPrompt(id: 'c1', text: 'Most likely to nap'),
+          ],
+        });
+        final bloc = MostLikelyToSetupBloc(FakeRosterRepository(), prompts);
+
+        final loaded = await _emitUntil(
+          bloc,
+          const MostLikelyToSetupStarted(),
+          (s) => s.customPromptCount == 1,
+        );
+        expect(loaded.buildSetup().customPrompts, ['Most likely to nap']);
+
+        final excluded = await _emitUntil(
+          bloc,
+          const MostLikelyToSetupIncludeCustomPromptsChanged(enabled: false),
+          (s) => !s.config.includeCustomPrompts,
+        );
+        expect(excluded.customPromptCount, 1);
+        expect(excluded.buildSetup().customPrompts, isEmpty);
+
+        await bloc.close();
+      },
+    );
+  });
+
   group('roster', () {
     test('Started seeds the saved roster, padded to the minimum', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository(['Ann', 'Bo']));
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(['Ann', 'Bo']),
+        FakeCustomPromptsRepository(),
+      );
 
       final s = await _emitUntil(
         bloc,
@@ -30,7 +67,7 @@ void main() {
 
     test('RosterSaved writes the current names', () async {
       final roster = FakeRosterRepository();
-      final bloc = MostLikelyToSetupBloc(roster)
+      final bloc = MostLikelyToSetupBloc(roster, FakeCustomPromptsRepository())
         ..add(const MostLikelyToSetupRosterSaved());
       await Future<void>.delayed(Duration.zero);
 
@@ -41,7 +78,10 @@ void main() {
 
   group('initial state', () {
     test('seeds the minimum default roster', () {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
       expect(bloc.state.players.length, MostLikelyToConfig.minPlayers);
       expect(
         bloc.state.players.map((p) => p.name),
@@ -57,7 +97,10 @@ void main() {
 
   group('players', () {
     test('addPlayer appends up to the max', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
       final before = bloc.state.players.length;
 
       final s = await _emitUntil(
@@ -71,7 +114,10 @@ void main() {
     });
 
     test('addPlayer is capped at maxPlayers', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
       for (var i = 0; i < 20; i++) {
         bloc.add(const MostLikelyToSetupPlayerAdded());
       }
@@ -84,7 +130,10 @@ void main() {
     });
 
     test('removePlayer removes the target', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
       final firstId = bloc.state.players.first.id;
 
       final s = await _emitUntil(
@@ -99,7 +148,10 @@ void main() {
     });
 
     test('renamePlayer updates only the target', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
       final id = bloc.state.players[1].id;
 
       final s = await _emitUntil(
@@ -117,7 +169,10 @@ void main() {
 
   group('config', () {
     test('setRoundCount clamps within min/max', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
 
       final capped = await _emitUntil(
         bloc,
@@ -137,7 +192,10 @@ void main() {
     });
 
     test('buildSetup produces a matching MostLikelyToSetup', () async {
-      final bloc = MostLikelyToSetupBloc(FakeRosterRepository());
+      final bloc = MostLikelyToSetupBloc(
+        FakeRosterRepository(),
+        FakeCustomPromptsRepository(),
+      );
       await _emitUntil(
         bloc,
         const MostLikelyToSetupRoundCountChanged(15),

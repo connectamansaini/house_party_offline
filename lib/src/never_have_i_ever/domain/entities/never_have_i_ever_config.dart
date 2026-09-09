@@ -8,6 +8,9 @@ abstract class NeverHaveIEverConfig with _$NeverHaveIEverConfig {
   const factory NeverHaveIEverConfig({
     /// How many prompts a player can match before they're out.
     @Default(3) int livesPerPlayer,
+
+    /// Whether the host's own prompts join the bundled deck.
+    @Default(true) bool includeCustomPrompts,
   }) = _NeverHaveIEverConfig;
 
   const NeverHaveIEverConfig._();

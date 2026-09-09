@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/app/injector/injector.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/pages/most_likely_to_setup_page.dart';
 import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
+import '../../helpers/fake_custom_prompts_repository.dart';
 import '../../helpers/fake_roster_repository.dart';
 
 /// Exercises the real, wired-up [MostLikelyToSetupPage] end to end — the
 /// roster list, the options, and the Start button.
 void main() {
   setUp(() {
-    getIt.registerSingleton<RosterRepository>(FakeRosterRepository());
+    getIt
+      ..registerSingleton<RosterRepository>(FakeRosterRepository())
+      ..registerSingleton<CustomPromptsRepository>(
+        FakeCustomPromptsRepository(),
+      );
   });
 
   tearDown(() async {

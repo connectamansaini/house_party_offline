@@ -31,12 +31,13 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('renders the hero and both ticket entries', (tester) async {
+  testWidgets('renders the hero and all three ticket entries', (tester) async {
     await pumpLanding(tester);
 
     expect(find.text('Most Likely To'), findsOneWidget);
-    expect(find.byType(TicketCard), findsNWidgets(2));
+    expect(find.byType(TicketCard), findsNWidgets(3));
     expect(find.text('New game'), findsOneWidget);
+    expect(find.text('Your prompts'), findsOneWidget);
     expect(find.text('How to play'), findsOneWidget);
   });
 

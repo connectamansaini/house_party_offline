@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 import 'package:house_party_offline/src/roster/domain/roster_seed.dart';
+import 'package:house_party_offline/src/truth_or_dare/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_config.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_level.dart';
 import 'package:house_party_offline/src/truth_or_dare/domain/entities/truth_or_dare_player.dart';
@@ -17,7 +19,7 @@ part 'truth_or_dare_setup_state.dart';
 /// swaps in the shared roster's names if any are saved.
 class TruthOrDareSetupBloc
     extends Bloc<TruthOrDareSetupEvent, TruthOrDareSetupState> {
-  TruthOrDareSetupBloc(this._roster)
+  TruthOrDareSetupBloc(this._roster, this._customPrompts)
     : super(
         TruthOrDareSetupState(
           players: _defaultRoster(TruthOrDareConfig.minPlayers),
@@ -30,26 +32,46 @@ class TruthOrDareSetupBloc
     on<TruthOrDareSetupLevelChanged>(_onLevelChanged);
     on<TruthOrDareSetupStarted>(_onStarted);
     on<TruthOrDareSetupRosterSaved>(_onRosterSaved);
+    on<TruthOrDareSetupIncludeCustomPromptsChanged>(
+      _onIncludeCustomPromptsChanged,
+    );
   }
 
   final RosterRepository _roster;
+  final CustomPromptsRepository _customPrompts;
 
   Future<void> _onStarted(
     TruthOrDareSetupStarted event,
     Emitter<TruthOrDareSetupState> emit,
   ) async {
     final saved = await _roster.loadNames();
-    if (saved.isEmpty) return;
+    final truths = await _customPrompts.load(kTruthOrDareTruthDeckId);
+    final dares = await _customPrompts.load(kTruthOrDareDareDeckId);
     emit(
       state.copyWith(
-        players: [
-          for (final name in seedRosterNames(
-            saved,
-            min: TruthOrDareConfig.minPlayers,
-            max: TruthOrDareConfig.maxPlayers,
-          ))
-            TruthOrDarePlayer(id: newId(), name: name),
-        ],
+        players: saved.isEmpty
+            ? state.players
+            : [
+                for (final name in seedRosterNames(
+                  saved,
+                  min: TruthOrDareConfig.minPlayers,
+                  max: TruthOrDareConfig.maxPlayers,
+                ))
+                  TruthOrDarePlayer(id: newId(), name: name),
+              ],
+        customTruths: [for (final p in truths) p.text],
+        customDares: [for (final p in dares) p.text],
+      ),
+    );
+  }
+
+  void _onIncludeCustomPromptsChanged(
+    TruthOrDareSetupIncludeCustomPromptsChanged event,
+    Emitter<TruthOrDareSetupState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        config: state.config.copyWith(includeCustomPrompts: event.enabled),
       ),
     );
   }

@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NeverHaveIEverSetup {
 
- List<NeverHaveIEverPlayer> get players; NeverHaveIEverConfig get config;
+ List<NeverHaveIEverPlayer> get players; NeverHaveIEverConfig get config;/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+ List<String> get customPrompts;
 /// Create a copy of NeverHaveIEverSetup
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $NeverHaveIEverSetupCopyWith<NeverHaveIEverSetup> get copyWith => _$NeverHaveIEv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NeverHaveIEverSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NeverHaveIEverSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config)&&const DeepCollectionEquality().equals(other.customPrompts, customPrompts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config,const DeepCollectionEquality().hash(customPrompts));
 
 @override
 String toString() {
-  return 'NeverHaveIEverSetup(players: $players, config: $config)';
+  return 'NeverHaveIEverSetup(players: $players, config: $config, customPrompts: $customPrompts)';
 }
 
 
@@ -45,7 +47,7 @@ abstract mixin class $NeverHaveIEverSetupCopyWith<$Res>  {
   factory $NeverHaveIEverSetupCopyWith(NeverHaveIEverSetup value, $Res Function(NeverHaveIEverSetup) _then) = _$NeverHaveIEverSetupCopyWithImpl;
 @useResult
 $Res call({
- List<NeverHaveIEverPlayer> players, NeverHaveIEverConfig config
+ List<NeverHaveIEverPlayer> players, NeverHaveIEverConfig config, List<String> customPrompts
 });
 
 
@@ -62,11 +64,12 @@ class _$NeverHaveIEverSetupCopyWithImpl<$Res>
 
 /// Create a copy of NeverHaveIEverSetup
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,Object? customPrompts = null,}) {
   return _then(_self.copyWith(
 players: null == players ? _self.players : players // ignore: cast_nullable_to_non_nullable
 as List<NeverHaveIEverPlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as NeverHaveIEverConfig,
+as NeverHaveIEverConfig,customPrompts: null == customPrompts ? _self.customPrompts : customPrompts // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 /// Create a copy of NeverHaveIEverSetup
@@ -160,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<NeverHaveIEverPlayer> players,  NeverHaveIEverConfig config)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<NeverHaveIEverPlayer> players,  NeverHaveIEverConfig config,  List<String> customPrompts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NeverHaveIEverSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customPrompts);case _:
   return orElse();
 
 }
@@ -181,10 +184,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<NeverHaveIEverPlayer> players,  NeverHaveIEverConfig config)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<NeverHaveIEverPlayer> players,  NeverHaveIEverConfig config,  List<String> customPrompts)  $default,) {final _that = this;
 switch (_that) {
 case _NeverHaveIEverSetup():
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customPrompts);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +204,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<NeverHaveIEverPlayer> players,  NeverHaveIEverConfig config)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<NeverHaveIEverPlayer> players,  NeverHaveIEverConfig config,  List<String> customPrompts)?  $default,) {final _that = this;
 switch (_that) {
 case _NeverHaveIEverSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customPrompts);case _:
   return null;
 
 }
@@ -216,7 +219,7 @@ return $default(_that.players,_that.config);case _:
 
 
 class _NeverHaveIEverSetup implements NeverHaveIEverSetup {
-  const _NeverHaveIEverSetup({required final  List<NeverHaveIEverPlayer> players, required this.config}): _players = players;
+  const _NeverHaveIEverSetup({required final  List<NeverHaveIEverPlayer> players, required this.config, final  List<String> customPrompts = const <String>[]}): _players = players,_customPrompts = customPrompts;
   
 
  final  List<NeverHaveIEverPlayer> _players;
@@ -227,6 +230,17 @@ class _NeverHaveIEverSetup implements NeverHaveIEverSetup {
 }
 
 @override final  NeverHaveIEverConfig config;
+/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+ final  List<String> _customPrompts;
+/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+@override@JsonKey() List<String> get customPrompts {
+  if (_customPrompts is EqualUnmodifiableListView) return _customPrompts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_customPrompts);
+}
+
 
 /// Create a copy of NeverHaveIEverSetup
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +252,16 @@ _$NeverHaveIEverSetupCopyWith<_NeverHaveIEverSetup> get copyWith => __$NeverHave
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NeverHaveIEverSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NeverHaveIEverSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config)&&const DeepCollectionEquality().equals(other._customPrompts, _customPrompts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config,const DeepCollectionEquality().hash(_customPrompts));
 
 @override
 String toString() {
-  return 'NeverHaveIEverSetup(players: $players, config: $config)';
+  return 'NeverHaveIEverSetup(players: $players, config: $config, customPrompts: $customPrompts)';
 }
 
 
@@ -258,7 +272,7 @@ abstract mixin class _$NeverHaveIEverSetupCopyWith<$Res> implements $NeverHaveIE
   factory _$NeverHaveIEverSetupCopyWith(_NeverHaveIEverSetup value, $Res Function(_NeverHaveIEverSetup) _then) = __$NeverHaveIEverSetupCopyWithImpl;
 @override @useResult
 $Res call({
- List<NeverHaveIEverPlayer> players, NeverHaveIEverConfig config
+ List<NeverHaveIEverPlayer> players, NeverHaveIEverConfig config, List<String> customPrompts
 });
 
 
@@ -275,11 +289,12 @@ class __$NeverHaveIEverSetupCopyWithImpl<$Res>
 
 /// Create a copy of NeverHaveIEverSetup
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,Object? customPrompts = null,}) {
   return _then(_NeverHaveIEverSetup(
 players: null == players ? _self._players : players // ignore: cast_nullable_to_non_nullable
 as List<NeverHaveIEverPlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as NeverHaveIEverConfig,
+as NeverHaveIEverConfig,customPrompts: null == customPrompts ? _self._customPrompts : customPrompts // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

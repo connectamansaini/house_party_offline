@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MostLikelyToSetup {
 
- List<MostLikelyToPlayer> get players; MostLikelyToConfig get config;
+ List<MostLikelyToPlayer> get players; MostLikelyToConfig get config;/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+ List<String> get customPrompts;
 /// Create a copy of MostLikelyToSetup
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $MostLikelyToSetupCopyWith<MostLikelyToSetup> get copyWith => _$MostLikelyToSetu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MostLikelyToSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MostLikelyToSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config)&&const DeepCollectionEquality().equals(other.customPrompts, customPrompts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config,const DeepCollectionEquality().hash(customPrompts));
 
 @override
 String toString() {
-  return 'MostLikelyToSetup(players: $players, config: $config)';
+  return 'MostLikelyToSetup(players: $players, config: $config, customPrompts: $customPrompts)';
 }
 
 
@@ -45,7 +47,7 @@ abstract mixin class $MostLikelyToSetupCopyWith<$Res>  {
   factory $MostLikelyToSetupCopyWith(MostLikelyToSetup value, $Res Function(MostLikelyToSetup) _then) = _$MostLikelyToSetupCopyWithImpl;
 @useResult
 $Res call({
- List<MostLikelyToPlayer> players, MostLikelyToConfig config
+ List<MostLikelyToPlayer> players, MostLikelyToConfig config, List<String> customPrompts
 });
 
 
@@ -62,11 +64,12 @@ class _$MostLikelyToSetupCopyWithImpl<$Res>
 
 /// Create a copy of MostLikelyToSetup
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,Object? customPrompts = null,}) {
   return _then(_self.copyWith(
 players: null == players ? _self.players : players // ignore: cast_nullable_to_non_nullable
 as List<MostLikelyToPlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as MostLikelyToConfig,
+as MostLikelyToConfig,customPrompts: null == customPrompts ? _self.customPrompts : customPrompts // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 /// Create a copy of MostLikelyToSetup
@@ -160,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MostLikelyToPlayer> players,  MostLikelyToConfig config)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MostLikelyToPlayer> players,  MostLikelyToConfig config,  List<String> customPrompts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MostLikelyToSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customPrompts);case _:
   return orElse();
 
 }
@@ -181,10 +184,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MostLikelyToPlayer> players,  MostLikelyToConfig config)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MostLikelyToPlayer> players,  MostLikelyToConfig config,  List<String> customPrompts)  $default,) {final _that = this;
 switch (_that) {
 case _MostLikelyToSetup():
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customPrompts);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +204,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MostLikelyToPlayer> players,  MostLikelyToConfig config)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MostLikelyToPlayer> players,  MostLikelyToConfig config,  List<String> customPrompts)?  $default,) {final _that = this;
 switch (_that) {
 case _MostLikelyToSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.customPrompts);case _:
   return null;
 
 }
@@ -216,7 +219,7 @@ return $default(_that.players,_that.config);case _:
 
 
 class _MostLikelyToSetup implements MostLikelyToSetup {
-  const _MostLikelyToSetup({required final  List<MostLikelyToPlayer> players, required this.config}): _players = players;
+  const _MostLikelyToSetup({required final  List<MostLikelyToPlayer> players, required this.config, final  List<String> customPrompts = const <String>[]}): _players = players,_customPrompts = customPrompts;
   
 
  final  List<MostLikelyToPlayer> _players;
@@ -227,6 +230,17 @@ class _MostLikelyToSetup implements MostLikelyToSetup {
 }
 
 @override final  MostLikelyToConfig config;
+/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+ final  List<String> _customPrompts;
+/// The host's own prompts to shuffle in — already filtered by the
+/// config's include flag, so the game just deals what it's given.
+@override@JsonKey() List<String> get customPrompts {
+  if (_customPrompts is EqualUnmodifiableListView) return _customPrompts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_customPrompts);
+}
+
 
 /// Create a copy of MostLikelyToSetup
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +252,16 @@ _$MostLikelyToSetupCopyWith<_MostLikelyToSetup> get copyWith => __$MostLikelyToS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MostLikelyToSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MostLikelyToSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config)&&const DeepCollectionEquality().equals(other._customPrompts, _customPrompts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config,const DeepCollectionEquality().hash(_customPrompts));
 
 @override
 String toString() {
-  return 'MostLikelyToSetup(players: $players, config: $config)';
+  return 'MostLikelyToSetup(players: $players, config: $config, customPrompts: $customPrompts)';
 }
 
 
@@ -258,7 +272,7 @@ abstract mixin class _$MostLikelyToSetupCopyWith<$Res> implements $MostLikelyToS
   factory _$MostLikelyToSetupCopyWith(_MostLikelyToSetup value, $Res Function(_MostLikelyToSetup) _then) = __$MostLikelyToSetupCopyWithImpl;
 @override @useResult
 $Res call({
- List<MostLikelyToPlayer> players, MostLikelyToConfig config
+ List<MostLikelyToPlayer> players, MostLikelyToConfig config, List<String> customPrompts
 });
 
 
@@ -275,11 +289,12 @@ class __$MostLikelyToSetupCopyWithImpl<$Res>
 
 /// Create a copy of MostLikelyToSetup
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,Object? customPrompts = null,}) {
   return _then(_MostLikelyToSetup(
 players: null == players ? _self._players : players // ignore: cast_nullable_to_non_nullable
 as List<MostLikelyToPlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as MostLikelyToConfig,
+as MostLikelyToConfig,customPrompts: null == customPrompts ? _self._customPrompts : customPrompts // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

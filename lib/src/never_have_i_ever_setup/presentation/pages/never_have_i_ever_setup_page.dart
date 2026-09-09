@@ -5,6 +5,7 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_player.dart';
 import 'package:house_party_offline/src/never_have_i_ever_setup/presentation/bloc/never_have_i_ever_setup_bloc.dart';
@@ -17,9 +18,10 @@ class NeverHaveIEverSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          NeverHaveIEverSetupBloc(getIt<RosterRepository>())
-            ..add(const NeverHaveIEverSetupStarted()),
+      create: (_) => NeverHaveIEverSetupBloc(
+        getIt<RosterRepository>(),
+        getIt<CustomPromptsRepository>(),
+      )..add(const NeverHaveIEverSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -98,6 +100,20 @@ class _SetupView extends StatelessWidget {
                           NeverHaveIEverSetupLivesCountChanged(count),
                         ),
                       ),
+                      if (state.customPromptCount > 0)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text('Add your prompts'),
+                          subtitle: Text(
+                            '${state.customPromptCount} in the deck',
+                          ),
+                          value: state.config.includeCustomPrompts,
+                          onChanged: (enabled) => bloc.add(
+                            NeverHaveIEverSetupIncludeCustomPromptsChanged(
+                              enabled: enabled,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
+import 'package:house_party_offline/src/most_likely_to/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_player.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_setup.dart';
@@ -16,7 +18,7 @@ part 'most_likely_to_setup_state.dart';
 /// swaps in the shared roster's names if any are saved.
 class MostLikelyToSetupBloc
     extends Bloc<MostLikelyToSetupEvent, MostLikelyToSetupState> {
-  MostLikelyToSetupBloc(this._roster)
+  MostLikelyToSetupBloc(this._roster, this._customPrompts)
     : super(
         MostLikelyToSetupState(
           players: _defaultRoster(MostLikelyToConfig.minPlayers),
@@ -28,26 +30,44 @@ class MostLikelyToSetupBloc
     on<MostLikelyToSetupRoundCountChanged>(_onRoundCountChanged);
     on<MostLikelyToSetupStarted>(_onStarted);
     on<MostLikelyToSetupRosterSaved>(_onRosterSaved);
+    on<MostLikelyToSetupIncludeCustomPromptsChanged>(
+      _onIncludeCustomPromptsChanged,
+    );
   }
 
   final RosterRepository _roster;
+  final CustomPromptsRepository _customPrompts;
 
   Future<void> _onStarted(
     MostLikelyToSetupStarted event,
     Emitter<MostLikelyToSetupState> emit,
   ) async {
     final saved = await _roster.loadNames();
-    if (saved.isEmpty) return;
+    final custom = await _customPrompts.load(kMostLikelyToPromptDeckId);
     emit(
       state.copyWith(
-        players: [
-          for (final name in seedRosterNames(
-            saved,
-            min: MostLikelyToConfig.minPlayers,
-            max: MostLikelyToConfig.maxPlayers,
-          ))
-            MostLikelyToPlayer(id: newId(), name: name),
-        ],
+        players: saved.isEmpty
+            ? state.players
+            : [
+                for (final name in seedRosterNames(
+                  saved,
+                  min: MostLikelyToConfig.minPlayers,
+                  max: MostLikelyToConfig.maxPlayers,
+                ))
+                  MostLikelyToPlayer(id: newId(), name: name),
+              ],
+        customPrompts: [for (final p in custom) p.text],
+      ),
+    );
+  }
+
+  void _onIncludeCustomPromptsChanged(
+    MostLikelyToSetupIncludeCustomPromptsChanged event,
+    Emitter<MostLikelyToSetupState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        config: state.config.copyWith(includeCustomPrompts: event.enabled),
       ),
     );
   }

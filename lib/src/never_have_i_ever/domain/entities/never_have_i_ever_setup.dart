@@ -10,5 +10,9 @@ abstract class NeverHaveIEverSetup with _$NeverHaveIEverSetup {
   const factory NeverHaveIEverSetup({
     required List<NeverHaveIEverPlayer> players,
     required NeverHaveIEverConfig config,
+
+    /// The host's own prompts to shuffle in — already filtered by the
+    /// config's include flag, so the game just deals what it's given.
+    @Default(<String>[]) List<String> customPrompts,
   }) = _NeverHaveIEverSetup;
 }

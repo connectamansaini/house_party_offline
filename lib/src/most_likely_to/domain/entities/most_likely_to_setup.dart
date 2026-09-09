@@ -10,5 +10,9 @@ abstract class MostLikelyToSetup with _$MostLikelyToSetup {
   const factory MostLikelyToSetup({
     required List<MostLikelyToPlayer> players,
     required MostLikelyToConfig config,
+
+    /// The host's own prompts to shuffle in — already filtered by the
+    /// config's include flag, so the game just deals what it's given.
+    @Default(<String>[]) List<String> customPrompts,
   }) = _MostLikelyToSetup;
 }

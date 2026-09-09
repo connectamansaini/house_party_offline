@@ -44,6 +44,16 @@ class MostLikelyToHomePage extends StatelessWidget {
             Entrance(
               index: 2,
               child: TicketCard(
+                icon: Icons.edit_note_rounded,
+                title: 'Your prompts',
+                subtitle: 'Add your own inside jokes to the deck',
+                onTap: () => context.push(AppRoutes.mostLikelyToPrompts),
+              ),
+            ),
+            const SizedBox(height: Spacing.xl),
+            Entrance(
+              index: 3,
+              child: TicketCard(
                 icon: Icons.menu_book_rounded,
                 title: 'How to play',
                 subtitle: 'Rules and how a round works',

@@ -10,6 +10,9 @@ abstract class TruthOrDareConfig with _$TruthOrDareConfig {
     /// Full rounds to play — every player gets one turn per round.
     @Default(3) int roundCount,
     @Default(TruthOrDareLevel.mild) TruthOrDareLevel level,
+
+    /// Whether the host's own truths and dares join the bundled decks.
+    @Default(true) bool includeCustomPrompts,
   }) = _TruthOrDareConfig;
 
   const TruthOrDareConfig._();

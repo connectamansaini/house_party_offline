@@ -17,6 +17,16 @@ class MostLikelyToSetupRosterSaved extends MostLikelyToSetupEvent {
   const MostLikelyToSetupRosterSaved();
 }
 
+class MostLikelyToSetupIncludeCustomPromptsChanged
+    extends MostLikelyToSetupEvent {
+  const MostLikelyToSetupIncludeCustomPromptsChanged({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+}
+
 class MostLikelyToSetupPlayerAdded extends MostLikelyToSetupEvent {
   const MostLikelyToSetupPlayerAdded();
 }

@@ -5,6 +5,7 @@ import 'package:house_party_offline/app/injector/injector.dart';
 import 'package:house_party_offline/app/router/router.dart';
 import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_config.dart';
 import 'package:house_party_offline/src/most_likely_to/domain/entities/most_likely_to_player.dart';
 import 'package:house_party_offline/src/most_likely_to_setup/presentation/bloc/most_likely_to_setup_bloc.dart';
@@ -17,9 +18,10 @@ class MostLikelyToSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          MostLikelyToSetupBloc(getIt<RosterRepository>())
-            ..add(const MostLikelyToSetupStarted()),
+      create: (_) => MostLikelyToSetupBloc(
+        getIt<RosterRepository>(),
+        getIt<CustomPromptsRepository>(),
+      )..add(const MostLikelyToSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -97,6 +99,20 @@ class _SetupView extends StatelessWidget {
                           MostLikelyToSetupRoundCountChanged(count),
                         ),
                       ),
+                      if (state.customPromptCount > 0)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text('Add your prompts'),
+                          subtitle: Text(
+                            '${state.customPromptCount} in the deck',
+                          ),
+                          value: state.config.includeCustomPrompts,
+                          onChanged: (enabled) => bloc.add(
+                            MostLikelyToSetupIncludeCustomPromptsChanged(
+                              enabled: enabled,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

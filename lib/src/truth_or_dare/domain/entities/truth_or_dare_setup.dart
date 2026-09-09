@@ -10,5 +10,10 @@ abstract class TruthOrDareSetup with _$TruthOrDareSetup {
   const factory TruthOrDareSetup({
     required List<TruthOrDarePlayer> players,
     required TruthOrDareConfig config,
+
+    /// The host's own prompts to shuffle in — already filtered by the
+    /// config's include flag, so the game just deals what it's given.
+    @Default(<String>[]) List<String> customTruths,
+    @Default(<String>[]) List<String> customDares,
   }) = _TruthOrDareSetup;
 }

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:house_party_offline/app/injector/injector.config.dart';
+import 'package:house_party_offline/src/custom_prompts/di/custom_prompts_di.dart';
 import 'package:house_party_offline/src/home/di/home_di.dart';
 import 'package:house_party_offline/src/imposter_game/di/imposter_game_di.dart';
 import 'package:house_party_offline/src/imposter_packs/di/imposter_packs_di.dart';
@@ -24,6 +25,7 @@ Future<void> configureInjector(String env) async {
 
   registerHomeDependencies(getIt);
   registerRosterDependencies(getIt);
+  registerCustomPromptsDependencies(getIt);
   registerReviewDependencies(getIt);
   registerImposterPacksDependencies(getIt);
   registerImposterSetupDependencies(getIt);

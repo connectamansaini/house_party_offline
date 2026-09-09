@@ -23,7 +23,7 @@ class NeverHaveIEverGameBloc
            session: engine.deal(
              setup.players,
              setup.config,
-             kNeverHaveIEverPrompts,
+             [...kNeverHaveIEverPrompts, ...setup.customPrompts],
            ),
          ),
        ) {

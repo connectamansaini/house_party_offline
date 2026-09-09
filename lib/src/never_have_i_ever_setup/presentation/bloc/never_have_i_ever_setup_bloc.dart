@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_party_offline/src/core/utils/id.dart';
+import 'package:house_party_offline/src/custom_prompts/domain/repositories/custom_prompts_repository.dart';
+import 'package:house_party_offline/src/never_have_i_ever/domain/custom_prompt_deck.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_config.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_player.dart';
 import 'package:house_party_offline/src/never_have_i_ever/domain/entities/never_have_i_ever_setup.dart';
@@ -16,7 +18,7 @@ part 'never_have_i_ever_setup_state.dart';
 /// swaps in the shared roster's names if any are saved.
 class NeverHaveIEverSetupBloc
     extends Bloc<NeverHaveIEverSetupEvent, NeverHaveIEverSetupState> {
-  NeverHaveIEverSetupBloc(this._roster)
+  NeverHaveIEverSetupBloc(this._roster, this._customPrompts)
     : super(
         NeverHaveIEverSetupState(
           players: _defaultRoster(NeverHaveIEverConfig.minPlayers),
@@ -28,26 +30,44 @@ class NeverHaveIEverSetupBloc
     on<NeverHaveIEverSetupLivesCountChanged>(_onLivesCountChanged);
     on<NeverHaveIEverSetupStarted>(_onStarted);
     on<NeverHaveIEverSetupRosterSaved>(_onRosterSaved);
+    on<NeverHaveIEverSetupIncludeCustomPromptsChanged>(
+      _onIncludeCustomPromptsChanged,
+    );
   }
 
   final RosterRepository _roster;
+  final CustomPromptsRepository _customPrompts;
 
   Future<void> _onStarted(
     NeverHaveIEverSetupStarted event,
     Emitter<NeverHaveIEverSetupState> emit,
   ) async {
     final saved = await _roster.loadNames();
-    if (saved.isEmpty) return;
+    final custom = await _customPrompts.load(kNeverHaveIEverPromptDeckId);
     emit(
       state.copyWith(
-        players: [
-          for (final name in seedRosterNames(
-            saved,
-            min: NeverHaveIEverConfig.minPlayers,
-            max: NeverHaveIEverConfig.maxPlayers,
-          ))
-            NeverHaveIEverPlayer(id: newId(), name: name),
-        ],
+        players: saved.isEmpty
+            ? state.players
+            : [
+                for (final name in seedRosterNames(
+                  saved,
+                  min: NeverHaveIEverConfig.minPlayers,
+                  max: NeverHaveIEverConfig.maxPlayers,
+                ))
+                  NeverHaveIEverPlayer(id: newId(), name: name),
+              ],
+        customPrompts: [for (final p in custom) p.text],
+      ),
+    );
+  }
+
+  void _onIncludeCustomPromptsChanged(
+    NeverHaveIEverSetupIncludeCustomPromptsChanged event,
+    Emitter<NeverHaveIEverSetupState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        config: state.config.copyWith(includeCustomPrompts: event.enabled),
       ),
     );
   }
