@@ -25,6 +25,7 @@ class HomeGame {
     required this.minutes,
     required this.route,
     required this.setupRoute,
+    this.image,
   });
 
   /// Stable key, persisted as the "last played" game — never rename.
@@ -50,6 +51,10 @@ class HomeGame {
   /// Straight into player setup — used by the "Play again" shortcut.
   final String setupRoute;
 
+  /// Key art for the hub cards (a portrait or square picture in
+  /// `assets/images/games/`), or null to show the icon chip instead.
+  final String? image;
+
   String get playersLabel => '$minPlayers–$maxPlayers';
 }
 
@@ -59,6 +64,7 @@ abstract final class GameCatalog {
     HomeGame(
       id: 'imposter',
       title: AppStrings.imposterName,
+      image: 'assets/images/games/imposter.png',
       blurb: AppStrings.imposterBlurb,
       tag: 'Bluffing',
       icon: Icons.theater_comedy_outlined,
@@ -72,6 +78,7 @@ abstract final class GameCatalog {
     HomeGame(
       id: 'mafia',
       title: AppStrings.mafiaName,
+      image: 'assets/images/games/mafia.png',
       blurb: AppStrings.mafiaBlurb,
       tag: 'Deduction',
       icon: Icons.dangerous_outlined,

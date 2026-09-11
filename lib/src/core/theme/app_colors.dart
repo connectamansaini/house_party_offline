@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 abstract final class AppColors {
   static const seed = Color(0xFF7C4DFF);
 
+  /// Fill behind key art on the hub cards: near-black in both themes, so
+  /// the picture's own darks blend into it and white text always reads.
+  static const artBase = Color(0xFF15131A);
+
   /// The one accent a surface is allowed to use for a game.
   static Color accentOf(Gradient gradient) => gradient.colors.first;
 

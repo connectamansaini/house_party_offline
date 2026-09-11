@@ -43,6 +43,7 @@ flutter:
 
   assets:
     - assets/word_packs/
+    - assets/images/games/
 
   fonts:
     - family: Unbounded
