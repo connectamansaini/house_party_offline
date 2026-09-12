@@ -61,17 +61,17 @@ Perfect for house parties, road trips, camping, hostels, family evenings and any
 
 ## What's new (500 max)
 
-For the next release after 1.3.0.
+For the 1.4.0 release (version code 6).
 
 ```
+• Mafia host mode: one person narrates and keeps the phone, so you stop passing it round every night
+• Rotate the host so nobody sits out two games running
+• Mafia: the doctor and detective are now optional
 • Two new games: Truth or Dare and Heads Up
-• Mafia host mode with a rotating host, plus an optional doctor and detective
-• Hinglish decks for the prompt games and a Bollywood word pack
+• Hinglish decks for the prompt games, plus a Bollywood word pack
 • One shared player roster across every game
-• Add your own prompts to Never Have I Ever, Most Likely To and Truth or Dare
-• Haptic feedback on turns, reveals and wins
-• Fresh, minimal design and a new home screen
-• Predictive back gestures, larger text sizes and reduced-motion support
+• Add your own prompts to the prompt games
+• Haptics, larger text sizes and predictive back gestures
 ```
 
 ## Screenshots
@@ -90,7 +90,7 @@ Suggested order and captions if you frame them:
 | --- | --- |
 | `01-hub.png` | Six games. One phone. Nothing to sign up for. |
 | `02-imposter.png` | Imposter: bluff your way through one-word clues. |
-| `03-mafia.png` | Mafia: the app runs the night, no narrator needed. |
+| `03-mafia.png` | Mafia: your secret role, for your eyes only. |
 | `04-never-have-i-ever.png` | Never Have I Ever: lose a life for every confession. |
 | `05-most-likely-to.png` | Most Likely To: everyone points, the most fingers score. |
 | `06-truth-or-dare.png` | Truth or Dare: mild or spicy, your call. |
