@@ -10,5 +10,10 @@ abstract class MafiaSetup with _$MafiaSetup {
   const factory MafiaSetup({
     required List<MafiaPlayer> players,
     required MafiaConfig config,
+
+    /// The narrator, when someone is running the night for the room. They
+    /// hold the phone all night and are dealt no role, so they are not in
+    /// [players].
+    MafiaPlayer? host,
   }) = _MafiaSetup;
 }

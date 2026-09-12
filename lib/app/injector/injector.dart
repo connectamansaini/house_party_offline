@@ -7,6 +7,7 @@ import 'package:house_party_offline/src/imposter_game/di/imposter_game_di.dart';
 import 'package:house_party_offline/src/imposter_packs/di/imposter_packs_di.dart';
 import 'package:house_party_offline/src/imposter_setup/di/imposter_setup_di.dart';
 import 'package:house_party_offline/src/mafia_game/di/mafia_game_di.dart';
+import 'package:house_party_offline/src/mafia_setup/di/mafia_setup_di.dart';
 import 'package:house_party_offline/src/most_likely_to/di/most_likely_to_di.dart';
 import 'package:house_party_offline/src/never_have_i_ever/di/never_have_i_ever_di.dart';
 import 'package:house_party_offline/src/review/di/review_di.dart';
@@ -32,6 +33,7 @@ Future<void> configureInjector(String env) async {
   registerImposterSetupDependencies(getIt);
   registerImposterGameDependencies(getIt);
   registerMafiaGameDependencies(getIt);
+  registerMafiaSetupDependencies(getIt);
   registerNeverHaveIEverDependencies(getIt);
   registerMostLikelyToDependencies(getIt);
   registerTruthOrDareDependencies(getIt);

@@ -17,6 +17,9 @@ class MafiaRoleRevealView extends StatelessWidget {
     final theme = Theme.of(context);
     final player = state.currentPlayer;
     final total = state.session.players.length;
+    // With a narrator the phone is handed round by them, so the prompts
+    // address the host rather than the player.
+    final hosted = state.session.isHosted;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
@@ -37,7 +40,11 @@ class MafiaRoleRevealView extends StatelessWidget {
                         key: const ValueKey('role'),
                         state: state,
                       )
-                    : _Cover(key: const ValueKey('cover'), name: player.name),
+                    : _Cover(
+                        key: const ValueKey('cover'),
+                        name: player.name,
+                        hosted: hosted,
+                      ),
               ),
             ),
           ),
@@ -52,7 +59,9 @@ class MafiaRoleRevealView extends StatelessWidget {
                     : Icons.visibility_off,
               ),
               label: Text(
-                state.isLastPlayer ? 'Begin night 1' : 'Hide & pass',
+                state.isLastPlayer
+                    ? 'Begin night 1'
+                    : (hosted ? 'Hide & move on' : 'Hide & pass'),
               ),
             )
           else
@@ -60,7 +69,11 @@ class MafiaRoleRevealView extends StatelessWidget {
               onPressed: () =>
                   context.read<MafiaGameBloc>().add(const RoleRevealed()),
               icon: const Icon(Icons.visibility),
-              label: Text("I'm ${player.name} — reveal role"),
+              label: Text(
+                hosted
+                    ? 'Show ${player.name} their role'
+                    : "I'm ${player.name} — reveal role",
+              ),
             ),
         ],
       ),
@@ -69,9 +82,10 @@ class MafiaRoleRevealView extends StatelessWidget {
 }
 
 class _Cover extends StatelessWidget {
-  const _Cover({required this.name, super.key});
+  const _Cover({required this.name, required this.hosted, super.key});
 
   final String name;
+  final bool hosted;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +100,10 @@ class _Cover extends StatelessWidget {
           children: [
             Icon(Icons.pan_tool_alt_outlined, size: 64, color: scheme.primary),
             const SizedBox(height: 24),
-            Text('Pass the phone to', style: theme.textTheme.titleMedium),
+            Text(
+              hosted ? 'Take the phone to' : 'Pass the phone to',
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             Text(
               name,
@@ -118,9 +135,6 @@ class _RoleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final role = state.session.roleOf(state.currentPlayer.id);
     final visual = roleVisual(role);
-    final teammates = role.isMafia
-        ? state.session.mafiaTeammateNames(state.currentPlayer.id)
-        : const <String>[];
 
     return MomentCard(
       mood: MomentMood.reveal,
@@ -129,7 +143,20 @@ class _RoleCard extends StatelessWidget {
       kicker: 'You are',
       headline: role.label,
       subtitle: visual.tagline,
-      hint: teammates.isEmpty ? null : 'Your mafia: ${teammates.join(', ')}',
+      hint: role.isMafia
+          ? _mafiaHint(
+              state.session.mafiaTeammateNames(state.currentPlayer.id),
+            )
+          : null,
     );
   }
+
+  /// Who else is in on it — the one line a new mafia actually needs, and a
+  /// warning when there is nobody to share the blame with.
+  static String _mafiaHint(List<String> teammates) =>
+      switch (teammates.length) {
+        0 => 'You are the only mafia — no partners, no cover.',
+        1 => 'Your partner in crime: ${teammates.first}.',
+        _ => 'Your mafia: ${teammates.join(', ')}.',
+      };
 }

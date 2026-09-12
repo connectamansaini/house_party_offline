@@ -7,6 +7,7 @@ import 'package:house_party_offline/core/design/app_padding.dart';
 import 'package:house_party_offline/core/design/spacing.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
+import 'package:house_party_offline/src/mafia_setup/domain/repositories/mafia_host_preferences_repository.dart';
 import 'package:house_party_offline/src/mafia_setup/presentation/bloc/mafia_setup_bloc.dart';
 import 'package:house_party_offline/src/roster/domain/repositories/roster_repository.dart';
 
@@ -17,9 +18,10 @@ class MafiaSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          MafiaSetupBloc(getIt<RosterRepository>())
-            ..add(const MafiaSetupStarted()),
+      create: (_) => MafiaSetupBloc(
+        getIt<RosterRepository>(),
+        getIt<MafiaHostPreferencesRepository>(),
+      )..add(const MafiaSetupStarted()),
       child: const _SetupView(),
     );
   }
@@ -50,8 +52,8 @@ class _SetupView extends StatelessWidget {
                           key: ValueKey(state.players[i].id),
                           number: i + 1,
                           player: state.players[i],
-                          canRemove:
-                              state.players.length > MafiaConfig.minPlayers,
+                          isHost: state.players[i].id == state.hostId,
+                          canRemove: state.players.length > state.rosterMinimum,
                           onChanged: (name) => bloc.add(
                             MafiaSetupPlayerRenamed(
                               id: state.players[i].id,
@@ -63,7 +65,7 @@ class _SetupView extends StatelessWidget {
                           ),
                         ),
                       const SizedBox(height: Spacing.md),
-                      if (state.players.length < MafiaConfig.maxPlayers)
+                      if (state.players.length < state.rosterCapacity)
                         OutlinedButton.icon(
                           onPressed: () =>
                               bloc.add(const MafiaSetupPlayerAdded()),
@@ -74,8 +76,12 @@ class _SetupView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: Spacing.lg),
                           child: Text(
-                            'Mafia needs at least '
-                            '${MafiaConfig.minPlayers} players.',
+                            state.isHosted
+                                ? 'Mafia needs '
+                                      '${MafiaConfig.minPlayers} players '
+                                      'plus the host.'
+                                : 'Mafia needs at least '
+                                      '${MafiaConfig.minPlayers} players.',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.error,
                             ),
@@ -84,6 +90,36 @@ class _SetupView extends StatelessWidget {
                       const Divider(),
                       Text('Options', style: theme.textTheme.titleLarge),
                       const SizedBox(height: Spacing.md),
+                      _OptionSwitch(
+                        title: 'Host runs the night',
+                        subtitle: state.isHosted
+                            ? 'One person narrates and keeps the phone — '
+                                  'no passing after the roles are dealt'
+                            : 'Pass the phone to every player each night',
+                        value: state.isHosted,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupHostModeChanged(enabled: value),
+                        ),
+                      ),
+                      if (state.isHosted) ...[
+                        _HostPicker(
+                          players: state.players,
+                          hostId: state.hostId,
+                          onChanged: (id) =>
+                              bloc.add(MafiaSetupHostChanged(id)),
+                        ),
+                        _OptionSwitch(
+                          title: 'Rotate the host',
+                          subtitle: state.rotateHost
+                              ? 'Next game hands narrating to the next '
+                                    'person on the list'
+                              : 'The same person hosts every game',
+                          value: state.rotateHost,
+                          onChanged: (value) => bloc.add(
+                            MafiaSetupRotateHostChanged(enabled: value),
+                          ),
+                        ),
+                      ],
                       _CountRow(
                         label: 'Mafia',
                         value: state.config.mafiaCount,
@@ -91,6 +127,26 @@ class _SetupView extends StatelessWidget {
                         max: state.maxMafia,
                         onChanged: (count) =>
                             bloc.add(MafiaSetupMafiaCountChanged(count)),
+                      ),
+                      _OptionSwitch(
+                        title: 'Include a doctor',
+                        subtitle: state.config.includeDoctor
+                            ? 'One player can save someone each night'
+                            : 'No saves — every mafia kill lands',
+                        value: state.config.includeDoctor,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupIncludeDoctorChanged(enabled: value),
+                        ),
+                      ),
+                      _OptionSwitch(
+                        title: 'Include a detective',
+                        subtitle: state.config.includeDetective
+                            ? 'One player can investigate someone each night'
+                            : 'The town gets no investigations',
+                        value: state.config.includeDetective,
+                        onChanged: (value) => bloc.add(
+                          MafiaSetupIncludeDetectiveChanged(enabled: value),
+                        ),
                       ),
                       _OptionSwitch(
                         title: 'Reveal role on death',
@@ -112,27 +168,31 @@ class _SetupView extends StatelessWidget {
                           MafiaSetupFirstNightKillChanged(enabled: value),
                         ),
                       ),
-                      _OptionSwitch(
-                        title: 'Doctor can self-save',
-                        subtitle: state.config.doctorSelfSave
-                            ? 'The doctor may protect themselves'
-                            : 'The doctor cannot protect themselves',
-                        value: state.config.doctorSelfSave,
-                        onChanged: (value) => bloc.add(
-                          MafiaSetupDoctorSelfSaveChanged(enabled: value),
+                      // The two rules below only bite when their role is in
+                      // the deal.
+                      if (state.config.includeDoctor)
+                        _OptionSwitch(
+                          title: 'Doctor can self-save',
+                          subtitle: state.config.doctorSelfSave
+                              ? 'The doctor may protect themselves'
+                              : 'The doctor cannot protect themselves',
+                          value: state.config.doctorSelfSave,
+                          onChanged: (value) => bloc.add(
+                            MafiaSetupDoctorSelfSaveChanged(enabled: value),
+                          ),
                         ),
-                      ),
-                      _OptionSwitch(
-                        title: 'Detective learns exact role',
-                        subtitle: state.config.detectiveExactRole
-                            ? 'Investigations reveal the exact role'
-                            : "Investigations reveal only 'Mafia' or "
-                                  "'Not Mafia'",
-                        value: state.config.detectiveExactRole,
-                        onChanged: (value) => bloc.add(
-                          MafiaSetupDetectiveExactRoleChanged(enabled: value),
+                      if (state.config.includeDetective)
+                        _OptionSwitch(
+                          title: 'Detective learns exact role',
+                          subtitle: state.config.detectiveExactRole
+                              ? 'Investigations reveal the exact role'
+                              : "Investigations reveal only 'Mafia' or "
+                                    "'Not Mafia'",
+                          value: state.config.detectiveExactRole,
+                          onChanged: (value) => bloc.add(
+                            MafiaSetupDetectiveExactRoleChanged(enabled: value),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -166,10 +226,56 @@ class _SetupView extends StatelessWidget {
   }
 }
 
+/// Picks which roster entry narrates. Shown only while host mode is on.
+class _HostPicker extends StatelessWidget {
+  const _HostPicker({
+    required this.players,
+    required this.hostId,
+    required this.onChanged,
+  });
+
+  final List<MafiaPlayer> players;
+  final String? hostId;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Who is hosting?',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: Spacing.md),
+          Wrap(
+            spacing: Spacing.md,
+            runSpacing: Spacing.md,
+            children: [
+              for (final p in players)
+                ChoiceChip(
+                  label: Text(p.name.trim().isEmpty ? 'Unnamed' : p.name),
+                  selected: p.id == hostId,
+                  onSelected: (_) => onChanged(p.id),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _PlayerRow extends StatefulWidget {
   const _PlayerRow({
     required this.number,
     required this.player,
+    required this.isHost,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
@@ -178,6 +284,9 @@ class _PlayerRow extends StatefulWidget {
 
   final int number;
   final MafiaPlayer player;
+
+  /// The narrator, who is dealt no role.
+  final bool isHost;
   final bool canRemove;
   final ValueChanged<String> onChanged;
   final VoidCallback onRemove;
@@ -208,12 +317,14 @@ class _PlayerRowState extends State<_PlayerRow> {
             radius: 20,
             backgroundColor: scheme.primaryContainer,
             foregroundColor: scheme.onPrimaryContainer,
-            child: Text(
-              '${widget.number}',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            child: widget.isHost
+                ? const Icon(Icons.campaign_rounded, size: 20)
+                : Text(
+                    '${widget.number}',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
           ),
           const SizedBox(width: Spacing.xl),
           Expanded(
@@ -223,6 +334,7 @@ class _PlayerRowState extends State<_PlayerRow> {
               style: Theme.of(context).textTheme.titleMedium,
               decoration: InputDecoration(
                 hintText: 'Player ${widget.number}',
+                helperText: widget.isHost ? 'Host — no role' : null,
                 contentPadding: AppPadding.section,
               ),
               onChanged: widget.onChanged,

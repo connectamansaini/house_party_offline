@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:house_party_offline/src/mafia_game/domain/engine/mafia_engine.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
+import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_night_step.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_role.dart';
 
@@ -29,6 +30,40 @@ void main() {
       expect(counts[MafiaRole.detective], 1);
       expect(counts[MafiaRole.villager], 3);
       expect(roles.length, 7);
+    });
+
+    test('leaves out a special the config excludes', () {
+      final roles = engine.assignRoles(
+        players(6),
+        const MafiaConfig(includeDoctor: false),
+        rng: Random(3),
+      );
+      expect(roles.values, isNot(contains(MafiaRole.doctor)));
+      expect(roles.values.where((r) => r == MafiaRole.detective), hasLength(1));
+      expect(roles.values.where((r) => r == MafiaRole.villager), hasLength(4));
+    });
+
+    test('deals mafia and villagers only when both specials are off', () {
+      final roles = engine.assignRoles(
+        players(5),
+        const MafiaConfig(includeDoctor: false, includeDetective: false),
+        rng: Random(4),
+      );
+      expect(roles.values.where((r) => r == MafiaRole.mafia), hasLength(1));
+      expect(roles.values.where((r) => r == MafiaRole.villager), hasLength(4));
+    });
+
+    test('a smaller role set makes room for more mafia', () {
+      const bare = MafiaConfig(
+        mafiaCount: 3,
+        includeDoctor: false,
+        includeDetective: false,
+      );
+      // 4 players leave room for 3 mafia only without the two specials.
+      expect(bare.maxMafiaFor(4), 1);
+      expect(bare.maxMafiaFor(7), 3);
+      expect(const MafiaConfig().maxMafiaFor(7), 3);
+      expect(const MafiaConfig().maxMafiaFor(4), 1);
     });
 
     test('is deterministic for a fixed seed', () {
@@ -177,6 +212,47 @@ void main() {
 
     test('game continues while town outnumbers mafia', () {
       expect(engine.winner(roles, {'m1', 'v1', 'v2'}), isNull);
+    });
+  });
+
+  group('nightSteps', () {
+    const roles = {
+      'm1': MafiaRole.mafia,
+      'd': MafiaRole.doctor,
+      'det': MafiaRole.detective,
+      'v1': MafiaRole.villager,
+    };
+
+    test('opens with sleep, then every acting role that is alive', () {
+      expect(engine.nightSteps(roles, {'m1', 'd', 'det', 'v1'}), [
+        MafiaNightStep.sleep,
+        MafiaNightStep.mafia,
+        MafiaNightStep.doctor,
+        MafiaNightStep.detective,
+      ]);
+    });
+
+    test('skips a role whose only holder is dead', () {
+      expect(engine.nightSteps(roles, {'m1', 'det', 'v1'}), [
+        MafiaNightStep.sleep,
+        MafiaNightStep.mafia,
+        MafiaNightStep.detective,
+      ]);
+    });
+
+    test('villagers add no step of their own', () {
+      expect(engine.nightSteps(roles, {'m1', 'v1'}), [
+        MafiaNightStep.sleep,
+        MafiaNightStep.mafia,
+      ]);
+    });
+
+    test('a role left out of the deal is never called', () {
+      const bare = {'m1': MafiaRole.mafia, 'v1': MafiaRole.villager};
+      expect(engine.nightSteps(bare, {'m1', 'v1'}), [
+        MafiaNightStep.sleep,
+        MafiaNightStep.mafia,
+      ]);
     });
   });
 }

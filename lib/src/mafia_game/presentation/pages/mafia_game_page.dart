@@ -13,6 +13,7 @@ import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_state.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_day_vote_view.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_game_over_view.dart';
+import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_host_night_view.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_night_view.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_recap_view.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_role_reveal_view.dart';
@@ -125,12 +126,14 @@ class _GameScaffoldState extends State<_GameScaffold> {
 
   static int _revealIndex(MafiaGameState state) => switch (state) {
     MafiaRoleReveal() => state.currentIndex,
+    MafiaHostNight() => state.stepIndex,
     _ => -1,
   };
 
   String _title(MafiaGameState state) => switch (state) {
     MafiaRoleReveal() => 'Role reveal',
     MafiaNight() => 'Night ${state.session.nightNumber}',
+    MafiaHostNight() => 'Night ${state.session.nightNumber}',
     MafiaNightRecap() => 'Morning',
     MafiaDayVote() => 'Day ${state.session.nightNumber}',
     MafiaLynchRecap() => 'Verdict',
@@ -143,6 +146,10 @@ class _GameScaffoldState extends State<_GameScaffold> {
       state: state,
     ),
     MafiaNight() => MafiaNightView(key: const ValueKey('night'), state: state),
+    MafiaHostNight() => MafiaHostNightView(
+      key: const ValueKey('host-night'),
+      state: state,
+    ),
     MafiaNightRecap() => MafiaNightRecapView(
       key: const ValueKey('night-recap'),
       state: state,

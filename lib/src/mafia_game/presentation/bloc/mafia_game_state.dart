@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:house_party_offline/src/mafia_game/domain/engine/mafia_engine.dart';
+import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_night_step.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_role.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_session.dart';
@@ -108,6 +110,71 @@ class MafiaNight extends MafiaGameState {
     selectedId,
     investigationReveal,
     mafiaPicks,
+    doctorProtectId,
+  ];
+}
+
+/// Host-run night. The phone stays with the narrator, who reads each step to
+/// the room and taps in what the waking players pointed at.
+class MafiaHostNight extends MafiaGameState {
+  const MafiaHostNight(
+    super.session, {
+    required this.steps,
+    this.stepIndex = 0,
+    this.selectedId,
+    this.investigationReveal,
+    this.mafiaTargetId,
+    this.doctorProtectId,
+  });
+
+  /// Tonight's beats, in order — the opening sleep plus one per acting role
+  /// still alive (see [MafiaEngine.nightSteps]).
+  final List<MafiaNightStep> steps;
+  final int stepIndex;
+
+  /// The host's tentative pick for the current step.
+  final String? selectedId;
+
+  /// The detective's result, shown to the host to pass on.
+  final String? investigationReveal;
+
+  /// Accumulated night actions.
+  final String? mafiaTargetId;
+  final String? doctorProtectId;
+
+  MafiaNightStep get step => steps[stepIndex];
+  bool get isLastStep => stepIndex == steps.length - 1;
+
+  MafiaHostNight copyWith({
+    int? stepIndex,
+    String? selectedId,
+    String? investigationReveal,
+    String? mafiaTargetId,
+    String? doctorProtectId,
+    bool clearSelection = false,
+    bool clearInvestigation = false,
+  }) {
+    return MafiaHostNight(
+      session,
+      steps: steps,
+      stepIndex: stepIndex ?? this.stepIndex,
+      selectedId: clearSelection ? null : (selectedId ?? this.selectedId),
+      investigationReveal: clearInvestigation
+          ? null
+          : (investigationReveal ?? this.investigationReveal),
+      mafiaTargetId: mafiaTargetId ?? this.mafiaTargetId,
+      doctorProtectId: doctorProtectId ?? this.doctorProtectId,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    session,
+    steps,
+    stepIndex,
+    selectedId,
+    investigationReveal,
+    mafiaTargetId,
     doctorProtectId,
   ];
 }

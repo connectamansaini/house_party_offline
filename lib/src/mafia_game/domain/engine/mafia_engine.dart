@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_config.dart';
+import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_night_step.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_player.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_role.dart';
 import 'package:house_party_offline/src/mafia_game/domain/entities/night_resolution.dart';
@@ -10,16 +11,21 @@ import 'package:house_party_offline/src/mafia_game/domain/entities/night_resolut
 class MafiaEngine {
   const MafiaEngine();
 
-  /// Deals roles: [MafiaConfig.mafiaCount] mafia, one doctor, one detective,
-  /// and the rest villagers. Throws [ArgumentError] on an invalid roster.
+  /// Deals roles: [MafiaConfig.mafiaCount] mafia, then whichever specials the
+  /// config asks for, and the rest villagers. Throws [ArgumentError] on an
+  /// invalid roster.
   Map<String, MafiaRole> assignRoles(
     List<MafiaPlayer> players,
     MafiaConfig config, {
     Random? rng,
   }) {
-    if (players.length < MafiaConfig.reservedSpecials + 1) {
+    final specials = [
+      if (config.includeDoctor) MafiaRole.doctor,
+      if (config.includeDetective) MafiaRole.detective,
+    ];
+    if (players.length < specials.length + 1) {
       throw ArgumentError(
-        'Need at least 3 players (mafia, doctor, detective).',
+        'Need at least ${specials.length + 1} players for this role set.',
       );
     }
     final ids = players.map((p) => p.id).toSet();
@@ -27,10 +33,11 @@ class MafiaEngine {
       throw ArgumentError('Player ids must be unique.');
     }
     if (config.mafiaCount < 1 ||
-        config.mafiaCount > players.length - MafiaConfig.reservedSpecials) {
+        config.mafiaCount > players.length - specials.length) {
       throw ArgumentError(
-        'mafiaCount must leave room for a doctor and a detective '
-        '(count=${config.mafiaCount}, players=${players.length}).',
+        'mafiaCount must leave room for the chosen special roles '
+        '(count=${config.mafiaCount}, players=${players.length}, '
+        'specials=${specials.length}).',
       );
     }
 
@@ -40,8 +47,9 @@ class MafiaEngine {
     for (; i < config.mafiaCount; i++) {
       roles[shuffled[i].id] = MafiaRole.mafia;
     }
-    roles[shuffled[i++].id] = MafiaRole.doctor;
-    roles[shuffled[i++].id] = MafiaRole.detective;
+    for (final role in specials) {
+      roles[shuffled[i++].id] = role;
+    }
     for (; i < shuffled.length; i++) {
       roles[shuffled[i].id] = MafiaRole.villager;
     }
@@ -82,6 +90,24 @@ class MafiaEngine {
       return NightResolution(savedId: killTarget);
     }
     return NightResolution(killedId: killTarget);
+  }
+
+  /// The beats a host runs tonight: the opening sleep, then one step per
+  /// acting role that still has a living holder. A dead doctor or detective
+  /// is skipped silently, so the room can't infer who died from the script.
+  List<MafiaNightStep> nightSteps(
+    Map<String, MafiaRole> roles,
+    Set<String> aliveIds,
+  ) {
+    final living = {
+      for (final id in aliveIds)
+        if (roles[id] != null) roles[id]!,
+    };
+    return [
+      MafiaNightStep.sleep,
+      for (final step in MafiaNightStep.values)
+        if (step.role != null && living.contains(step.role)) step,
+    ];
   }
 
   /// What the detective learns about [role].

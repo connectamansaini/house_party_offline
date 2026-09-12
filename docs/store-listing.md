@@ -27,7 +27,7 @@ THE GAMES
 Everyone gets the same secret word, except the imposter. Go round the room with one-word clues, vote on who is bluffing, and give the imposter one last chance to guess the word and steal the win. Six bundled word packs, your own custom packs, an Undercover mode and secret ballots.
 
 🕵️ Mafia (5–15 players)
-Social deduction with no narrator needed. The app runs the whole night: role reveal, pass-and-play turns for Mafia, Doctor and Detective, a morning recap of what happened, then a daytime vote. Root out the mafia before they take the town.
+Social deduction, moderated by the app. Role reveal, a morning recap of what happened overnight, then a daytime vote. Root out the mafia before they take the town. Choose whether a doctor and a detective are in the deal. Play it pass-and-play, or switch on host mode: one person keeps the phone, reads out each step, and taps in what the room points at — no more passing round a big group. Rotate the host and the job moves to the next person each game.
 
 🙈 Never Have I Ever (2–12 players)
 A confession is read to the room. Everyone who has done it loses a life. Last player standing wins.
@@ -65,6 +65,7 @@ For the next release after 1.3.0.
 
 ```
 • Two new games: Truth or Dare and Heads Up
+• Mafia host mode with a rotating host, plus an optional doctor and detective
 • Hinglish decks for the prompt games and a Bollywood word pack
 • One shared player roster across every game
 • Add your own prompts to Never Have I Ever, Most Likely To and Truth or Dare

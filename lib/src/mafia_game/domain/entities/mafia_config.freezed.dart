@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MafiaConfig {
 
- int get mafiaCount;/// Whether the mafia may kill on the very first night.
+ int get mafiaCount;/// Whether a doctor is dealt. Off makes for a faster, deadlier game.
+ bool get includeDoctor;/// Whether a detective is dealt.
+ bool get includeDetective;/// Whether the mafia may kill on the very first night.
  bool get firstNightKill;/// Whether the doctor may protect themselves.
  bool get doctorSelfSave;/// Whether an investigation reveals the exact role vs. just mafia/not.
  bool get detectiveExactRole;/// Whether a killed/lynched player's role is announced.
@@ -29,16 +31,16 @@ $MafiaConfigCopyWith<MafiaConfig> get copyWith => _$MafiaConfigCopyWithImpl<Mafi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MafiaConfig&&(identical(other.mafiaCount, mafiaCount) || other.mafiaCount == mafiaCount)&&(identical(other.firstNightKill, firstNightKill) || other.firstNightKill == firstNightKill)&&(identical(other.doctorSelfSave, doctorSelfSave) || other.doctorSelfSave == doctorSelfSave)&&(identical(other.detectiveExactRole, detectiveExactRole) || other.detectiveExactRole == detectiveExactRole)&&(identical(other.revealRolesOnDeath, revealRolesOnDeath) || other.revealRolesOnDeath == revealRolesOnDeath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MafiaConfig&&(identical(other.mafiaCount, mafiaCount) || other.mafiaCount == mafiaCount)&&(identical(other.includeDoctor, includeDoctor) || other.includeDoctor == includeDoctor)&&(identical(other.includeDetective, includeDetective) || other.includeDetective == includeDetective)&&(identical(other.firstNightKill, firstNightKill) || other.firstNightKill == firstNightKill)&&(identical(other.doctorSelfSave, doctorSelfSave) || other.doctorSelfSave == doctorSelfSave)&&(identical(other.detectiveExactRole, detectiveExactRole) || other.detectiveExactRole == detectiveExactRole)&&(identical(other.revealRolesOnDeath, revealRolesOnDeath) || other.revealRolesOnDeath == revealRolesOnDeath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,mafiaCount,firstNightKill,doctorSelfSave,detectiveExactRole,revealRolesOnDeath);
+int get hashCode => Object.hash(runtimeType,mafiaCount,includeDoctor,includeDetective,firstNightKill,doctorSelfSave,detectiveExactRole,revealRolesOnDeath);
 
 @override
 String toString() {
-  return 'MafiaConfig(mafiaCount: $mafiaCount, firstNightKill: $firstNightKill, doctorSelfSave: $doctorSelfSave, detectiveExactRole: $detectiveExactRole, revealRolesOnDeath: $revealRolesOnDeath)';
+  return 'MafiaConfig(mafiaCount: $mafiaCount, includeDoctor: $includeDoctor, includeDetective: $includeDetective, firstNightKill: $firstNightKill, doctorSelfSave: $doctorSelfSave, detectiveExactRole: $detectiveExactRole, revealRolesOnDeath: $revealRolesOnDeath)';
 }
 
 
@@ -49,7 +51,7 @@ abstract mixin class $MafiaConfigCopyWith<$Res>  {
   factory $MafiaConfigCopyWith(MafiaConfig value, $Res Function(MafiaConfig) _then) = _$MafiaConfigCopyWithImpl;
 @useResult
 $Res call({
- int mafiaCount, bool firstNightKill, bool doctorSelfSave, bool detectiveExactRole, bool revealRolesOnDeath
+ int mafiaCount, bool includeDoctor, bool includeDetective, bool firstNightKill, bool doctorSelfSave, bool detectiveExactRole, bool revealRolesOnDeath
 });
 
 
@@ -66,10 +68,12 @@ class _$MafiaConfigCopyWithImpl<$Res>
 
 /// Create a copy of MafiaConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mafiaCount = null,Object? firstNightKill = null,Object? doctorSelfSave = null,Object? detectiveExactRole = null,Object? revealRolesOnDeath = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mafiaCount = null,Object? includeDoctor = null,Object? includeDetective = null,Object? firstNightKill = null,Object? doctorSelfSave = null,Object? detectiveExactRole = null,Object? revealRolesOnDeath = null,}) {
   return _then(_self.copyWith(
 mafiaCount: null == mafiaCount ? _self.mafiaCount : mafiaCount // ignore: cast_nullable_to_non_nullable
-as int,firstNightKill: null == firstNightKill ? _self.firstNightKill : firstNightKill // ignore: cast_nullable_to_non_nullable
+as int,includeDoctor: null == includeDoctor ? _self.includeDoctor : includeDoctor // ignore: cast_nullable_to_non_nullable
+as bool,includeDetective: null == includeDetective ? _self.includeDetective : includeDetective // ignore: cast_nullable_to_non_nullable
+as bool,firstNightKill: null == firstNightKill ? _self.firstNightKill : firstNightKill // ignore: cast_nullable_to_non_nullable
 as bool,doctorSelfSave: null == doctorSelfSave ? _self.doctorSelfSave : doctorSelfSave // ignore: cast_nullable_to_non_nullable
 as bool,detectiveExactRole: null == detectiveExactRole ? _self.detectiveExactRole : detectiveExactRole // ignore: cast_nullable_to_non_nullable
 as bool,revealRolesOnDeath: null == revealRolesOnDeath ? _self.revealRolesOnDeath : revealRolesOnDeath // ignore: cast_nullable_to_non_nullable
@@ -158,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int mafiaCount,  bool firstNightKill,  bool doctorSelfSave,  bool detectiveExactRole,  bool revealRolesOnDeath)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int mafiaCount,  bool includeDoctor,  bool includeDetective,  bool firstNightKill,  bool doctorSelfSave,  bool detectiveExactRole,  bool revealRolesOnDeath)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MafiaConfig() when $default != null:
-return $default(_that.mafiaCount,_that.firstNightKill,_that.doctorSelfSave,_that.detectiveExactRole,_that.revealRolesOnDeath);case _:
+return $default(_that.mafiaCount,_that.includeDoctor,_that.includeDetective,_that.firstNightKill,_that.doctorSelfSave,_that.detectiveExactRole,_that.revealRolesOnDeath);case _:
   return orElse();
 
 }
@@ -179,10 +183,10 @@ return $default(_that.mafiaCount,_that.firstNightKill,_that.doctorSelfSave,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int mafiaCount,  bool firstNightKill,  bool doctorSelfSave,  bool detectiveExactRole,  bool revealRolesOnDeath)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int mafiaCount,  bool includeDoctor,  bool includeDetective,  bool firstNightKill,  bool doctorSelfSave,  bool detectiveExactRole,  bool revealRolesOnDeath)  $default,) {final _that = this;
 switch (_that) {
 case _MafiaConfig():
-return $default(_that.mafiaCount,_that.firstNightKill,_that.doctorSelfSave,_that.detectiveExactRole,_that.revealRolesOnDeath);case _:
+return $default(_that.mafiaCount,_that.includeDoctor,_that.includeDetective,_that.firstNightKill,_that.doctorSelfSave,_that.detectiveExactRole,_that.revealRolesOnDeath);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +203,10 @@ return $default(_that.mafiaCount,_that.firstNightKill,_that.doctorSelfSave,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int mafiaCount,  bool firstNightKill,  bool doctorSelfSave,  bool detectiveExactRole,  bool revealRolesOnDeath)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int mafiaCount,  bool includeDoctor,  bool includeDetective,  bool firstNightKill,  bool doctorSelfSave,  bool detectiveExactRole,  bool revealRolesOnDeath)?  $default,) {final _that = this;
 switch (_that) {
 case _MafiaConfig() when $default != null:
-return $default(_that.mafiaCount,_that.firstNightKill,_that.doctorSelfSave,_that.detectiveExactRole,_that.revealRolesOnDeath);case _:
+return $default(_that.mafiaCount,_that.includeDoctor,_that.includeDetective,_that.firstNightKill,_that.doctorSelfSave,_that.detectiveExactRole,_that.revealRolesOnDeath);case _:
   return null;
 
 }
@@ -214,10 +218,14 @@ return $default(_that.mafiaCount,_that.firstNightKill,_that.doctorSelfSave,_that
 
 
 class _MafiaConfig extends MafiaConfig {
-  const _MafiaConfig({this.mafiaCount = 1, this.firstNightKill = true, this.doctorSelfSave = true, this.detectiveExactRole = true, this.revealRolesOnDeath = true}): super._();
+  const _MafiaConfig({this.mafiaCount = 1, this.includeDoctor = true, this.includeDetective = true, this.firstNightKill = true, this.doctorSelfSave = true, this.detectiveExactRole = true, this.revealRolesOnDeath = true}): super._();
   
 
 @override@JsonKey() final  int mafiaCount;
+/// Whether a doctor is dealt. Off makes for a faster, deadlier game.
+@override@JsonKey() final  bool includeDoctor;
+/// Whether a detective is dealt.
+@override@JsonKey() final  bool includeDetective;
 /// Whether the mafia may kill on the very first night.
 @override@JsonKey() final  bool firstNightKill;
 /// Whether the doctor may protect themselves.
@@ -237,16 +245,16 @@ _$MafiaConfigCopyWith<_MafiaConfig> get copyWith => __$MafiaConfigCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MafiaConfig&&(identical(other.mafiaCount, mafiaCount) || other.mafiaCount == mafiaCount)&&(identical(other.firstNightKill, firstNightKill) || other.firstNightKill == firstNightKill)&&(identical(other.doctorSelfSave, doctorSelfSave) || other.doctorSelfSave == doctorSelfSave)&&(identical(other.detectiveExactRole, detectiveExactRole) || other.detectiveExactRole == detectiveExactRole)&&(identical(other.revealRolesOnDeath, revealRolesOnDeath) || other.revealRolesOnDeath == revealRolesOnDeath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MafiaConfig&&(identical(other.mafiaCount, mafiaCount) || other.mafiaCount == mafiaCount)&&(identical(other.includeDoctor, includeDoctor) || other.includeDoctor == includeDoctor)&&(identical(other.includeDetective, includeDetective) || other.includeDetective == includeDetective)&&(identical(other.firstNightKill, firstNightKill) || other.firstNightKill == firstNightKill)&&(identical(other.doctorSelfSave, doctorSelfSave) || other.doctorSelfSave == doctorSelfSave)&&(identical(other.detectiveExactRole, detectiveExactRole) || other.detectiveExactRole == detectiveExactRole)&&(identical(other.revealRolesOnDeath, revealRolesOnDeath) || other.revealRolesOnDeath == revealRolesOnDeath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,mafiaCount,firstNightKill,doctorSelfSave,detectiveExactRole,revealRolesOnDeath);
+int get hashCode => Object.hash(runtimeType,mafiaCount,includeDoctor,includeDetective,firstNightKill,doctorSelfSave,detectiveExactRole,revealRolesOnDeath);
 
 @override
 String toString() {
-  return 'MafiaConfig(mafiaCount: $mafiaCount, firstNightKill: $firstNightKill, doctorSelfSave: $doctorSelfSave, detectiveExactRole: $detectiveExactRole, revealRolesOnDeath: $revealRolesOnDeath)';
+  return 'MafiaConfig(mafiaCount: $mafiaCount, includeDoctor: $includeDoctor, includeDetective: $includeDetective, firstNightKill: $firstNightKill, doctorSelfSave: $doctorSelfSave, detectiveExactRole: $detectiveExactRole, revealRolesOnDeath: $revealRolesOnDeath)';
 }
 
 
@@ -257,7 +265,7 @@ abstract mixin class _$MafiaConfigCopyWith<$Res> implements $MafiaConfigCopyWith
   factory _$MafiaConfigCopyWith(_MafiaConfig value, $Res Function(_MafiaConfig) _then) = __$MafiaConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int mafiaCount, bool firstNightKill, bool doctorSelfSave, bool detectiveExactRole, bool revealRolesOnDeath
+ int mafiaCount, bool includeDoctor, bool includeDetective, bool firstNightKill, bool doctorSelfSave, bool detectiveExactRole, bool revealRolesOnDeath
 });
 
 
@@ -274,10 +282,12 @@ class __$MafiaConfigCopyWithImpl<$Res>
 
 /// Create a copy of MafiaConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mafiaCount = null,Object? firstNightKill = null,Object? doctorSelfSave = null,Object? detectiveExactRole = null,Object? revealRolesOnDeath = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mafiaCount = null,Object? includeDoctor = null,Object? includeDetective = null,Object? firstNightKill = null,Object? doctorSelfSave = null,Object? detectiveExactRole = null,Object? revealRolesOnDeath = null,}) {
   return _then(_MafiaConfig(
 mafiaCount: null == mafiaCount ? _self.mafiaCount : mafiaCount // ignore: cast_nullable_to_non_nullable
-as int,firstNightKill: null == firstNightKill ? _self.firstNightKill : firstNightKill // ignore: cast_nullable_to_non_nullable
+as int,includeDoctor: null == includeDoctor ? _self.includeDoctor : includeDoctor // ignore: cast_nullable_to_non_nullable
+as bool,includeDetective: null == includeDetective ? _self.includeDetective : includeDetective // ignore: cast_nullable_to_non_nullable
+as bool,firstNightKill: null == firstNightKill ? _self.firstNightKill : firstNightKill // ignore: cast_nullable_to_non_nullable
 as bool,doctorSelfSave: null == doctorSelfSave ? _self.doctorSelfSave : doctorSelfSave // ignore: cast_nullable_to_non_nullable
 as bool,detectiveExactRole: null == detectiveExactRole ? _self.detectiveExactRole : detectiveExactRole // ignore: cast_nullable_to_non_nullable
 as bool,revealRolesOnDeath: null == revealRolesOnDeath ? _self.revealRolesOnDeath : revealRolesOnDeath // ignore: cast_nullable_to_non_nullable

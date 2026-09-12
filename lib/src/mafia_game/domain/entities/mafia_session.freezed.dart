@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MafiaSession {
 
- List<MafiaPlayer> get players; Map<String, MafiaRole> get roles; Set<String> get aliveIds; MafiaConfig get config; int get nightNumber;
+ List<MafiaPlayer> get players; Map<String, MafiaRole> get roles; Set<String> get aliveIds; MafiaConfig get config; int get nightNumber;/// The narrator running the night, if any. Holds no role and never
+/// appears in [players].
+ MafiaPlayer? get host;
 /// Create a copy of MafiaSession
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $MafiaSessionCopyWith<MafiaSession> get copyWith => _$MafiaSessionCopyWithImpl<M
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MafiaSession&&const DeepCollectionEquality().equals(other.players, players)&&const DeepCollectionEquality().equals(other.roles, roles)&&const DeepCollectionEquality().equals(other.aliveIds, aliveIds)&&(identical(other.config, config) || other.config == config)&&(identical(other.nightNumber, nightNumber) || other.nightNumber == nightNumber));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MafiaSession&&const DeepCollectionEquality().equals(other.players, players)&&const DeepCollectionEquality().equals(other.roles, roles)&&const DeepCollectionEquality().equals(other.aliveIds, aliveIds)&&(identical(other.config, config) || other.config == config)&&(identical(other.nightNumber, nightNumber) || other.nightNumber == nightNumber)&&(identical(other.host, host) || other.host == host));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),const DeepCollectionEquality().hash(roles),const DeepCollectionEquality().hash(aliveIds),config,nightNumber);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),const DeepCollectionEquality().hash(roles),const DeepCollectionEquality().hash(aliveIds),config,nightNumber,host);
 
 @override
 String toString() {
-  return 'MafiaSession(players: $players, roles: $roles, aliveIds: $aliveIds, config: $config, nightNumber: $nightNumber)';
+  return 'MafiaSession(players: $players, roles: $roles, aliveIds: $aliveIds, config: $config, nightNumber: $nightNumber, host: $host)';
 }
 
 
@@ -45,11 +47,11 @@ abstract mixin class $MafiaSessionCopyWith<$Res>  {
   factory $MafiaSessionCopyWith(MafiaSession value, $Res Function(MafiaSession) _then) = _$MafiaSessionCopyWithImpl;
 @useResult
 $Res call({
- List<MafiaPlayer> players, Map<String, MafiaRole> roles, Set<String> aliveIds, MafiaConfig config, int nightNumber
+ List<MafiaPlayer> players, Map<String, MafiaRole> roles, Set<String> aliveIds, MafiaConfig config, int nightNumber, MafiaPlayer? host
 });
 
 
-$MafiaConfigCopyWith<$Res> get config;
+$MafiaConfigCopyWith<$Res> get config;$MafiaPlayerCopyWith<$Res>? get host;
 
 }
 /// @nodoc
@@ -62,14 +64,15 @@ class _$MafiaSessionCopyWithImpl<$Res>
 
 /// Create a copy of MafiaSession
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? roles = null,Object? aliveIds = null,Object? config = null,Object? nightNumber = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? roles = null,Object? aliveIds = null,Object? config = null,Object? nightNumber = null,Object? host = freezed,}) {
   return _then(_self.copyWith(
 players: null == players ? _self.players : players // ignore: cast_nullable_to_non_nullable
 as List<MafiaPlayer>,roles: null == roles ? _self.roles : roles // ignore: cast_nullable_to_non_nullable
 as Map<String, MafiaRole>,aliveIds: null == aliveIds ? _self.aliveIds : aliveIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
 as MafiaConfig,nightNumber: null == nightNumber ? _self.nightNumber : nightNumber // ignore: cast_nullable_to_non_nullable
-as int,
+as int,host: freezed == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
+as MafiaPlayer?,
   ));
 }
 /// Create a copy of MafiaSession
@@ -80,6 +83,18 @@ $MafiaConfigCopyWith<$Res> get config {
   
   return $MafiaConfigCopyWith<$Res>(_self.config, (value) {
     return _then(_self.copyWith(config: value));
+  });
+}/// Create a copy of MafiaSession
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MafiaPlayerCopyWith<$Res>? get host {
+    if (_self.host == null) {
+    return null;
+  }
+
+  return $MafiaPlayerCopyWith<$Res>(_self.host!, (value) {
+    return _then(_self.copyWith(host: value));
   });
 }
 }
@@ -163,10 +178,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  Map<String, MafiaRole> roles,  Set<String> aliveIds,  MafiaConfig config,  int nightNumber)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  Map<String, MafiaRole> roles,  Set<String> aliveIds,  MafiaConfig config,  int nightNumber,  MafiaPlayer? host)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MafiaSession() when $default != null:
-return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nightNumber);case _:
+return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nightNumber,_that.host);case _:
   return orElse();
 
 }
@@ -184,10 +199,10 @@ return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nigh
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  Map<String, MafiaRole> roles,  Set<String> aliveIds,  MafiaConfig config,  int nightNumber)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  Map<String, MafiaRole> roles,  Set<String> aliveIds,  MafiaConfig config,  int nightNumber,  MafiaPlayer? host)  $default,) {final _that = this;
 switch (_that) {
 case _MafiaSession():
-return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nightNumber);case _:
+return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nightNumber,_that.host);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +219,10 @@ return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nigh
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MafiaPlayer> players,  Map<String, MafiaRole> roles,  Set<String> aliveIds,  MafiaConfig config,  int nightNumber)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MafiaPlayer> players,  Map<String, MafiaRole> roles,  Set<String> aliveIds,  MafiaConfig config,  int nightNumber,  MafiaPlayer? host)?  $default,) {final _that = this;
 switch (_that) {
 case _MafiaSession() when $default != null:
-return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nightNumber);case _:
+return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nightNumber,_that.host);case _:
   return null;
 
 }
@@ -219,7 +234,7 @@ return $default(_that.players,_that.roles,_that.aliveIds,_that.config,_that.nigh
 
 
 class _MafiaSession extends MafiaSession {
-  const _MafiaSession({required final  List<MafiaPlayer> players, required final  Map<String, MafiaRole> roles, required final  Set<String> aliveIds, required this.config, this.nightNumber = 1}): _players = players,_roles = roles,_aliveIds = aliveIds,super._();
+  const _MafiaSession({required final  List<MafiaPlayer> players, required final  Map<String, MafiaRole> roles, required final  Set<String> aliveIds, required this.config, this.nightNumber = 1, this.host}): _players = players,_roles = roles,_aliveIds = aliveIds,super._();
   
 
  final  List<MafiaPlayer> _players;
@@ -245,6 +260,9 @@ class _MafiaSession extends MafiaSession {
 
 @override final  MafiaConfig config;
 @override@JsonKey() final  int nightNumber;
+/// The narrator running the night, if any. Holds no role and never
+/// appears in [players].
+@override final  MafiaPlayer? host;
 
 /// Create a copy of MafiaSession
 /// with the given fields replaced by the non-null parameter values.
@@ -256,16 +274,16 @@ _$MafiaSessionCopyWith<_MafiaSession> get copyWith => __$MafiaSessionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MafiaSession&&const DeepCollectionEquality().equals(other._players, _players)&&const DeepCollectionEquality().equals(other._roles, _roles)&&const DeepCollectionEquality().equals(other._aliveIds, _aliveIds)&&(identical(other.config, config) || other.config == config)&&(identical(other.nightNumber, nightNumber) || other.nightNumber == nightNumber));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MafiaSession&&const DeepCollectionEquality().equals(other._players, _players)&&const DeepCollectionEquality().equals(other._roles, _roles)&&const DeepCollectionEquality().equals(other._aliveIds, _aliveIds)&&(identical(other.config, config) || other.config == config)&&(identical(other.nightNumber, nightNumber) || other.nightNumber == nightNumber)&&(identical(other.host, host) || other.host == host));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),const DeepCollectionEquality().hash(_roles),const DeepCollectionEquality().hash(_aliveIds),config,nightNumber);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),const DeepCollectionEquality().hash(_roles),const DeepCollectionEquality().hash(_aliveIds),config,nightNumber,host);
 
 @override
 String toString() {
-  return 'MafiaSession(players: $players, roles: $roles, aliveIds: $aliveIds, config: $config, nightNumber: $nightNumber)';
+  return 'MafiaSession(players: $players, roles: $roles, aliveIds: $aliveIds, config: $config, nightNumber: $nightNumber, host: $host)';
 }
 
 
@@ -276,11 +294,11 @@ abstract mixin class _$MafiaSessionCopyWith<$Res> implements $MafiaSessionCopyWi
   factory _$MafiaSessionCopyWith(_MafiaSession value, $Res Function(_MafiaSession) _then) = __$MafiaSessionCopyWithImpl;
 @override @useResult
 $Res call({
- List<MafiaPlayer> players, Map<String, MafiaRole> roles, Set<String> aliveIds, MafiaConfig config, int nightNumber
+ List<MafiaPlayer> players, Map<String, MafiaRole> roles, Set<String> aliveIds, MafiaConfig config, int nightNumber, MafiaPlayer? host
 });
 
 
-@override $MafiaConfigCopyWith<$Res> get config;
+@override $MafiaConfigCopyWith<$Res> get config;@override $MafiaPlayerCopyWith<$Res>? get host;
 
 }
 /// @nodoc
@@ -293,14 +311,15 @@ class __$MafiaSessionCopyWithImpl<$Res>
 
 /// Create a copy of MafiaSession
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? roles = null,Object? aliveIds = null,Object? config = null,Object? nightNumber = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? roles = null,Object? aliveIds = null,Object? config = null,Object? nightNumber = null,Object? host = freezed,}) {
   return _then(_MafiaSession(
 players: null == players ? _self._players : players // ignore: cast_nullable_to_non_nullable
 as List<MafiaPlayer>,roles: null == roles ? _self._roles : roles // ignore: cast_nullable_to_non_nullable
 as Map<String, MafiaRole>,aliveIds: null == aliveIds ? _self._aliveIds : aliveIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
 as MafiaConfig,nightNumber: null == nightNumber ? _self.nightNumber : nightNumber // ignore: cast_nullable_to_non_nullable
-as int,
+as int,host: freezed == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
+as MafiaPlayer?,
   ));
 }
 
@@ -312,6 +331,18 @@ $MafiaConfigCopyWith<$Res> get config {
   
   return $MafiaConfigCopyWith<$Res>(_self.config, (value) {
     return _then(_self.copyWith(config: value));
+  });
+}/// Create a copy of MafiaSession
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MafiaPlayerCopyWith<$Res>? get host {
+    if (_self.host == null) {
+    return null;
+  }
+
+  return $MafiaPlayerCopyWith<$Res>(_self.host!, (value) {
+    return _then(_self.copyWith(host: value));
   });
 }
 }

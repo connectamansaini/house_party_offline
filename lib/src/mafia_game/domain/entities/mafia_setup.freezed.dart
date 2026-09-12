@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MafiaSetup {
 
- List<MafiaPlayer> get players; MafiaConfig get config;
+ List<MafiaPlayer> get players; MafiaConfig get config;/// The narrator, when someone is running the night for the room. They
+/// hold the phone all night and are dealt no role, so they are not in
+/// [players].
+ MafiaPlayer? get host;
 /// Create a copy of MafiaSetup
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +28,16 @@ $MafiaSetupCopyWith<MafiaSetup> get copyWith => _$MafiaSetupCopyWithImpl<MafiaSe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MafiaSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MafiaSetup&&const DeepCollectionEquality().equals(other.players, players)&&(identical(other.config, config) || other.config == config)&&(identical(other.host, host) || other.host == host));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(players),config,host);
 
 @override
 String toString() {
-  return 'MafiaSetup(players: $players, config: $config)';
+  return 'MafiaSetup(players: $players, config: $config, host: $host)';
 }
 
 
@@ -45,11 +48,11 @@ abstract mixin class $MafiaSetupCopyWith<$Res>  {
   factory $MafiaSetupCopyWith(MafiaSetup value, $Res Function(MafiaSetup) _then) = _$MafiaSetupCopyWithImpl;
 @useResult
 $Res call({
- List<MafiaPlayer> players, MafiaConfig config
+ List<MafiaPlayer> players, MafiaConfig config, MafiaPlayer? host
 });
 
 
-$MafiaConfigCopyWith<$Res> get config;
+$MafiaConfigCopyWith<$Res> get config;$MafiaPlayerCopyWith<$Res>? get host;
 
 }
 /// @nodoc
@@ -62,11 +65,12 @@ class _$MafiaSetupCopyWithImpl<$Res>
 
 /// Create a copy of MafiaSetup
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? players = null,Object? config = null,Object? host = freezed,}) {
   return _then(_self.copyWith(
 players: null == players ? _self.players : players // ignore: cast_nullable_to_non_nullable
 as List<MafiaPlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as MafiaConfig,
+as MafiaConfig,host: freezed == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
+as MafiaPlayer?,
   ));
 }
 /// Create a copy of MafiaSetup
@@ -77,6 +81,18 @@ $MafiaConfigCopyWith<$Res> get config {
   
   return $MafiaConfigCopyWith<$Res>(_self.config, (value) {
     return _then(_self.copyWith(config: value));
+  });
+}/// Create a copy of MafiaSetup
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MafiaPlayerCopyWith<$Res>? get host {
+    if (_self.host == null) {
+    return null;
+  }
+
+  return $MafiaPlayerCopyWith<$Res>(_self.host!, (value) {
+    return _then(_self.copyWith(host: value));
   });
 }
 }
@@ -160,10 +176,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  MafiaConfig config)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  MafiaConfig config,  MafiaPlayer? host)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MafiaSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.host);case _:
   return orElse();
 
 }
@@ -181,10 +197,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  MafiaConfig config)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MafiaPlayer> players,  MafiaConfig config,  MafiaPlayer? host)  $default,) {final _that = this;
 switch (_that) {
 case _MafiaSetup():
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.host);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +217,10 @@ return $default(_that.players,_that.config);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MafiaPlayer> players,  MafiaConfig config)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MafiaPlayer> players,  MafiaConfig config,  MafiaPlayer? host)?  $default,) {final _that = this;
 switch (_that) {
 case _MafiaSetup() when $default != null:
-return $default(_that.players,_that.config);case _:
+return $default(_that.players,_that.config,_that.host);case _:
   return null;
 
 }
@@ -216,7 +232,7 @@ return $default(_that.players,_that.config);case _:
 
 
 class _MafiaSetup implements MafiaSetup {
-  const _MafiaSetup({required final  List<MafiaPlayer> players, required this.config}): _players = players;
+  const _MafiaSetup({required final  List<MafiaPlayer> players, required this.config, this.host}): _players = players;
   
 
  final  List<MafiaPlayer> _players;
@@ -227,6 +243,10 @@ class _MafiaSetup implements MafiaSetup {
 }
 
 @override final  MafiaConfig config;
+/// The narrator, when someone is running the night for the room. They
+/// hold the phone all night and are dealt no role, so they are not in
+/// [players].
+@override final  MafiaPlayer? host;
 
 /// Create a copy of MafiaSetup
 /// with the given fields replaced by the non-null parameter values.
@@ -238,16 +258,16 @@ _$MafiaSetupCopyWith<_MafiaSetup> get copyWith => __$MafiaSetupCopyWithImpl<_Maf
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MafiaSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MafiaSetup&&const DeepCollectionEquality().equals(other._players, _players)&&(identical(other.config, config) || other.config == config)&&(identical(other.host, host) || other.host == host));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_players),config,host);
 
 @override
 String toString() {
-  return 'MafiaSetup(players: $players, config: $config)';
+  return 'MafiaSetup(players: $players, config: $config, host: $host)';
 }
 
 
@@ -258,11 +278,11 @@ abstract mixin class _$MafiaSetupCopyWith<$Res> implements $MafiaSetupCopyWith<$
   factory _$MafiaSetupCopyWith(_MafiaSetup value, $Res Function(_MafiaSetup) _then) = __$MafiaSetupCopyWithImpl;
 @override @useResult
 $Res call({
- List<MafiaPlayer> players, MafiaConfig config
+ List<MafiaPlayer> players, MafiaConfig config, MafiaPlayer? host
 });
 
 
-@override $MafiaConfigCopyWith<$Res> get config;
+@override $MafiaConfigCopyWith<$Res> get config;@override $MafiaPlayerCopyWith<$Res>? get host;
 
 }
 /// @nodoc
@@ -275,11 +295,12 @@ class __$MafiaSetupCopyWithImpl<$Res>
 
 /// Create a copy of MafiaSetup
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? players = null,Object? config = null,Object? host = freezed,}) {
   return _then(_MafiaSetup(
 players: null == players ? _self._players : players // ignore: cast_nullable_to_non_nullable
 as List<MafiaPlayer>,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
-as MafiaConfig,
+as MafiaConfig,host: freezed == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
+as MafiaPlayer?,
   ));
 }
 
@@ -291,6 +312,18 @@ $MafiaConfigCopyWith<$Res> get config {
   
   return $MafiaConfigCopyWith<$Res>(_self.config, (value) {
     return _then(_self.copyWith(config: value));
+  });
+}/// Create a copy of MafiaSetup
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MafiaPlayerCopyWith<$Res>? get host {
+    if (_self.host == null) {
+    return null;
+  }
+
+  return $MafiaPlayerCopyWith<$Res>(_self.host!, (value) {
+    return _then(_self.copyWith(host: value));
   });
 }
 }

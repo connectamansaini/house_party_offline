@@ -15,6 +15,10 @@ abstract class MafiaSession with _$MafiaSession {
     required Set<String> aliveIds,
     required MafiaConfig config,
     @Default(1) int nightNumber,
+
+    /// The narrator running the night, if any. Holds no role and never
+    /// appears in [players].
+    MafiaPlayer? host,
   }) = _MafiaSession;
 
   const MafiaSession._();
@@ -30,14 +34,19 @@ abstract class MafiaSession with _$MafiaSession {
     required List<MafiaPlayer> players,
     required Map<String, MafiaRole> roles,
     required MafiaConfig config,
+    MafiaPlayer? host,
   }) {
     return MafiaSession(
       players: players,
       roles: roles,
       aliveIds: players.map((p) => p.id).toSet(),
       config: config,
+      host: host,
     );
   }
+
+  /// Whether a narrator is running the night instead of passing the phone.
+  bool get isHosted => host != null;
 
   MafiaRole roleOf(String id) => roles[id]!;
   bool isAlive(String id) => aliveIds.contains(id);
@@ -56,6 +65,13 @@ abstract class MafiaSession with _$MafiaSession {
   List<String> mafiaTeammateNames(String playerId) => [
     for (final p in players)
       if (p.id != playerId && roleOf(p.id).isMafia && isAlive(p.id)) p.name,
+  ];
+
+  /// Living players holding [role] — what the host needs to check that the
+  /// right people woke up.
+  List<MafiaPlayer> livingWithRole(MafiaRole role) => [
+    for (final p in livingPlayers)
+      if (roleOf(p.id) == role) p,
   ];
 
   /// A copy with [id] removed from the living set.

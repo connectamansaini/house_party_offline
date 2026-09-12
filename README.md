@@ -10,7 +10,7 @@ room — no accounts, no internet, no second device.
 | Game | How it plays | Players |
 | --- | --- | --- |
 | **Imposter** | Everyone gets the same secret word except the imposter. One-word clues, a vote, and one chance for the imposter to steal the win. Bundled + custom word packs, Undercover mode, secret ballots. | 3–12 |
-| **Mafia** | App-moderated social deduction, no narrator: role reveal, pass-and-play nights (Mafia, Doctor, Detective), morning recaps, daytime lynch. | 5–15 |
+| **Mafia** | App-moderated social deduction: role reveal, morning recaps, daytime lynch. Doctor and detective are optional. Nights run pass-and-play, or hand one person the phone as host and the app scripts the night for them, rotating the job between games. | 5–15 |
 | **Never Have I Ever** | A confession is read to the room; everyone who's done it loses a life. Last player standing wins. | 2–12 |
 | **Most Likely To** | A prompt, everyone points at once, the most fingers takes the point. Top score after the last round wins. | 3–12 |
 | **Truth or Dare** | Pick truth or dare, face the prompt, a point for going through with it. Mild and spicy decks. | 2–12 |

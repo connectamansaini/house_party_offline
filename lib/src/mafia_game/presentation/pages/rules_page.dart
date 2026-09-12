@@ -9,8 +9,16 @@ import 'package:house_party_offline/src/core/widgets/rules_sections.dart';
 // linter requires each item to be a single expression.
 const _mafiaRoleBullet =
     'Mafia — secretly kill one player each night. They know each other.';
+const _doctorRoleBullet =
+    'Doctor (optional) — each night, protect one player from being killed.';
 const _detectiveRoleBullet =
-    'Detective — each night, investigate one player to learn their role.';
+    'Detective (optional) — each night, investigate one player to learn '
+    'their role.';
+const _villagerRoleBullet =
+    'Villagers — no night powers; use logic and discussion by day.';
+const _specialsBullet =
+    'Leave the doctor or the detective out at setup for a faster, harsher '
+    'game — the night simply skips their turn.';
 
 const _nightActionsStep =
     'Mafia pick a victim, the doctor picks someone to protect, the '
@@ -19,6 +27,31 @@ const _nightActionsStep =
 const _nightResolveStep =
     'The app resolves the night: the victim dies unless the doctor '
     'protected them.';
+
+const _hostPassStep =
+    'Pass-and-play — the phone goes round every living player each '
+    'night, acting roles and villagers alike.';
+const _hostRunStep =
+    'Host runs the night — one person narrates and keeps the phone. '
+    'Turn it on in setup and pick who hosts; they are dealt no role.';
+const _hostRotateStep =
+    'Rotate the host to hand the job to the next person on the list each '
+    'game, so nobody sits out two nights running. The narrator knows every '
+    'role, so they can never also play the game they are running.';
+
+const _hostOptionBullet =
+    'Whether a host runs the night, who hosts, and whether the job rotates '
+    'between games.';
+
+const _hostScriptStep =
+    'The app gives the host a line to read for each role: “Mafia, open '
+    'your eyes”, and so on.';
+const _hostTapStep =
+    'The waking players point at their target with everyone else’s eyes '
+    'shut, and the host taps it in.';
+const _hostDetectiveStep =
+    'For the detective, the host shows them the answer on screen, then '
+    'carries on.';
 
 /// In-app rulebook for the Mafia game.
 class MafiaRulesPage extends StatelessWidget {
@@ -47,26 +80,42 @@ class MafiaRulesPage extends StatelessWidget {
               title: 'Objective',
               body:
                   'The town tries to eliminate every mafia member; the '
-                  'mafia try to outnumber the town. The app is your '
-                  'moderator — no narrator needed.',
+                  'mafia try to outnumber the town. The app moderates, so '
+                  'no one has to keep the secrets straight.',
             ),
             RuleBulletSection(
               icon: Icons.badge_rounded,
               title: 'Roles',
               bullets: [
                 _mafiaRoleBullet,
-                'Doctor — each night, protect one player from being killed.',
+                _doctorRoleBullet,
                 _detectiveRoleBullet,
-                'Villagers — no night powers; use logic and discussion by day.',
+                _villagerRoleBullet,
+                _specialsBullet,
               ],
+            ),
+            RuleBulletSection(
+              icon: Icons.campaign_rounded,
+              title: 'Two ways to play',
+              bullets: [_hostPassStep, _hostRunStep, _hostRotateStep],
             ),
             RuleNumberedSection(
               icon: Icons.nightlight_round,
-              title: 'Each night',
+              title: 'Each night (pass-and-play)',
               steps: [
                 'The phone passes to every living player in turn.',
                 _nightActionsStep,
                 _nightResolveStep,
+              ],
+            ),
+            RuleNumberedSection(
+              icon: Icons.record_voice_over_rounded,
+              title: 'Each night (with a host)',
+              steps: [
+                'Everyone closes their eyes; the host keeps the phone.',
+                _hostScriptStep,
+                _hostTapStep,
+                _hostDetectiveStep,
               ],
             ),
             RuleNumberedSection(
@@ -89,9 +138,10 @@ class MafiaRulesPage extends StatelessWidget {
             ),
             RuleBulletSection(
               icon: Icons.tune_rounded,
-              title: 'Host options',
+              title: 'Match options',
               bullets: [
-                'Number of mafia.',
+                _hostOptionBullet,
+                'Number of mafia, and whether a doctor and detective play.',
                 'Reveal a player’s role when they die, or keep it secret.',
                 'Whether the first night has a kill.',
                 'Whether the doctor may protect themselves.',

@@ -40,6 +40,36 @@ class MafiaSetupPlayerRenamed extends MafiaSetupEvent {
   List<Object?> get props => [id, name];
 }
 
+/// Turns narrator mode on (defaulting to the first player) or off.
+class MafiaSetupHostModeChanged extends MafiaSetupEvent {
+  const MafiaSetupHostModeChanged({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+}
+
+/// Hands the job to the next person each game, or keeps it with one.
+class MafiaSetupRotateHostChanged extends MafiaSetupEvent {
+  const MafiaSetupRotateHostChanged({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+}
+
+/// Picks which roster entry narrates.
+class MafiaSetupHostChanged extends MafiaSetupEvent {
+  const MafiaSetupHostChanged(this.id);
+
+  final String id;
+
+  @override
+  List<Object?> get props => [id];
+}
+
 class MafiaSetupMafiaCountChanged extends MafiaSetupEvent {
   const MafiaSetupMafiaCountChanged(this.count);
 
@@ -47,6 +77,26 @@ class MafiaSetupMafiaCountChanged extends MafiaSetupEvent {
 
   @override
   List<Object?> get props => [count];
+}
+
+/// Deals a doctor, or leaves the town without one.
+class MafiaSetupIncludeDoctorChanged extends MafiaSetupEvent {
+  const MafiaSetupIncludeDoctorChanged({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+}
+
+/// Deals a detective, or leaves the town without one.
+class MafiaSetupIncludeDetectiveChanged extends MafiaSetupEvent {
+  const MafiaSetupIncludeDetectiveChanged({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
 }
 
 class MafiaSetupRevealRolesOnDeathChanged extends MafiaSetupEvent {

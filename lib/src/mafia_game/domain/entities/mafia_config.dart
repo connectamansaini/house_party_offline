@@ -2,13 +2,18 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'mafia_config.freezed.dart';
 
-/// Per-game settings for a Mafia match. The role set is fixed in v1 (mafia +
-/// one doctor + one detective + villagers); only the counts and rule toggles
-/// vary.
+/// Per-game settings for a Mafia match: how many mafia, which of the two
+/// special town roles are in the deal, and the rule toggles.
 @freezed
 abstract class MafiaConfig with _$MafiaConfig {
   const factory MafiaConfig({
     @Default(1) int mafiaCount,
+
+    /// Whether a doctor is dealt. Off makes for a faster, deadlier game.
+    @Default(true) bool includeDoctor,
+
+    /// Whether a detective is dealt.
+    @Default(true) bool includeDetective,
 
     /// Whether the mafia may kill on the very first night.
     @Default(true) bool firstNightKill,
@@ -28,14 +33,14 @@ abstract class MafiaConfig with _$MafiaConfig {
   static const minPlayers = 5;
   static const maxPlayers = 15;
 
-  /// Doctor + Detective always take two of the seats.
-  static const reservedSpecials = 2;
+  /// How many seats the chosen special roles take before villagers.
+  int get specialCount => (includeDoctor ? 1 : 0) + (includeDetective ? 1 : 0);
 
-  /// Largest balanced mafia count for [playerCount]: leaves room for the two
-  /// specials and keeps the mafia a minority at the start.
-  static int maxMafia(int playerCount) {
+  /// Largest balanced mafia count for [playerCount]: leaves room for the
+  /// chosen specials and keeps the mafia a minority at the start.
+  int maxMafiaFor(int playerCount) {
     final byBalance = (playerCount - 1) ~/ 2; // mafia < town at start
-    final byRoster = playerCount - reservedSpecials; // room for specials
+    final byRoster = playerCount - specialCount; // room for the specials
     final max = byBalance < byRoster ? byBalance : byRoster;
     return max < 1 ? 1 : max;
   }
