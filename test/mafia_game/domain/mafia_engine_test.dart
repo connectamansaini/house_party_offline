@@ -175,17 +175,23 @@ void main() {
   });
 
   group('investigationResult', () {
-    test('exact role when configured', () {
+    // The card renders these as "<name> is <result>", so each one has to
+    // finish that sentence.
+    test('exact role when configured, with its article', () {
+      const cfg = MafiaConfig();
+      expect(engine.investigationResult(MafiaRole.doctor, cfg), 'the Doctor');
       expect(
-        engine.investigationResult(MafiaRole.doctor, const MafiaConfig()),
-        'Doctor',
+        engine.investigationResult(MafiaRole.detective, cfg),
+        'the Detective',
       );
+      expect(engine.investigationResult(MafiaRole.villager, cfg), 'a Villager');
+      expect(engine.investigationResult(MafiaRole.mafia, cfg), 'Mafia');
     });
 
     test('only alignment when exact role is off', () {
       const cfg = MafiaConfig(detectiveExactRole: false);
       expect(engine.investigationResult(MafiaRole.mafia, cfg), 'Mafia');
-      expect(engine.investigationResult(MafiaRole.doctor, cfg), 'Not Mafia');
+      expect(engine.investigationResult(MafiaRole.doctor, cfg), 'not Mafia');
     });
   });
 

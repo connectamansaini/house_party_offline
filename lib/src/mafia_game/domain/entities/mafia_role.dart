@@ -25,4 +25,14 @@ enum MafiaRole {
     MafiaRole.detective => 'Detective',
     MafiaRole.villager => 'Villager',
   };
+
+  /// What this role does to the person it picks, for buttons that name the
+  /// consequence ("Kill Rohan") instead of a vague "Confirm". Null for the
+  /// villager, who picks nobody.
+  String? get nightVerb => switch (this) {
+    MafiaRole.mafia => 'Kill',
+    MafiaRole.doctor => 'Save',
+    MafiaRole.detective => 'Check',
+    MafiaRole.villager => null,
+  };
 }

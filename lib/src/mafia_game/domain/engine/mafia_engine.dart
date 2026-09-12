@@ -110,10 +110,18 @@ class MafiaEngine {
     ];
   }
 
-  /// What the detective learns about [role].
+  /// What the detective learns about [role], as the tail of `<name> is …` —
+  /// so it carries its own article and reads as a sentence on the card.
   String investigationResult(MafiaRole role, MafiaConfig config) {
-    if (config.detectiveExactRole) return role.label;
-    return role.isMafia ? 'Mafia' : 'Not Mafia';
+    if (!config.detectiveExactRole) {
+      return role.isMafia ? 'Mafia' : 'not Mafia';
+    }
+    return switch (role) {
+      // A faction takes no article; there may be several of them.
+      MafiaRole.mafia => 'Mafia',
+      MafiaRole.villager => 'a Villager',
+      MafiaRole.doctor || MafiaRole.detective => 'the ${role.label}',
+    };
   }
 
   /// The winning faction given who is alive, or null if the game continues.

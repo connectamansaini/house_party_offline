@@ -53,6 +53,9 @@ class HomeGame {
 
   /// Key art for the hub cards (a portrait or square picture in
   /// `assets/images/games/`), or null to show the icon chip instead.
+  ///
+  /// Left unset on every game until the artwork actually ships: a path to a
+  /// missing asset renders a blank card, which looks worse than the chip.
   final String? image;
 
   String get playersLabel => '$minPlayers–$maxPlayers';
@@ -64,7 +67,6 @@ abstract final class GameCatalog {
     HomeGame(
       id: 'imposter',
       title: AppStrings.imposterName,
-      image: 'assets/images/games/imposter.png',
       blurb: AppStrings.imposterBlurb,
       tag: 'Bluffing',
       icon: Icons.theater_comedy_outlined,
@@ -78,7 +80,6 @@ abstract final class GameCatalog {
     HomeGame(
       id: 'mafia',
       title: AppStrings.mafiaName,
-      image: 'assets/images/games/mafia.png',
       blurb: AppStrings.mafiaBlurb,
       tag: 'Deduction',
       icon: Icons.dangerous_outlined,

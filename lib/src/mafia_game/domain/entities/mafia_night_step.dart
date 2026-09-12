@@ -45,10 +45,6 @@ enum MafiaNightStep {
 
   /// The button label once [name] is picked — it names the consequence, so
   /// the host can't record the wrong person by muscle memory.
-  String confirmWith(String name) => switch (this) {
-    MafiaNightStep.sleep => 'Start the night',
-    MafiaNightStep.mafia => 'Kill $name',
-    MafiaNightStep.doctor => 'Save $name',
-    MafiaNightStep.detective => 'Check $name',
-  };
+  String confirmWith(String name) =>
+      role?.nightVerb == null ? confirmLabel : '${role!.nightVerb} $name';
 }

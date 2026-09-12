@@ -12,6 +12,7 @@ import 'package:house_party_offline/src/mafia_game/domain/entities/mafia_role.da
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_bloc.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_event.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/bloc/mafia_game_state.dart';
+import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_night_card.dart';
 import 'package:house_party_offline/src/mafia_game/presentation/widgets/mafia_role_visuals.dart';
 
 /// Host-run night: a teleprompter for the narrator. A rail across the top
@@ -202,9 +203,16 @@ class _Step extends StatelessWidget {
         : session.playerOf(selected).name;
 
     return _Frame(
-      header: _ScriptCard(
-        step: step,
-        awake: [for (final p in session.livingWithRole(role)) p.name],
+      header: MafiaNightCard(
+        role: role,
+        eyebrow: 'READ ALOUD',
+        headline: step.announcement,
+        subtitle: step.instruction,
+        // The host's cheat sheet: who should have their eyes open.
+        chip:
+            'Awake: '
+            '${session.livingWithRole(role).map((p) => p.name).join(', ')}',
+        chipIcon: Icons.visibility_outlined,
       ),
       body: ListView(
         // Matches the script card's inset so the column has one edge.
@@ -270,122 +278,6 @@ class _Step extends StatelessWidget {
       ],
       MafiaNightStep.sleep => session.livingPlayers,
     };
-  }
-}
-
-/// The line the host says out loud, with the role's mark and the names that
-/// should be awake to hear it.
-class _ScriptCard extends StatelessWidget {
-  const _ScriptCard({required this.step, required this.awake});
-
-  final MafiaNightStep step;
-  final List<String> awake;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final accent = AppColors.accentOf(roleVisual(step.role!).gradient);
-    final ink = AppColors.legible(accent, theme.brightness);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(Spacing.x5l),
-      decoration: BoxDecoration(
-        color: AppColors.tint(accent, scheme),
-        borderRadius: BorderRadius.circular(AppRadii.x5l),
-        border: Border.all(color: accent.withValues(alpha: 0.35)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              MomentGlyph(
-                icon: roleVisual(step.role!).icon,
-                size: 22,
-                color: ink,
-              ),
-              const SizedBox(width: Spacing.lg),
-              Text(
-                'READ ALOUD',
-                style: const TextStyle(fontFamily: 'Unbounded').copyWith(
-                  color: ink,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.6,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: Spacing.x3l),
-          Text(
-            step.announcement,
-            style: const TextStyle(fontFamily: 'Unbounded').copyWith(
-              color: scheme.onSurface,
-              fontSize: 20,
-              height: 1.15,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: Spacing.md),
-          Text(
-            step.instruction,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-          if (awake.isNotEmpty) ...[
-            const SizedBox(height: Spacing.x3l),
-            _AwakeChip(names: awake, accent: accent),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Names the living holders of the waking role, so the host can check that
-/// the right people opened their eyes.
-class _AwakeChip extends StatelessWidget {
-  const _AwakeChip({required this.names, required this.accent});
-
-  final List<String> names;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.x2l,
-        vertical: Spacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(AppRadii.xl),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.visibility_outlined,
-            size: 15,
-            color: scheme.onSurfaceVariant,
-          ),
-          const SizedBox(width: Spacing.md),
-          Expanded(
-            child: Text(
-              'Awake: ${names.join(', ')}',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: scheme.onSurface,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
